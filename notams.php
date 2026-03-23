@@ -41,12 +41,7 @@ if ($ident) {
 <body>
     <div class="container">
         <header>
-            <h1>AnganiData</h1>
-            <nav>
-                <a href="index.php">Viewer</a>
-                <a href="form.php">Add Airport</a>
-                <a href="import.php">Bulk Import</a>
-            </nav>
+            <?php $active_page = 'directory'; include 'header.php'; ?>
         </header>
 
         <main>

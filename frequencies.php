@@ -31,12 +31,7 @@ if ($airport_ident) {
 <body>
     <div class="container">
         <header>
-            <h1>AnganiData</h1>
-            <nav>
-                <a href="index.php">Viewer</a>
-                <a href="navaids.php">Navaids</a>
-                <a href="import.php">Bulk Import</a>
-            </nav>
+            <?php $active_page = 'directory'; include 'header.php'; ?>
         </header>
 
         <main>

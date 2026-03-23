@@ -1,5 +1,6 @@
 <?php
 require_once 'db.php';
+require_once 'logger.php';
 
 $message = '';
 $importType = isset($_POST['type']) ? $_POST['type'] : '';
@@ -35,9 +36,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $importType) {
             
             // Bulk Insert Logic based on Dataset Type
             if ($importType === 'airports') {
-                $stmt = $pdo->prepare("INSERT INTO airports (id, ident, type, name, latitude_deg, longitude_deg, elevation_ft, continent, iso_country, iso_region, municipality, scheduled_service, icao_code, iata_code, gps_code, local_code, home_link, wikipedia_link, keywords) 
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) 
-                    ON DUPLICATE KEY UPDATE name=VALUES(name), type=VALUES(type)");
+                $sql = "INSERT INTO airports (id, ident, type, name, latitude_deg, longitude_deg, elevation_ft, continent, iso_country, iso_region, municipality, scheduled_service, icao_code, iata_code, gps_code, local_code, home_link, wikipedia_link, keywords) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                
+                if (DB_TYPE === 'mysql') {
+                    $sql .= " ON DUPLICATE KEY UPDATE name=VALUES(name), type=VALUES(type)";
+                } else {
+                    $sql .= " ON CONFLICT(id) DO UPDATE SET name=excluded.name, type=excluded.type";
+                }
+                
+                $stmt = $pdo->prepare($sql);
                 while (($data = fgetcsv($handle)) !== FALSE) {
                     if (count($data) >= 19) {
                         // Reorder to match: id,ident,type,name,latitude_deg,longitude_deg,elevation_ft,continent,iso_country,iso_region,municipality,scheduled_service,icao_code,iata_code,gps_code,local_code,home_link,wikipedia_link,keywords
@@ -47,9 +55,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $importType) {
                     }
                 }
             } elseif ($importType === 'airlines') {
-                $stmt = $pdo->prepare("INSERT INTO airlines (airline_id, name, alias, iata, icao, callsign, country, active) 
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?) 
-                    ON DUPLICATE KEY UPDATE name=VALUES(name)");
+                $sql = "INSERT INTO airlines (airline_id, name, alias, iata, icao, callsign, country, active) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                
+                if (DB_TYPE === 'mysql') {
+                    $sql .= " ON DUPLICATE KEY UPDATE name=VALUES(name)";
+                } else {
+                    $sql .= " ON CONFLICT(airline_id) DO UPDATE SET name=excluded.name";
+                }
+                
+                $stmt = $pdo->prepare($sql);
                 while (($data = fgetcsv($handle)) !== FALSE) {
                     if (count($data) >= 8) {
                         $stmt->execute(array_slice($data, 0, 8));
@@ -65,9 +80,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $importType) {
                     }
                 }
             } elseif ($importType === 'navaids') {
-                $stmt = $pdo->prepare("INSERT INTO navaids (id, filename, ident, name, type, frequency_khz, latitude_deg, longitude_deg, elevation_ft, iso_country, dme_frequency_khz, dme_channel, dme_latitude_deg, dme_longitude_deg, dme_elevation_ft, slaved_variation_deg, magnetic_variation_deg, usageType, power, associated_airport) 
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) 
-                    ON DUPLICATE KEY UPDATE name=VALUES(name)");
+                $sql = "INSERT INTO navaids (id, filename, ident, name, type, frequency_khz, latitude_deg, longitude_deg, elevation_ft, iso_country, dme_frequency_khz, dme_channel, dme_latitude_deg, dme_longitude_deg, dme_elevation_ft, slaved_variation_deg, magnetic_variation_deg, usageType, power, associated_airport) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                
+                if (DB_TYPE === 'mysql') {
+                    $sql .= " ON DUPLICATE KEY UPDATE name=VALUES(name)";
+                } else {
+                    $sql .= " ON CONFLICT(id) DO UPDATE SET name=excluded.name";
+                }
+
+                $stmt = $pdo->prepare($sql);
                 while (($data = fgetcsv($handle)) !== FALSE) {
                     if (count($data) >= 20) {
                         $stmt->execute(array_slice($data, 0, 20));
@@ -75,12 +97,63 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $importType) {
                     }
                 }
             } elseif ($importType === 'frequencies') {
-                $stmt = $pdo->prepare("INSERT INTO frequencies (id, airport_ref, airport_ident, type, description, frequency_mhz) 
-                    VALUES (?, ?, ?, ?, ?, ?) 
-                    ON DUPLICATE KEY UPDATE description=VALUES(description)");
+                $sql = "INSERT INTO frequencies (id, airport_ref, airport_ident, type, description, frequency_mhz) 
+                    VALUES (?, ?, ?, ?, ?, ?)";
+                
+                if (DB_TYPE === 'mysql') {
+                    $sql .= " ON DUPLICATE KEY UPDATE description=VALUES(description)";
+                } else {
+                    $sql .= " ON CONFLICT(id) DO UPDATE SET description=excluded.description";
+                }
+
+                $stmt = $pdo->prepare($sql);
                 while (($data = fgetcsv($handle)) !== FALSE) {
                     if (count($data) >= 6) {
                         $stmt->execute(array_slice($data, 0, 6));
+                        $count++;
+                    }
+                }
+            } elseif ($importType === 'notam_sources') {
+                $sql = "INSERT INTO notam_sources (iso_country, country_name, official_source_name, notam_portal_url, icao_nof_code, notes) 
+                    VALUES (?, ?, ?, ?, ?, ?)";
+                
+                if (DB_TYPE === 'mysql') {
+                    $sql .= " ON DUPLICATE KEY UPDATE country_name=VALUES(country_name), official_source_name=VALUES(official_source_name), notam_portal_url=VALUES(notam_portal_url)";
+                } else {
+                    $sql .= " ON CONFLICT(iso_country) DO UPDATE SET country_name=excluded.country_name, official_source_name=excluded.official_source_name, notam_portal_url=excluded.notam_portal_url";
+                }
+
+                $stmt = $pdo->prepare($sql);
+                while (($data = fgetcsv($handle)) !== FALSE) {
+                    if (count($data) >= 4) { // Basic validation
+                        $stmt->execute(array_slice($data, 0, 6));
+                        $count++;
+                    }
+                }
+            } elseif ($importType === 'licenses') {
+                while (($data = fgetcsv($handle)) !== FALSE) {
+                    if (count($data) >= 3) {
+                        $iso = $data[0];
+                        $catName = $data[1];
+                        $name = $data[2];
+                        $validity = $data[3] ?? '';
+                        $cost = $data[4] ?? '';
+                        $reqs = $data[5] ?? '';
+                        $desc = $data[6] ?? '';
+                        
+                        // Category lookup/creation
+                        $catStmt = $pdo->prepare("SELECT id FROM license_categories WHERE name = ?");
+                        $catStmt->execute([$catName]);
+                        $catId = $catStmt->fetchColumn();
+                        
+                        if (!$catId) {
+                            $insCat = $pdo->prepare("INSERT INTO license_categories (name) VALUES (?)");
+                            $insCat->execute([$catName]);
+                            $catId = $pdo->lastInsertId();
+                        }
+                        
+                        $stmt = $pdo->prepare("INSERT INTO licenses (category_id, iso_country, name, validity, cost, requirements, description) VALUES (?, ?, ?, ?, ?, ?, ?)");
+                        $stmt->execute([$catId, $iso, $name, $validity, $cost, $reqs, $desc]);
                         $count++;
                     }
                 }
@@ -88,6 +161,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $importType) {
             
             $pdo->commit();
             $message = "Successfully imported $count $importType.";
+            logAction($pdo, 'IMPORT', $importType, 0, null, ['count' => $count, 'country' => $country]);
         } catch (Exception $e) {
             $pdo->rollBack();
             $message = "Error during import: " . $e->getMessage();
@@ -124,18 +198,19 @@ if (is_dir('../angani-data/datasets/Countries')) {
 <body>
     <div class="container">
         <header>
-            <h1>AnganiData</h1>
-            <nav>
-                <a href="index.php">Viewer</a>
-                <a href="form.php">Add Airport</a>
-                <a href="import.php">Bulk Import</a>
-            </nav>
+            <?php $active_page = 'admin'; include 'header.php'; ?>
         </header>
 
         <main>
             <div class="card import-box">
                 <h2>Bulk Data Import</h2>
                 
+                <div class="alert" style="background: rgba(59, 130, 246, 0.1); color: #3b82f6; border: 1px solid #3b82f6; font-size: 0.9rem; line-height: 1.5;">
+                    <strong>Dataset Setup:</strong> Ensure your datasets are saved in the sibling <code>angani-data/datasets/</code> directory. 
+                    <br>• Airports/Airlines: <code>../angani-data/datasets/Countries/[ISO]/airports/airports.csv</code>
+                    <br>• Global Data: <code>../angani-data/datasets/Global/</code>
+                </div>
+
                 <?php if ($message): ?>
                     <div class="alert <?= strpos($message, 'Error') === false ? 'alert-success' : 'alert-error' ?>">
                         <?= htmlspecialchars($message) ?>
@@ -158,8 +233,17 @@ if (is_dir('../angani-data/datasets/Countries')) {
                     <div class="form-group" id="country-group" style="display: none;">
                         <label>Select Country</label>
                         <select name="country">
-                            <?php foreach ($countries as $c): ?>
-                                <option value="<?= htmlspecialchars($c) ?>"><?= htmlspecialchars($c) ?></option>
+                            <?php 
+                            $country_names = [
+                                'KE' => 'Kenya', 'US' => 'United States', 'GB' => 'United Kingdom', 
+                                'AE' => 'United Arab Emirates', 'TZ' => 'Tanzania', 'UG' => 'Uganda',
+                                'RW' => 'Rwanda', 'ET' => 'Ethiopia', 'ZA' => 'South Africa',
+                                'AD' => 'Andorra', 'AF' => 'Afghanistan', 'IN' => 'India', 'FR' => 'France'
+                            ];
+                            foreach ($countries as $c): 
+                                $displayName = isset($country_names[$c]) ? "$c - " . $country_names[$c] : $c;
+                            ?>
+                                <option value="<?= htmlspecialchars($c) ?>"><?= htmlspecialchars($displayName) ?></option>
                             <?php endforeach; ?>
                         </select>
                     </div>

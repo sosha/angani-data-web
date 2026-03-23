@@ -1,105 +1,160 @@
 <?php
 require_once 'db.php';
 
-// Pagination Settings
-$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-$perPage = 20;
-$offset = ($page - 1) * $perPage;
+function renderMarkdown($content) {
+    // Basic Markdown Rendering with Regex
+    
+    // Headers
+    $content = preg_replace('/^# (.*)$/m', '<h1>$1</h1>', $content);
+    $content = preg_replace('/^## (.*)$/m', '<h2>$1</h2>', $content);
+    $content = preg_replace('/^### (.*)$/m', '<h3>$1</h3>', $content);
+    
+    // Bold
+    $content = preg_replace('/\*\*(.*?)\*\*/', '<strong>$1</strong>', $content);
+    
+    // Links [text](url)
+    $content = preg_replace('/\[(.*?)\]\((.*?)\)/', '<a href="$2">$1</a>', $content);
+    
+    // Inline Code
+    $content = preg_replace('/`(.*?)`/', '<code>$1</code>', $content);
+    
+    // Logic for Lists and Tasks
+    $lines = explode("\n", $content);
+    $html = "";
+    $inList = false;
+    
+    foreach ($lines as $line) {
+        $trimmed = trim($line);
+        if (empty($trimmed)) {
+            if ($inList) { $html .= "</ul>"; $inList = false; }
+            continue;
+        }
 
-// Search/Filter Logic
-$search = isset($_GET['search']) ? $_GET['search'] : '';
-$where = "1=1";
-$params = [];
-
-if ($search) {
-    $where = "(name LIKE ? OR ident LIKE ? OR iata_code LIKE ? OR iso_country = ?)";
-    $params = ["%$search%", "%$search%", $search, $search];
+        // Check for Tasks/Lists
+        if (preg_match('/^([-*]) \[(.)\] (.*)/', $trimmed, $matches)) {
+            if (!$inList) { $html .= "<ul class='todo-list'>"; $inList = true; }
+            $checked = ($matches[2] === 'x') ? 'checked' : '';
+            $statusClass = ($matches[2] === 'x') ? 'done' : (($matches[2] === '/') ? 'in-progress' : '');
+            $html .= "<li class='$statusClass'><input type='checkbox' $checked disabled> " . $matches[3] . "</li>";
+        } elseif (preg_match('/^    ([-*]) \[(.)\] (.*)/', $line, $matches)) {
+            if (!$inList) { $html .= "<ul class='todo-list'>"; $inList = true; }
+            $checked = ($matches[2] === 'x') ? 'checked' : '';
+            $statusClass = ($matches[2] === 'x') ? 'done' : (($matches[2] === '/') ? 'in-progress' : '');
+            $html .= "<li class='$statusClass' style='margin-left: 20px;'><input type='checkbox' $checked disabled> " . $matches[3] . "</li>";
+        } elseif (preg_match('/^([-*]) (.*)/', $trimmed, $matches)) {
+            if (!$inList) { $html .= "<ul>"; $inList = true; }
+            $html .= "<li>" . $matches[2] . "</li>";
+        } else {
+            if ($inList && !str_starts_with($line, "    ")) { $html .= "</ul>"; $inList = false; }
+            
+            // If it's not a block element already, wrap in P
+            if (!preg_match('/^<(h1|h2|h3|ul|li|p|div|section)/', $line)) {
+                $html .= "<p>" . $line . "</p>";
+            } else {
+                $html .= $line;
+            }
+        }
+    }
+    if ($inList) $html .= "</ul>";
+    
+    return $html;
 }
 
-// Get Total Count
-$countStmt = $pdo->prepare("SELECT COUNT(*) FROM airports WHERE $where");
-$countStmt->execute($params);
-$totalRecords = $countStmt->fetchColumn();
-$totalPages = ceil($totalRecords / $perPage);
-
-// Fetch airport records for the current page
-$stmt = $pdo->prepare("SELECT * FROM airports WHERE $where ORDER BY name LIMIT $perPage OFFSET $offset");
-$stmt->execute($params);
-$airports = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AnganiData | Airport Viewer</title>
+    <title>AnganiData | Dashboard</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        .dashboard-grid { display: grid; grid-template-columns: 1.6fr 1fr; gap: 2.5rem; margin-top: 1rem; }
+        
+        /* GitHub-style Markdown */
+        .markdown-body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            word-wrap: break-word;
+            color: var(--text);
+        }
+        .markdown-body h1, .markdown-body h2, .markdown-body h3 { 
+            border-bottom: 1px solid var(--border); 
+            padding-bottom: 0.3em; 
+            margin-top: 1.5rem; 
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+        .markdown-body p { margin-bottom: 1rem; }
+        .markdown-body code { 
+            padding: 0.2rem 0.4rem; 
+            background: rgba(175, 184, 193, 0.2); 
+            border-radius: 6px; 
+            font-size: 85%;
+            font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+        }
+        .markdown-body ul { padding-left: 2rem; margin-bottom: 1rem; }
+        .markdown-body a { color: var(--accent-color); text-decoration: none; }
+        .markdown-body a:hover { text-decoration: underline; }
+        
+        /* Mission Status Styling */
+        .todo-list { padding-left: 0 !important; }
+        .todo-list li { 
+            list-style: none; 
+            padding: 0.5rem;
+            border-left: 3px solid transparent;
+            margin-bottom: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .todo-list li:hover { background: rgba(255,255,255,0.02); }
+        .todo-list li.in-progress { 
+            border-left-color: var(--accent-color); 
+            background: rgba(99, 102, 241, 0.05);
+            font-weight: 500;
+        }
+        .todo-list input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            cursor: default;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>AnganiData</h1>
-            <nav>
-                <a href="index.php">Viewer</a>
-                <a href="form.php">Add Airport</a>
-                <a href="import.php">Bulk Import</a>
-            </nav>
+            <?php $active_page = 'home'; include 'header.php'; ?>
         </header>
 
         <main>
-            <div class="card">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-                    <h2>Airport Directory</h2>
-                    <form method="GET" style="display: flex; gap: 0.5rem;">
-                        <input type="text" name="search" placeholder="Search name, code, country..." value="<?= htmlspecialchars($search) ?>" style="width: 300px;">
-                        <button type="submit" class="btn">Search</button>
-                    </form>
-                </div>
+            <div class="dashboard-grid">
+                <section class="card markdown-body">
+                    <div class="content">
+                        <?php 
+                        $readme = file_get_contents('README.md');
+                        echo renderMarkdown($readme);
+                        ?>
+                    </div>
+                </section>
 
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Ident</th>
-                            <th>ICAO</th>
-                            <th>Name</th>
-                            <th>Type</th>
-                            <th>Municipality</th>
-                            <th>Country</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php if (empty($airports)): ?>
-                        <tr><td colspan="7" style="text-align: center;">No airports found. Use Bulk Import to get started.</td></tr>
-                        <?php else: ?>
-                            <?php foreach ($airports as $airport): ?>
-                            <tr>
-                                <td><code><?= htmlspecialchars($airport['ident']) ?></code></td>
-                                <td><code><?= htmlspecialchars($airport['icao_code'] ?? '-') ?></code></td>
-                                <td><?= htmlspecialchars($airport['name']) ?></td>
-                                <td><?= htmlspecialchars(str_replace('_', ' ', $airport['type'])) ?></td>
-                                <td><?= htmlspecialchars($airport['municipality']) ?></td>
-                                <td><?= htmlspecialchars($airport['iso_country']) ?></td>
-                                <td style="display: flex; gap: 0.3rem;">
-                                    <a href="weather.php?ident=<?= $airport['ident'] ?>" class="btn" style="padding: 0.4rem 0.8rem; font-size: 0.8rem; background: var(--success-color);" title="Weather">WX</a>
-                                    <a href="notams.php?ident=<?= $airport['ident'] ?>" class="btn" style="padding: 0.4rem 0.8rem; font-size: 0.8rem; background: #f59e0b;" title="NOTAMs">NT</a>
-                                    <a href="frequencies.php?ident=<?= $airport['ident'] ?>" class="btn" style="padding: 0.4rem 0.8rem; font-size: 0.8rem; background: #3b82f6;" title="Frequencies">FR</a>
-                                    <a href="form.php?id=<?= $airport['id'] ?>" class="btn btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">Edit</a>
-                                    <a href="delete.php?id=<?= $airport['id'] ?>" class="btn btn-danger" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;" onclick="return confirm('Are you sure?')">Del</a>
-                                </td>
-                            </tr>
-                            <?php endforeach; ?>
-                        <?php endif; ?>
-                    </tbody>
-                </table>
-
-                <?php if ($totalPages > 1): ?>
-                <div class="pagination">
-                    <?php for ($i = 1; $i <= min($totalPages, 10); $i++): ?>
-                    <a href="?page=<?= $i ?>&search=<?= urlencode($search) ?>" class="<?= $page === $i ? 'active' : '' ?>"><?= $i ?></a>
-                    <?php endfor; ?>
-                </div>
-                <?php endif; ?>
+                <section class="card">
+                    <h2>Mission Status (To-Do)</h2>
+                    <div class="todo-viewer markdown-body">
+                        <?php 
+                        $todo = file_get_contents('todo.md');
+                        echo renderMarkdown($todo);
+                        ?>
+                    </div>
+                    <div style="margin-top: 1.5rem; border-top: 1px solid var(--border); padding-top: 1rem;">
+                        <h3>Quick Actions</h3>
+                        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                            <a href="tracking.php" class="btn" style="background: var(--accent-color);">📡 Launch Live Tracker</a>
+                            <a href="viewer.php" class="btn btn-secondary">Browse Aircraft & Airports</a>
+                            <a href="import.php" class="btn btn-secondary">Import New Datasets</a>
+                        </div>
+                    </div>
+                </section>
             </div>
         </main>
     </div>
