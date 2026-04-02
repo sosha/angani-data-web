@@ -149,7 +149,8 @@ function renderMarkdown($content) {
                     <div style="margin-top: 1.5rem; border-top: 1px solid var(--border); padding-top: 1rem;">
                         <h3>Quick Actions</h3>
                         <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-                            <a href="tracking.php" class="btn" style="background: var(--accent-color);">📡 Launch Live Tracker</a>
+                            <a href="datasets.php" class="btn" style="background: linear-gradient(135deg, #6366f1, #8b5cf6); font-weight: 700;">📂 Browse & Edit Datasets</a>
+                            <a href="tracking.php" class="btn btn-secondary">📡 Launch Live Tracker</a>
                             <a href="viewer.php" class="btn btn-secondary">Browse Aircraft & Airports</a>
                             <a href="import.php" class="btn btn-secondary">Import New Datasets</a>
                         </div>
