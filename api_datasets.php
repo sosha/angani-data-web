@@ -53,13 +53,18 @@ function jsonErr(string $msg, int $code = 400) {
 $action = $_GET['action'] ?? '';
 
 switch ($action) {
-    case 'tree':   actionTree();   break;
-    case 'read':   actionRead();   break;
-    case 'update': actionUpdate(); break;
-    case 'add':    actionAdd();    break;
-    case 'delete': actionDelete(); break;
-    case 'export': actionExport(); break;
-    default:       jsonErr('Unknown action. Use: tree, read, update, add, delete, export');
+    case 'tree':        actionTree();       break;
+    case 'read':        actionRead();       break;
+    case 'update':      actionUpdate();     break;
+    case 'add':         actionAdd();        break;
+    case 'delete':      actionDelete();     break;
+    case 'export':      actionExport();     break;
+    case 'upload':      actionUpload();     break;
+    case 'create':      actionCreate();     break;
+    case 'delete_file': actionDeleteFile(); break;
+    case 'audit':       actionAudit();      break;
+    case 'folders':     actionFolders();    break;
+    default:            jsonErr('Unknown action. Use: tree, read, update, add, delete, export, upload, create, delete_file, audit, folders');
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -325,6 +330,170 @@ function actionExport() {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
+// ACTION: upload — upload a CSV file to a target directory
+// ═══════════════════════════════════════════════════════════════════════════════
+function actionUpload() {
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') jsonErr('POST required', 405);
+
+    $targetDir = $_POST['target_dir'] ?? '';
+    if (!$targetDir) jsonErr('target_dir is required.');
+
+    // Validate target directory exists within DATA_ROOT
+    $absDir = safePath($targetDir);
+    if (!$absDir || !is_dir($absDir)) jsonErr('Target directory does not exist.');
+
+    if (!isset($_FILES['csv_file']) || $_FILES['csv_file']['error'] !== UPLOAD_ERR_OK) {
+        jsonErr('No file uploaded or upload error.');
+    }
+
+    $uploadedName = basename($_FILES['csv_file']['name']);
+    if (strtolower(pathinfo($uploadedName, PATHINFO_EXTENSION)) !== 'csv') {
+        jsonErr('Only CSV files are allowed.');
+    }
+
+    $destPath = $absDir . DIRECTORY_SEPARATOR . $uploadedName;
+
+    // If file already exists, back it up first
+    if (file_exists($destPath)) {
+        backupFile($destPath);
+    }
+
+    if (!move_uploaded_file($_FILES['csv_file']['tmp_name'], $destPath)) {
+        jsonErr('Failed to move uploaded file.', 500);
+    }
+
+    // Count records
+    $lineCount = max(0, count(file($destPath)) - 1);
+
+    auditLog('UPLOAD', $targetDir . '/' . $uploadedName, "Uploaded $lineCount records");
+    jsonOut(['success' => true, 'file' => $targetDir . '/' . $uploadedName, 'records' => $lineCount]);
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// ACTION: create — create a new empty CSV with headers
+// ═══════════════════════════════════════════════════════════════════════════════
+function actionCreate() {
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') jsonErr('POST required', 405);
+
+    $input = json_decode(file_get_contents('php://input'), true);
+    if (!$input) jsonErr('Invalid JSON body.');
+
+    $filePath = $input['file'] ?? '';
+    $headers = $input['headers'] ?? [];
+
+    if (!$filePath) jsonErr('file path is required.');
+    if (empty($headers)) jsonErr('headers array is required.');
+    if (strtolower(pathinfo($filePath, PATHINFO_EXTENSION)) !== 'csv') jsonErr('File must have .csv extension.');
+
+    // Build absolute path and verify parent directory exists within DATA_ROOT
+    $relative = str_replace('\\', '/', trim($filePath, '/'));
+    if (strpos($relative, '..') !== false) jsonErr('Invalid path.');
+    $abs = DATA_ROOT . '/' . $relative;
+    $parentDir = dirname($abs);
+
+    // Verify parent is within DATA_ROOT
+    $realParent = realpath($parentDir);
+    if (!$realParent || strpos($realParent, DATA_ROOT) !== 0) {
+        jsonErr('Parent directory is outside data root.');
+    }
+
+    if (file_exists($abs)) jsonErr('File already exists. Use upload to replace.');
+
+    // Write just the header row
+    $handle = fopen($abs, 'w');
+    if (!$handle) jsonErr('Failed to create file.', 500);
+    fputcsv($handle, $headers);
+    fclose($handle);
+
+    auditLog('CREATE', $filePath, 'Created with ' . count($headers) . ' columns: ' . implode(', ', $headers));
+    jsonOut(['success' => true, 'file' => $filePath, 'headers' => $headers]);
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// ACTION: delete_file — delete an entire CSV file (with backup)
+// ═══════════════════════════════════════════════════════════════════════════════
+function actionDeleteFile() {
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') jsonErr('POST required', 405);
+
+    $input = json_decode(file_get_contents('php://input'), true);
+    if (!$input) jsonErr('Invalid JSON body.');
+
+    $file = $input['file'] ?? '';
+    $abs = safeCSVPath($file);
+    if (!$abs) jsonErr('Invalid CSV path.');
+
+    // Backup before deleting
+    backupFile($abs);
+
+    if (!unlink($abs)) {
+        jsonErr('Failed to delete file.', 500);
+    }
+
+    auditLog('DELETE_FILE', $file, 'File permanently deleted (backup created)');
+    jsonOut(['success' => true, 'deleted' => $file]);
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// ACTION: audit — return recent audit log entries
+// ═══════════════════════════════════════════════════════════════════════════════
+function actionAudit() {
+    $limit = max(1, min(500, (int)($_GET['limit'] ?? 50)));
+    $auditFile = __DIR__ . '/logs/audit.csv';
+
+    if (!file_exists($auditFile)) {
+        jsonOut(['entries' => [], 'total' => 0]);
+        return;
+    }
+
+    $handle = fopen($auditFile, 'r');
+    if (!$handle) jsonErr('Could not read audit log.', 500);
+
+    $headers = fgetcsv($handle);
+    $entries = [];
+    while (($row = fgetcsv($handle)) !== false) {
+        if (count($row) >= 4) {
+            $entries[] = [
+                'timestamp' => $row[0] ?? '',
+                'action'    => $row[1] ?? '',
+                'file'      => $row[2] ?? '',
+                'details'   => $row[3] ?? '',
+            ];
+        }
+    }
+    fclose($handle);
+
+    // Return most recent first
+    $entries = array_reverse($entries);
+    $total = count($entries);
+    $entries = array_slice($entries, 0, $limit);
+
+    jsonOut(['entries' => $entries, 'total' => $total]);
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// ACTION: folders — return a flat list of all folder paths (for dropdowns)
+// ═══════════════════════════════════════════════════════════════════════════════
+function actionFolders() {
+    $folders = [];
+    collectFolders(DATA_ROOT, '', $folders);
+    jsonOut($folders);
+}
+
+function collectFolders(string $absDir, string $relPrefix, array &$list): void {
+    $entries = @scandir($absDir);
+    if (!$entries) return;
+    foreach ($entries as $entry) {
+        if ($entry === '.' || $entry === '..' || $entry === '.git') continue;
+        $abs = $absDir . DIRECTORY_SEPARATOR . $entry;
+        if (is_dir($abs)) {
+            $rel = $relPrefix ? $relPrefix . '/' . $entry : $entry;
+            $list[] = $rel;
+            collectFolders($abs, $rel, $list);
+        }
+    }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
 // File I/O Helpers
 // ═══════════════════════════════════════════════════════════════════════════════
 function readCSVFile(string $abs): ?array {
@@ -343,7 +512,6 @@ function writeCSVFile(string $abs, array $lines): bool {
     $handle = fopen($abs, 'w');
     if (!$handle) return false;
 
-    // Acquire exclusive lock
     if (!flock($handle, LOCK_EX)) {
         fclose($handle);
         return false;
@@ -359,6 +527,24 @@ function writeCSVFile(string $abs, array $lines): bool {
 }
 
 function backupFile(string $abs): void {
-    $bak = $abs . '.bak';
-    @copy($abs, $bak);
+    $bakDir = __DIR__ . '/backups';
+    if (!is_dir($bakDir)) @mkdir($bakDir, 0755, true);
+    $bakName = basename($abs) . '.' . date('Ymd_His') . '.bak';
+    @copy($abs, $bakDir . '/' . $bakName);
+}
+
+function auditLog(string $action, string $file, string $details = ''): void {
+    $logDir = __DIR__ . '/logs';
+    if (!is_dir($logDir)) @mkdir($logDir, 0755, true);
+    $logFile = $logDir . '/audit.csv';
+
+    $writeHeader = !file_exists($logFile);
+    $handle = fopen($logFile, 'a');
+    if (!$handle) return;
+
+    if ($writeHeader) {
+        fputcsv($handle, ['Timestamp', 'Action', 'File', 'Details']);
+    }
+    fputcsv($handle, [date('Y-m-d H:i:s'), $action, $file, $details]);
+    fclose($handle);
 }

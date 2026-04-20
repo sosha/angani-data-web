@@ -74,6 +74,32 @@ $active_page = 'admin';
                             });
                     });
                 </script>
+                
+                <?php
+                // Handle Meta API Key Saving
+                if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['meta_access_token'])) {
+                    if ($is_mysql) {
+                        $stmt = $pdo->prepare("INSERT INTO settings (setting_key, setting_value) VALUES ('meta_access_token', ?) ON DUPLICATE KEY UPDATE setting_value = VALUES(setting_value)");
+                    } else {
+                        $stmt = $pdo->prepare("INSERT INTO settings (setting_key, setting_value) VALUES ('meta_access_token', ?) ON CONFLICT(setting_key) DO UPDATE SET setting_value = excluded.setting_value");
+                    }
+                    $stmt->execute([$_POST['meta_access_token']]);
+                    echo "<div class='alert alert-success' style='grid-column: 1 / -1;'>Meta Ads Access Token saved successfully!</div>";
+                }
+
+                $stmt = $pdo->prepare("SELECT setting_value FROM settings WHERE setting_key = 'meta_access_token'");
+                $stmt->execute();
+                $currentMetaKey = $stmt->fetchColumn();
+                ?>
+
+                <div class="card admin-card" style="grid-column: 1 / -1; border-color: #1877F2;">
+                    <h3>🌐 Meta Ads API Configuration</h3>
+                    <p>Enter your <strong>Meta Graph API Access Token</strong> to enable syncing with the Facebook Ads Library. Requires a User Access Token with the necessary ad reading permissions.</p>
+                    <form method="POST" style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                        <input type="password" name="meta_access_token" value="<?= htmlspecialchars($currentMetaKey ?: '') ?>" placeholder="Paste your Meta Access Token here..." style="flex-grow: 1;">
+                        <button type="submit" class="btn" style="background: #1877F2; border-color: #1877F2;">Save Token</button>
+                    </form>
+                </div>
 
                 <div class="card admin-card">
                     <h3>📥 Data Import</h3>
