@@ -5,12 +5,7 @@
  */
 header('Content-Type: application/json; charset=utf-8');
 
-define('DATA_ROOT', realpath(__DIR__ . '/../angani-data/datasets'));
-
-if (!DATA_ROOT) {
-    echo json_encode(['error' => 'Dataset root not found']);
-    exit;
-}
+require_once __DIR__ . '/config.php'; // defines DATA_ROOT
 
 $action = $_GET['action'] ?? '';
 

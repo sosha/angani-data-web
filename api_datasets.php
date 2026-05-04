@@ -6,13 +6,7 @@
 header('Content-Type: application/json; charset=utf-8');
 
 // ── Configuration ──────────────────────────────────────────────────────────────
-define('DATA_ROOT', realpath(__DIR__ . '/../angani-data/datasets'));
-
-if (!DATA_ROOT || !is_dir(DATA_ROOT)) {
-    http_response_code(500);
-    echo json_encode(['error' => 'Dataset root not found. Expected ../angani-data/datasets']);
-    exit;
-}
+require_once __DIR__ . '/config.php'; // defines DATA_ROOT
 
 // ── Security: validate that a requested path is within DATA_ROOT ────────────
 function safePath(string $relative): ?string {
@@ -84,7 +78,9 @@ function scanDir_recursive(string $absDir, string $relPrefix): array {
     $dirs = [];
     $files = [];
     foreach ($entries as $entry) {
+        // Skip hidden/system entries and underscore-prefixed folders (e.g. _errors)
         if ($entry === '.' || $entry === '..' || $entry === '.git') continue;
+        if ($entry[0] === '_') continue;
         $abs = $absDir . DIRECTORY_SEPARATOR . $entry;
         $rel = $relPrefix ? $relPrefix . '/' . $entry : $entry;
         if (is_dir($abs)) {
@@ -484,6 +480,7 @@ function collectFolders(string $absDir, string $relPrefix, array &$list): void {
     if (!$entries) return;
     foreach ($entries as $entry) {
         if ($entry === '.' || $entry === '..' || $entry === '.git') continue;
+        if ($entry[0] === '_') continue; // skip underscore-prefixed folders
         $abs = $absDir . DIRECTORY_SEPARATOR . $entry;
         if (is_dir($abs)) {
             $rel = $relPrefix ? $relPrefix . '/' . $entry : $entry;

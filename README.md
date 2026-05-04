@@ -54,6 +54,8 @@ All endpoints return JSON. The API operates directly on CSV files within `../ang
 
 ## 🛠️ Setup
 
+### Standard deployment (sibling directories)
+
 1. Place this directory alongside `angani-data/` on your web server:
    ```
    /var/www/html/
@@ -66,6 +68,19 @@ All endpoints return JSON. The API operates directly on CSV files within `../ang
 3. No database configuration needed. No `.env` files. No migrations.
 
 4. Navigate to `http://localhost/angani-data-web/` to start.
+
+### Custom dataset path
+
+If your datasets live somewhere other than the sibling `angani-data/` folder, open `config.php` and set the override:
+
+```php
+// config.php
+$dataRootOverride = 'C:/Users/user/Documents/Angani/angani-data/datasets';
+// or on Linux/Mac:
+$dataRootOverride = '/home/user/projects/angani-data/datasets';
+```
+
+Alternatively, set the `ANGANI_DATA_ROOT` environment variable to the datasets path before starting your web server.
 
 ## 🆕 What's New
 

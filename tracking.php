@@ -1,6 +1,4 @@
 <?php
-require_once 'db.php';
-
 $active_page = 'tracking';
 ?>
 <!DOCTYPE html>

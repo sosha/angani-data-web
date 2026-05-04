@@ -1,5 +1,12 @@
 <?php
-// CSV-native logger — writes to logs/audit.csv
+/**
+ * AnganiData — CSV-native audit logger
+ * Writes structured entries to logs/audit.csv.
+ *
+ * Usage:
+ *   logAction('IMPORT', 'airports', 42);
+ *   logAction('DELETE', 'Countries/KE/airports/airports.csv');
+ */
 function logAction(string $action, string $target, int $count = 0, $oldData = null, $newData = null): void {
     $logDir = __DIR__ . '/logs';
     if (!is_dir($logDir)) @mkdir($logDir, 0755, true);

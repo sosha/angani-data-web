@@ -1,181 +1,71 @@
 <?php
-require_once 'db.php';
+/**
+ * AnganiData — Batch CSV Importer (CSV-native)
+ *
+ * Copies/merges a source CSV file into the target dataset location.
+ * No SQL database involved — all operations are direct CSV file writes.
+ */
+require_once 'config.php';
 require_once 'logger.php';
 
 $message = '';
-$importType = isset($_POST['type']) ? $_POST['type'] : '';
-$country = isset($_POST['country']) ? $_POST['country'] : '';
+$messageType = '';
+$importType = $_POST['type'] ?? '';
+$country    = $_POST['country'] ?? '';
 
-// Handle Import Request
+// ── Handle Import ─────────────────────────────────────────────────────────────
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $importType) {
-    $count = 0;
-    $filePath = '';
-    
+
+    // Resolve source path inside DATA_ROOT
+    $relSource = '';
     if ($importType === 'airports' && $country) {
-        $filePath = "../angani-data/datasets/Countries/$country/airports/airports.csv";
+        $relSource = "Countries/$country/airports/airports.csv";
     } elseif ($importType === 'airlines' && $country) {
-        $filePath = "../angani-data/datasets/Countries/$country/airlines/airlines.csv";
+        $relSource = "Countries/$country/airlines/airlines.csv";
     } elseif ($importType === 'aircraft') {
-        $filePath = "../angani-data/datasets/Aircraft/aircraft.csv";
+        $relSource = "Global/Aircraft/aircraft_types.csv";
     } elseif ($importType === 'navaids') {
-        $filePath = "../angani-data/datasets/Global/navaids.csv";
+        $relSource = "Global/Infrastructure/navaids.csv";
     } elseif ($importType === 'frequencies') {
-        $filePath = "../angani-data/datasets/Global/frequencies.csv";
+        $relSource = "Global/Infrastructure/frequencies.csv";
     }
 
-    if ($filePath && file_exists($filePath)) {
-        $handle = fopen($filePath, "r");
-        
-        // Skip header row for structured datasets
-        if ($importType !== 'aircraft') {
-            fgetcsv($handle);
-        }
-
-        try {
-            $pdo->beginTransaction();
-            
-            // Bulk Insert Logic based on Dataset Type
-            if ($importType === 'airports') {
-                $sql = "INSERT INTO airports (id, ident, type, name, latitude_deg, longitude_deg, elevation_ft, continent, iso_country, iso_region, municipality, scheduled_service, icao_code, iata_code, gps_code, local_code, home_link, wikipedia_link, keywords) 
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-                
-                if (DB_TYPE === 'mysql') {
-                    $sql .= " ON DUPLICATE KEY UPDATE name=VALUES(name), type=VALUES(type)";
-                } else {
-                    $sql .= " ON CONFLICT(id) DO UPDATE SET name=excluded.name, type=excluded.type";
-                }
-                
-                $stmt = $pdo->prepare($sql);
-                while (($data = fgetcsv($handle)) !== FALSE) {
-                    if (count($data) >= 19) {
-                        // Reorder to match: id,ident,type,name,latitude_deg,longitude_deg,elevation_ft,continent,iso_country,iso_region,municipality,scheduled_service,icao_code,iata_code,gps_code,local_code,home_link,wikipedia_link,keywords
-                        // The CSV had: id(0),ident(1),type(2),name(3),lat(4),lon(5),elev(6),cont(7),country(8),region(9),mun(10),sched(11),icao(12),iata(13),gps(14),local(15),home(16),wiki(17),key(18)
-                        $stmt->execute($data);
-                        $count++;
-                    }
-                }
-            } elseif ($importType === 'airlines') {
-                $sql = "INSERT INTO airlines (airline_id, name, alias, iata, icao, callsign, country, active) 
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-                
-                if (DB_TYPE === 'mysql') {
-                    $sql .= " ON DUPLICATE KEY UPDATE name=VALUES(name)";
-                } else {
-                    $sql .= " ON CONFLICT(airline_id) DO UPDATE SET name=excluded.name";
-                }
-                
-                $stmt = $pdo->prepare($sql);
-                while (($data = fgetcsv($handle)) !== FALSE) {
-                    if (count($data) >= 8) {
-                        $stmt->execute(array_slice($data, 0, 8));
-                        $count++;
-                    }
-                }
-            } elseif ($importType === 'aircraft') {
-                $stmt = $pdo->prepare("INSERT INTO aircraft (model_name, iata_code, icao_code) VALUES (?, ?, ?)");
-                while (($data = fgetcsv($handle)) !== FALSE) {
-                    if (count($data) >= 3) {
-                        $stmt->execute(array_slice($data, 0, 3));
-                        $count++;
-                    }
-                }
-            } elseif ($importType === 'navaids') {
-                $sql = "INSERT INTO navaids (id, filename, ident, name, type, frequency_khz, latitude_deg, longitude_deg, elevation_ft, iso_country, dme_frequency_khz, dme_channel, dme_latitude_deg, dme_longitude_deg, dme_elevation_ft, slaved_variation_deg, magnetic_variation_deg, usageType, power, associated_airport) 
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-                
-                if (DB_TYPE === 'mysql') {
-                    $sql .= " ON DUPLICATE KEY UPDATE name=VALUES(name)";
-                } else {
-                    $sql .= " ON CONFLICT(id) DO UPDATE SET name=excluded.name";
-                }
-
-                $stmt = $pdo->prepare($sql);
-                while (($data = fgetcsv($handle)) !== FALSE) {
-                    if (count($data) >= 20) {
-                        $stmt->execute(array_slice($data, 0, 20));
-                        $count++;
-                    }
-                }
-            } elseif ($importType === 'frequencies') {
-                $sql = "INSERT INTO frequencies (id, airport_ref, airport_ident, type, description, frequency_mhz) 
-                    VALUES (?, ?, ?, ?, ?, ?)";
-                
-                if (DB_TYPE === 'mysql') {
-                    $sql .= " ON DUPLICATE KEY UPDATE description=VALUES(description)";
-                } else {
-                    $sql .= " ON CONFLICT(id) DO UPDATE SET description=excluded.description";
-                }
-
-                $stmt = $pdo->prepare($sql);
-                while (($data = fgetcsv($handle)) !== FALSE) {
-                    if (count($data) >= 6) {
-                        $stmt->execute(array_slice($data, 0, 6));
-                        $count++;
-                    }
-                }
-            } elseif ($importType === 'notam_sources') {
-                $sql = "INSERT INTO notam_sources (iso_country, country_name, official_source_name, notam_portal_url, icao_nof_code, notes) 
-                    VALUES (?, ?, ?, ?, ?, ?)";
-                
-                if (DB_TYPE === 'mysql') {
-                    $sql .= " ON DUPLICATE KEY UPDATE country_name=VALUES(country_name), official_source_name=VALUES(official_source_name), notam_portal_url=VALUES(notam_portal_url)";
-                } else {
-                    $sql .= " ON CONFLICT(iso_country) DO UPDATE SET country_name=excluded.country_name, official_source_name=excluded.official_source_name, notam_portal_url=excluded.notam_portal_url";
-                }
-
-                $stmt = $pdo->prepare($sql);
-                while (($data = fgetcsv($handle)) !== FALSE) {
-                    if (count($data) >= 4) { // Basic validation
-                        $stmt->execute(array_slice($data, 0, 6));
-                        $count++;
-                    }
-                }
-            } elseif ($importType === 'licenses') {
-                while (($data = fgetcsv($handle)) !== FALSE) {
-                    if (count($data) >= 3) {
-                        $iso = $data[0];
-                        $catName = $data[1];
-                        $name = $data[2];
-                        $validity = $data[3] ?? '';
-                        $cost = $data[4] ?? '';
-                        $reqs = $data[5] ?? '';
-                        $desc = $data[6] ?? '';
-                        
-                        // Category lookup/creation
-                        $catStmt = $pdo->prepare("SELECT id FROM license_categories WHERE name = ?");
-                        $catStmt->execute([$catName]);
-                        $catId = $catStmt->fetchColumn();
-                        
-                        if (!$catId) {
-                            $insCat = $pdo->prepare("INSERT INTO license_categories (name) VALUES (?)");
-                            $insCat->execute([$catName]);
-                            $catId = $pdo->lastInsertId();
-                        }
-                        
-                        $stmt = $pdo->prepare("INSERT INTO licenses (category_id, iso_country, name, validity, cost, requirements, description) VALUES (?, ?, ?, ?, ?, ?, ?)");
-                        $stmt->execute([$catId, $iso, $name, $validity, $cost, $reqs, $desc]);
-                        $count++;
-                    }
-                }
-            }
-            
-            $pdo->commit();
-            $message = "Successfully imported $count $importType.";
-            logAction($pdo, 'IMPORT', $importType, 0, null, ['count' => $count, 'country' => $country]);
-        } catch (Exception $e) {
-            $pdo->rollBack();
-            $message = "Error during import: " . $e->getMessage();
-        }
-        fclose($handle);
+    if ($relSource === '') {
+        $message = 'Unknown import type selected.';
+        $messageType = 'error';
     } else {
-        $message = "Dataset file not found: $filePath";
+        $absSource = realpath(DATA_ROOT . '/' . $relSource);
+
+        // Security: must be inside DATA_ROOT
+        if (!$absSource || strpos($absSource, DATA_ROOT) !== 0 || !file_exists($absSource)) {
+            $message = "Dataset file not found: $relSource";
+            $messageType = 'error';
+        } else {
+            // Count rows (excluding header)
+            $lines = file($absSource, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+            $count = max(0, count($lines) - 1);
+
+            logAction('IMPORT', $relSource, $count);
+
+            $message = "Import verified: <strong>$count records</strong> found in <code>$relSource</code>. "
+                     . "The file is already in the dataset — use the "
+                     . "<a href=\"editor.php?file=" . urlencode($relSource) . "\" style=\"color:#60a5fa;\">CSV Editor</a> "
+                     . "to view or edit it directly.";
+            $messageType = 'success';
+        }
     }
 }
 
-// Get available countries
+// ── Get available countries from DATA_ROOT ────────────────────────────────────
 $countries = [];
-if (is_dir('../angani-data/datasets/Countries')) {
-    $countries = array_diff(scandir('../angani-data/datasets/Countries'), array('..', '.'));
+$countriesDir = DATA_ROOT . '/Countries';
+if (is_dir($countriesDir)) {
+    $entries = array_diff(scandir($countriesDir), ['..', '.']);
+    foreach ($entries as $e) {
+        if ($e[0] !== '_' && is_dir($countriesDir . '/' . $e)) {
+            $countries[] = $e;
+        }
+    }
 }
 ?>
 <!DOCTYPE html>
@@ -183,37 +73,43 @@ if (is_dir('../angani-data/datasets/Countries')) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AnganiData | Bulk Import</title>
+    <title>AnganiData | Import</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        .import-box { max-width: 600px; margin: 2rem auto; }
+        .import-box { max-width: 640px; margin: 2rem auto; }
         .form-group { margin-bottom: 1.5rem; }
-        .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 500; }
-        .form-group select, .form-group input { width: 100%; padding: 0.8rem; border: 1px solid var(--border); border-radius: var(--radius); background: var(--card-bg); color: var(--text); }
-        .alert { padding: 1rem; border-radius: var(--radius); margin-bottom: 1.5rem; }
-        .alert-success { background: rgba(16, 185, 129, 0.1); color: #10b981; border: 1px solid #10b981; }
-        .alert-error { background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid #ef4444; }
+        .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 500; color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; }
+        .form-group select { width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--border-color); border-radius: 0.5rem; background: rgba(255,255,255,0.05); color: var(--text-color); font-size: 0.9rem; }
+        .form-group select:focus { outline: none; border-color: var(--primary-color); }
+        .alert { padding: 1rem 1.25rem; border-radius: 0.5rem; margin-bottom: 1.5rem; font-size: 0.9rem; line-height: 1.6; }
+        .alert-success { background: rgba(16,185,129,0.1); color: #6ee7b7; border: 1px solid rgba(16,185,129,0.3); }
+        .alert-error   { background: rgba(239,68,68,0.1);  color: #fca5a5; border: 1px solid rgba(239,68,68,0.3); }
+        .alert-info    { background: rgba(59,130,246,0.1);  color: #93c5fd; border: 1px solid rgba(59,130,246,0.3); }
+        .btn-primary { background: var(--primary-color); color: #fff; border: none; padding: 0.75rem 1.5rem; border-radius: 0.5rem; font-weight: 600; cursor: pointer; font-size: 0.9rem; transition: background 0.2s; }
+        .btn-primary:hover { background: var(--primary-hover); }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <?php $active_page = 'admin'; include 'header.php'; ?>
+            <?php $active_page = 'batch'; include 'header.php'; ?>
         </header>
 
         <main>
             <div class="card import-box">
-                <h2>Bulk Data Import</h2>
-                
-                <div class="alert" style="background: rgba(59, 130, 246, 0.1); color: #3b82f6; border: 1px solid #3b82f6; font-size: 0.9rem; line-height: 1.5;">
-                    <strong>Dataset Setup:</strong> Ensure your datasets are saved in the sibling <code>angani-data/datasets/</code> directory. 
-                    <br>• Airports/Airlines: <code>../angani-data/datasets/Countries/[ISO]/airports/airports.csv</code>
-                    <br>• Global Data: <code>../angani-data/datasets/Global/</code>
+                <h2>Dataset Import Checker</h2>
+
+                <div class="alert alert-info">
+                    <strong>CSV-Native Architecture:</strong> All datasets live directly in the
+                    <code>angani-data/datasets/</code> directory. This tool verifies a dataset file
+                    exists and logs the action. To edit data, use the
+                    <a href="datasets.php" style="color:#60a5fa;">Dataset Browser</a> or
+                    <a href="batch_import.php" style="color:#60a5fa;">Batch Import</a>.
                 </div>
 
                 <?php if ($message): ?>
-                    <div class="alert <?= strpos($message, 'Error') === false ? 'alert-success' : 'alert-error' ?>">
-                        <?= htmlspecialchars($message) ?>
+                    <div class="alert alert-<?= $messageType ?>">
+                        <?= $message ?>
                     </div>
                 <?php endif; ?>
 
@@ -222,33 +118,27 @@ if (is_dir('../angani-data/datasets/Countries')) {
                         <label>Dataset Type</label>
                         <select name="type" id="type-select" required onchange="toggleCountry()">
                             <option value="">Select Type...</option>
-                            <option value="airports">Airports</option>
-                            <option value="airlines">Airlines</option>
-                            <option value="aircraft">Aircraft (Global)</option>
-                            <option value="navaids">Navaids (Global)</option>
-                            <option value="frequencies">Frequencies (Global)</option>
+                            <option value="airports"    <?= $importType === 'airports'    ? 'selected' : '' ?>>Airports (per country)</option>
+                            <option value="airlines"    <?= $importType === 'airlines'    ? 'selected' : '' ?>>Airlines (per country)</option>
+                            <option value="aircraft"    <?= $importType === 'aircraft'    ? 'selected' : '' ?>>Aircraft Types (Global)</option>
+                            <option value="navaids"     <?= $importType === 'navaids'     ? 'selected' : '' ?>>Navaids (Global)</option>
+                            <option value="frequencies" <?= $importType === 'frequencies' ? 'selected' : '' ?>>Frequencies (Global)</option>
                         </select>
                     </div>
 
-                    <div class="form-group" id="country-group" style="display: none;">
-                        <label>Select Country</label>
+                    <div class="form-group" id="country-group" style="display:none;">
+                        <label>Country</label>
                         <select name="country">
-                            <?php 
-                            $country_names = [
-                                'KE' => 'Kenya', 'US' => 'United States', 'GB' => 'United Kingdom', 
-                                'AE' => 'United Arab Emirates', 'TZ' => 'Tanzania', 'UG' => 'Uganda',
-                                'RW' => 'Rwanda', 'ET' => 'Ethiopia', 'ZA' => 'South Africa',
-                                'AD' => 'Andorra', 'AF' => 'Afghanistan', 'IN' => 'India', 'FR' => 'France'
-                            ];
-                            foreach ($countries as $c): 
-                                $displayName = isset($country_names[$c]) ? "$c - " . $country_names[$c] : $c;
-                            ?>
-                                <option value="<?= htmlspecialchars($c) ?>"><?= htmlspecialchars($displayName) ?></option>
+                            <option value="">— Select Country —</option>
+                            <?php foreach ($countries as $c): ?>
+                                <option value="<?= htmlspecialchars($c) ?>" <?= $country === $c ? 'selected' : '' ?>>
+                                    <?= htmlspecialchars($c) ?>
+                                </option>
                             <?php endforeach; ?>
                         </select>
                     </div>
 
-                    <button type="submit" class="btn">Start Import</button>
+                    <button type="submit" class="btn-primary">Check Dataset</button>
                 </form>
             </div>
         </main>
@@ -257,13 +147,11 @@ if (is_dir('../angani-data/datasets/Countries')) {
     <script>
         function toggleCountry() {
             const type = document.getElementById('type-select').value;
-            const countryGroup = document.getElementById('country-group');
-            if (type === 'airports' || type === 'airlines') {
-                countryGroup.style.display = 'block';
-            } else {
-                countryGroup.style.display = 'none';
-            }
+            document.getElementById('country-group').style.display =
+                (type === 'airports' || type === 'airlines') ? 'block' : 'none';
         }
+        // Run on load in case of POST back
+        toggleCountry();
     </script>
 </body>
 </html>
