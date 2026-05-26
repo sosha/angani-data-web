@@ -1,0 +1,47 @@
+-- Angani Data split seed loader.
+-- Run this from the application root: mysql -u USER -p angani_data < database/02_seed_data.sql
+-- Each referenced file is under 1MB for phpMyAdmin/cPanel-friendly imports.
+SET NAMES utf8mb4;
+SET FOREIGN_KEY_CHECKS = 0;
+SOURCE database/seeds/01_countries.sql;
+SOURCE database/seeds/02_airlines_001.sql;
+SOURCE database/seeds/02_airlines_002.sql;
+SOURCE database/seeds/03_aircraft_registrations_001.sql;
+SOURCE database/seeds/03_aircraft_registrations_002.sql;
+SOURCE database/seeds/03_aircraft_registrations_003.sql;
+SOURCE database/seeds/03_aircraft_registrations_004.sql;
+SOURCE database/seeds/03_aircraft_registrations_005.sql;
+SOURCE database/seeds/03_aircraft_registrations_006.sql;
+SOURCE database/seeds/04_aircraft_types.sql;
+SOURCE database/seeds/05_airports.sql;
+SOURCE database/seeds/06_airline_destinations.sql;
+SOURCE database/seeds/07_regulatory_records.sql;
+SOURCE database/seeds/08_dataset_files_001.sql;
+SOURCE database/seeds/08_dataset_files_002.sql;
+SOURCE database/seeds/08_dataset_files_003.sql;
+SOURCE database/seeds/08_dataset_files_004.sql;
+SOURCE database/seeds/08_dataset_files_005.sql;
+SOURCE database/seeds/08_dataset_files_006.sql;
+SOURCE database/seeds/09_dataset_records_001.sql;
+SOURCE database/seeds/09_dataset_records_002.sql;
+SOURCE database/seeds/09_dataset_records_003.sql;
+SOURCE database/seeds/09_dataset_records_004.sql;
+SOURCE database/seeds/09_dataset_records_005.sql;
+SOURCE database/seeds/09_dataset_records_006.sql;
+SOURCE database/seeds/09_dataset_records_007.sql;
+SOURCE database/seeds/09_dataset_records_008.sql;
+SOURCE database/seeds/09_dataset_records_009.sql;
+SOURCE database/seeds/09_dataset_records_010.sql;
+SOURCE database/seeds/09_dataset_records_011.sql;
+SOURCE database/seeds/09_dataset_records_012.sql;
+SOURCE database/seeds/09_dataset_records_013.sql;
+SOURCE database/seeds/09_dataset_records_014.sql;
+SOURCE database/seeds/09_dataset_records_015.sql;
+SOURCE database/seeds/09_dataset_records_016.sql;
+SOURCE database/seeds/09_dataset_records_017.sql;
+SOURCE database/seeds/09_dataset_records_018.sql;
+SOURCE database/seeds/09_dataset_records_019.sql;
+SOURCE database/seeds/09_dataset_records_020.sql;
+SOURCE database/seeds/09_dataset_records_021.sql;
+SOURCE database/seeds/09_dataset_records_022.sql;
+SET FOREIGN_KEY_CHECKS = 1;
