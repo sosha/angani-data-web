@@ -121,7 +121,7 @@ function status_chip(?string $status): string { $s=strtolower((string)($status ?
 function module_count(string $key): int { $cfg=module_config($key); if(!$cfg || !table_exists($cfg['table'])) return 0; try{return (int)scalar('SELECT COUNT(*) FROM '.$cfg['table']);}catch(Throwable $e){return 0;} }
 function public_url_prefix(): string { return defined('ANGANI_ADMIN_CONTEXT') ? '../' : ''; }
 function module_url(string $key): string { return public_url_prefix().'?page=module&module='.urlencode($key); }
-function detail_url(string $key,$id): string { return public_url_prefix().'?page=detail&module='.urlencode($key).'&id='.(int)$id; }
+function detail_url(string $key,$id): string { return public_url_prefix().'?page=detail&module='.urlencode($key).'&id='.urlencode((string)$id); }
 
 function query_module_records(array $cfg, int $limit=24, int $offset=0, bool $forExport=false): array {
     $table=$cfg['table']; if(!table_exists($table)) return [[],0];
@@ -152,7 +152,9 @@ function render_module_cards(string $key, array $rows): string {
 }
 function render_record_card(string $key,array $cfg,array $r): string {
     $title=$r[$cfg['title']] ?? ($r['name'] ?? 'Record'); $sub=$r[$cfg['subtitle']] ?? '';
-    $url=detail_url($key,$r['id'] ?? 0); $card=$cfg['card'] ?? 'generic';
+    // Use code instead of id for modules with code as primary key
+    $idOrCode = ($key === 'countries' && isset($r['code'])) ? $r['code'] : ($r['id'] ?? 0);
+    $url=detail_url($key,$idOrCode); $card=$cfg['card'] ?? 'generic';
     if($card==='airline'){
         $logo=trim((string)($r['logo_url'] ?? '')); $mark=$logo?'<img class="card-logo" src="'.e($logo).'" alt="">':'<div class="avatar">'.e(initials($title)).'</div>';
         return '<article class="record-card airline-card" onclick="location.href=\''.e($url).'\'"><div class="record-top"><div class="flag">'.flag_emoji($r['country_code'] ?? '').'</div>'.$mark.status_chip($r['status_bucket'] ?? $r['status'] ?? '').'</div><h3>'.e($title).'</h3><p>'.e(trim(($r['iata_code'] ?? '').' / '.($r['icao_code'] ?? '').' / '.($r['callsign'] ?? ''),' /')).'</p><div class="mini-metrics"><span>Fleet '.e($r['fleet_size'] ?? '—').'</span><span>'.e($r['alliance'] ?? 'No alliance').'</span></div><a class="btn small primary" href="'.e($url).'">View Airline</a></article>';
