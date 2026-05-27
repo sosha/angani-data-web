@@ -1,0 +1,9 @@
+iso_country,country_name,official_source_name,notam_portal_url,icao_nof_code,notes
+KE,Kenya,Kenya Civil Aviation Authority (KCAA),https://eaip.kcaa.or.ke/,HKJK,AIS/AIM Department
+UG,Uganda,Uganda Civil Aviation Authority (UCAA),https://aim.caa.go.ug/,HUEC,Aeronautical Information Management
+TZ,Tanzania,Tanzania Civil Aviation Authority (TCAA),https://tcaa.go.tz/air-navigation-services/ais/,HTDA,International NOTAM Office
+SS,South Sudan,South Sudan Civil Aviation Authority (SSCAA),https://sscaa.gov.ss/,HSSJ,Aeronautical Information Services
+SO,Somalia,Somali Civil Aviation Authority (SCAA),https://scaa.gov.so/,HCSM,Mogadishu NOF (Currently managed from Nairobi)
+US,United States,Federal Aviation Administration (FAA),https://notams.aim.faa.gov/notamSearch/,KDZZ,FAA NOTAM Search Portal
+GB,United Kingdom,NATS Aeronautical Information Service,https://www.nats.aero/ais,EGZZ,AIS Information Centre
+ZA,South Africa,Air Traffic and Navigation Services (ATNS),https://www.atns.com/,FAZZ,Aeronautical Information Management

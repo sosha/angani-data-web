@@ -1,0 +1,15 @@
+No syntax errors detected in ./admin/index.php
+No syntax errors detected in ./admin/pages/bulk_operations.php
+No syntax errors detected in ./database/import_all_seeds.php
+No syntax errors detected in ./includes/config.example.php
+No syntax errors detected in ./includes/config.php
+No syntax errors detected in ./includes/db.php
+No syntax errors detected in ./includes/functions.php
+No syntax errors detected in ./includes/modules.php
+No syntax errors detected in ./index.php
+No syntax errors detected in ./scripts/import_csv_to_mysql.php
+No syntax errors detected in ./scripts/import_uploaded_datasets.php
+No syntax errors detected in ./scripts/importers/DatasetMap.php
+No syntax errors detected in ./scripts/importers/ImportEngine.php
+No syntax errors detected in ./scripts/importers/phase4_import.php
+No syntax errors detected in ./scripts/qa_phase5_check.php

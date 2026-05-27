@@ -1,0 +1,250 @@
+country_name,alpha_2,alpha_3,numeric_code,aircraft_prefix
+Andorra,AD,,,C3
+United Arab Emirates,AE,,,A6
+Afghanistan,AF,,,YA
+Antigua and Barbuda,AG,,,V2
+Anguilla,AI,,,VP-A
+Albania,AL,,,ZA
+Armenia,AM,,,EK
+Angola,AO,,,
+Antarctica,AQ,,,
+Argentina,AR,,,"LQ, LV"
+American Samoa,AS,,,5W
+Austria,AT,,,
+Australia,AU,,,VH
+Aruba,AW,,,P4
+Åland Islands,AX,,,
+Azerbaijan,AZ,,,4K
+Bosnia and Herzegovina,BA,,,E7
+Barbados,BB,,,
+Bangladesh,BD,,,S2
+Belgium,BE,,,OO
+Burkina Faso,BF,,,
+Bulgaria,BG,,,LZ
+Bahrain,BH,,,A9C
+Burundi,BI,,,9U
+Benin,BJ,,,TY
+Saint Barthélemy,BL,,,
+Bermuda,BM,,,"VP-B,"
+Brunei Darussalam,BN,,,V8
+"Bolivia, Plurinational State of",BO,,,
+"Bonaire, Sint Eustatius and Saba",BQ,,,
+Brazil,BR,,,"PP, PR,"
+Bahamas,BS,,,C6
+Bhutan,BT,,,A5
+Bouvet Island,BV,,,
+Botswana,BW,,,A2
+Belarus,BY,,,EW
+Belize,BZ,,,V3
+Canada,CA,,,"C-F, C-"
+Cocos (Keeling) Islands,CC,,,
+"Congo, the Democratic Republic of the",CD,,,Congo
+Central African Republic,CF,,,TL
+Congo,CG,,,
+Switzerland,CH,,,HB
+Côte d'Ivoire,CI,,,TU
+Cook Islands,CK,,,E5
+Chile,CL,,,CC
+Cameroon,CM,,,TJ
+China,CN,,,B
+Colombia,CO,,,"HJ, HK"
+Costa Rica,CR,,,TI
+Cuba,CU,,,
+Cape Verde,CV,,,D4
+Curaçao,CW,,,PJ
+Christmas Island,CX,,,
+Cyprus,CY,,,5B
+Czech Republic,CZ,,,OK
+Germany,DE,,,D
+Djibouti,DJ,,,J2
+Denmark,DK,,,OY
+Dominica,DM,,,J7
+Dominican Republic,DO,,,J7
+Algeria,DZ,,,7T
+Ecuador,EC,,,HC
+Estonia,EE,,,ES
+Egypt,EG,,,
+Western Sahara,EH,,,
+Eritrea,ER,,,E3
+Spain,ES,,,EC
+Ethiopia,ET,,,
+Finland,FI,,,OH
+Fiji,FJ,,,DQ
+Falkland Islands (Malvinas),FK,,,VP-F
+"Micronesia, Federated States of",FM,,,V6
+Faroe Islands,FO,,,
+France,FR,,,F
+Gabon,GA,,,
+United Kingdom,GB,,,G
+Grenada,GD,,,J3
+Georgia,GE,,,
+French Guiana,GF,,,
+Guernsey,GG,,,2
+Ghana,GH,,,9G
+Gibraltar,GI,,,
+Greenland,GL,,,
+Gambia,GM,,,C5
+Guinea,GN,,,3C
+Guadeloupe,GP,,,
+Equatorial Guinea,GQ,,,3C
+Greece,GR,,,SX
+South Georgia and the South Sandwich Islands,GS,,,
+Guatemala,GT,,,TG
+Guam,GU,,,
+Guinea-Bissau,GW,,,
+Guyana,GY,,,8R
+Hong Kong,HK,,,
+Heard Island and McDonald Islands,HM,,,
+Honduras,HN,,,HR
+Croatia,HR,,,9A
+Haiti,HT,,,HH
+Hungary,HU,,,HA
+Indonesia,ID,,,PK
+Ireland,IE,,,"EI, EJ"
+Israel,IL,,,4X
+Isle of Man,IM,,,M
+India,IN,,,VT
+British Indian Ocean Territory,IO,,,VT
+Iraq,IQ,,,
+"Iran, Islamic Republic of",IR,,,EP
+Iceland,IS,,,TF
+Italy,IT,,,I
+Jersey,JE,,,ZJ
+Jamaica,JM,,,
+Jordan,JO,,,JY
+Japan,JP,,,JA
+Kenya,KE,,,
+Kyrgyzstan,KG,,,EX
+Cambodia,KH,,,XU
+Kiribati,KI,,,T3
+Comoros,KM,,,D6
+Saint Kitts and Nevis,KN,,,V4
+"Korea, Democratic People's Republic of",KP,,,
+"Korea, Republic of",KR,,,P
+Kuwait,KW,,,9K
+Cayman Islands,KY,,,"VP-C,"
+Kazakhstan,KZ,,,UP
+Lao People's Democratic Republic,LA,,,
+Lebanon,LB,,,OD
+Saint Lucia,LC,,,J6
+Liechtenstein,LI,,,
+Sri Lanka,LK,,,4R
+Liberia,LR,,,A8
+Lesotho,LS,,,7P
+Lithuania,LT,,,
+Luxembourg,LU,,,LX
+Latvia,LV,,,
+Libya,LY,,,5A
+Morocco,MA,,,CN
+Monaco,MC,,,3A
+"Moldova, Republic of",MD,,,ER
+Montenegro,ME,,,4O
+Saint Martin (French part),MF,,,
+Madagascar,MG,,,5R
+Marshall Islands,MH,,,V7
+"Macedonia, the Former Yugoslav Republic of",MK,,,Z3
+Mali,ML,,,TZ
+Myanmar,MM,,,XY
+Mongolia,MN,,,"JU, MT"
+Macao,MO,,,
+Northern Mariana Islands,MP,,,Congo
+Martinique,MQ,,,
+Mauritania,MR,,,5T
+Montserrat,MS,,,
+Malta,MT,,,9H
+Mauritius,MU,,,3B
+Maldives,MV,,,8Q
+Malawi,MW,,,
+Mexico,MX,,,
+Malaysia,MY,,,9M
+Mozambique,MZ,,,C9
+Namibia,NA,,,V5
+New Caledonia,NC,,,
+Niger,NE,,,5U
+Norfolk Island,NF,,,
+Nigeria,NG,,,5U
+Nicaragua,NI,,,YN
+Netherlands,NL,,,Congo
+Norway,NO,,,
+Nepal,NP,,,9N
+Nauru,NR,,,
+Niue,NU,,,
+New Zealand,NZ,,,"ZK, ZL,"
+Oman,OM,,,A4O
+Panama,PA,,,HP
+Peru,PE,,,OB
+French Polynesia,PF,,,
+Papua New Guinea,PG,,,
+Philippines,PH,,,RP
+Pakistan,PK,,,AP
+Poland,PL,,,SP
+Saint Pierre and Miquelon,PM,,,
+Pitcairn,PN,,,
+Puerto Rico,PR,,,
+"Palestine, State of",PS,,,
+Portugal,PT,,,
+Palau,PW,,,T8A
+Paraguay,PY,,,ZP
+Qatar,QA,,,A7
+Réunion,RE,,,
+Romania,RO,,,A4O
+Serbia,RS,,,YU
+Russian Federation,RU,,,RA
+Rwanda,RW,,,9XR
+Saudi Arabia,SA,,,HZ
+Solomon Islands,SB,,,H4
+Seychelles,SC,,,S7
+Sudan,SD,,,ST
+Sweden,SE,,,SE
+Singapore,SG,,,9V
+"Saint Helena, Ascension and Tristan da Cunha",SH,,,
+Slovenia,SI,,,
+Svalbard and Jan Mayen,SJ,,,
+Slovakia,SK,,,OM
+Sierra Leone,SL,,,
+San Marino,SM,,,T7
+Senegal,SN,,,"6V, 6W"
+Somalia,SO,,,TZ
+Suriname,SR,,,PZ
+South Sudan,SS,,,ST
+Sao Tome and Principe,ST,,,S9
+El Salvador,SV,,,YS
+Sint Maarten (Dutch part),SX,,,
+Syrian Arab Republic,SY,,,YK
+Eswatini,SZ,,,
+Turks and Caicos Islands,TC,,,VQ-T
+Chad,TD,,,TT
+French Southern Territories,TF,,,Congo
+Togo,TG,,,
+Thailand,TH,,,HS
+Tajikistan,TJ,,,
+Tokelau,TK,,,
+Timor-Leste,TL,,,
+Turkmenistan,TM,,,
+Tunisia,TN,,,TS
+Tonga,TO,,,A3
+Turkey,TR,,,TC
+Trinidad and Tobago,TT,,,caa.gov.tt
+Tuvalu,TV,,,T2
+"Taiwan, Province of China",TW,,,B
+"Tanzania, United Republic of",TZ,,,5H
+Ukraine,UA,,,UR
+Uganda,UG,,,5X
+United States Minor Outlying Islands,UM,,,N
+United States,US,,,N
+Uruguay,UY,,,
+Uzbekistan,UZ,,,UK
+Holy See (Vatican City State),VA,,,HV
+Saint Vincent and the Grenadines,VC,,,J8
+"Venezuela, Bolivarian Republic of",VE,,,YV
+"Virgin Islands, British",VG,,,
+"Virgin Islands, U.S.",VI,,,
+Viet Nam,VN,,,
+Vanuatu,VU,,,YJ
+Wallis and Futuna,WF,,,
+Samoa,WS,,,5W
+Yemen,YE,,,7O
+Mayotte,YT,,,
+South Africa,ZA,,,"ZS, ZT,"
+Zambia,ZM,,,9J
+Zimbabwe,ZW,,,Z

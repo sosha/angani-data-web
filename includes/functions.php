@@ -119,8 +119,9 @@ function flag_emoji(?string $code): string { $code=strtoupper((string)$code); if
 function status_chip(?string $status): string { $s=strtolower((string)($status ?: 'unknown')); $class = str_contains($s,'active') ? 'ok glow-green' : (str_contains($s,'defunct') || str_contains($s,'closed') ? 'danger' : 'gold'); return '<span class="chip '.$class.'">'.e(ucfirst($status ?: 'Unknown')).'</span>'; }
 
 function module_count(string $key): int { $cfg=module_config($key); if(!$cfg || !table_exists($cfg['table'])) return 0; try{return (int)scalar('SELECT COUNT(*) FROM '.$cfg['table']);}catch(Throwable $e){return 0;} }
-function module_url(string $key): string { return '?page=module&module='.urlencode($key); }
-function detail_url(string $key,$id): string { return '?page=detail&module='.urlencode($key).'&id='.(int)$id; }
+function public_url_prefix(): string { return defined('ANGANI_ADMIN_CONTEXT') ? '../' : ''; }
+function module_url(string $key): string { return public_url_prefix().'?page=module&module='.urlencode($key); }
+function detail_url(string $key,$id): string { return public_url_prefix().'?page=detail&module='.urlencode($key).'&id='.(int)$id; }
 
 function query_module_records(array $cfg, int $limit=24, int $offset=0, bool $forExport=false): array {
     $table=$cfg['table']; if(!table_exists($table)) return [[],0];
@@ -252,7 +253,7 @@ function run_preset_query(string $key): array {
 }
 
 function handle_post_actions(): void {
-    if($_SERVER['REQUEST_METHOD']!=='POST') return; verify_csrf(); $action=postv('action');
+    if(($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'POST') return; verify_csrf(); $action=postv('action');
     if($action==='login'){ if(login_user(postv('email'),postv('password'))){flash('success','Logged in.'); redirect_to('?page=dashboard');} flash('error','Invalid email or password.'); redirect_to('?page=login'); }
     if($action==='register'){ [$ok,$msg]=register_user(postv('name'),postv('email'),postv('password')); flash($ok?'success':'error',$msg); redirect_to($ok?'?page=dashboard':'?page=register'); }
     if($action==='update_account' && is_logged_in()){ exec_sql('UPDATE users SET name=?, updated_at=NOW() WHERE id=?',[postv('name'),(int)current_user()['id']]); flash('success','Account updated.'); redirect_to('?page=account'); }
