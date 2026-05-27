@@ -134,9 +134,13 @@ function query_module_records(array $cfg, int $limit=24, int $offset=0, bool $fo
     $country=getv('country'); if($country!=='' && in_array('country_code',$cols,true)) { $where[]='country_code=?'; $params[]=$country; }
     $sql=' FROM `'.$table.'`'.($where?' WHERE '.implode(' AND ',$where):'');
     $total=(int)scalar('SELECT COUNT(*)'.$sql,$params);
-    $order=in_array('last_modified',$cols,true)?' ORDER BY last_modified DESC':(in_array('updated_at',$cols,true)?' ORDER BY updated_at DESC':' ORDER BY id DESC');
-    if($forExport){ $data=rows('SELECT *'.$sql.$order.' LIMIT 5000',$params); }
-    else { $data=rows('SELECT *'.$sql.$order.' LIMIT '.(int)$limit.' OFFSET '.(int)$offset,$params); }
+    $hasId = in_array('id', $cols, true);
+    $order = in_array('last_modified',$cols,true) ? ' ORDER BY last_modified DESC' : 
+             (in_array('updated_at',$cols,true) ? ' ORDER BY updated_at DESC' : 
+             ($hasId ? ' ORDER BY id DESC' : ''));
+    $limitClause = $order ? $order.' LIMIT ' : ' LIMIT ';
+    if($forExport){ $data=rows('SELECT *'.$sql.$limitClause.'5000',$params); }
+    else { $data=rows('SELECT *'.$sql.$limitClause.(int)$limit.' OFFSET '.(int)$offset,$params); }
     return [$data,$total];
 }
 
@@ -188,7 +192,12 @@ function render_admin_record_table(array $rows, array $columns, string $moduleKe
 
 function render_detail_fields(array $cfg,array $r,bool $admin=false): string {
     $fields=$cfg['detail'] ?? array_keys($r); $html='<div class="detail-grid">';
-    foreach($fields as $f){ if(!$admin && is_internal_field($f)) continue; $html.='<div class="detail-item"><small>'.e(public_field_label($f)).'</small><strong>'.display_value($r[$f] ?? null).'</strong></div>'; }
+    foreach($fields as $f){ if(!$admin && is_internal_field($f)) continue; 
+        $val = $r[$f] ?? null;
+        // Add flag emoji for country code fields
+        if($f === 'code' && isset($cfg['card']) && $cfg['card'] === 'country') { $val = flag_emoji($val ?? '').' '.$val; }
+        $html.='<div class="detail-item"><small>'.e(public_field_label($f)).'</small><strong>'.display_value($val).'</strong></div>'; 
+    }
     return $html.'</div>';
 }
 function render_related_sections(string $key,array $r): string {
