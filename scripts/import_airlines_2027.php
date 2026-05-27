@@ -1,8 +1,16 @@
 <?php
 /**
  * Import airlines from airlines.csv (May 2027 operating airlines)
+ * 
+ * Updates the following fields from CSV:
+ * - name, iata_code, icao_code, prefix
+ * - fleet_size, destinations_count
+ * - callsign, logo_url, wikipedia_url
+ * - status, status_bucket
+ * 
+ * Status rules:
  * - Airlines in CSV with fleet_size > 0 = active
- * - Airlines in CSV with fleet_size = 0 = inactive
+ * - Airlines in CSV with fleet_size = 0 = inactive/defunct
  * - Airlines in DB but not in CSV = defunct
  */
 
