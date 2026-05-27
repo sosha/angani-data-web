@@ -50,7 +50,7 @@ $user = current_user();
     <div class="hero premium-hero">
         <div>
             <div class="kicker">Angani Solutions · Aviation Data Product</div>
-            <h1>Aviation intelligence - Arranged for decisions.</h1>
+            <h1>Aviation data arranged for intelligent decisions.</h1>
             <p class="lead">Airlines, aircraft, airports, routes, lessors, regulatory bodies and key people in one aviation-grade PHP/MySQL product. Built for research, due diligence, market entry, route planning and board-ready analysis.</p>
             <div class="hero-actions"><a class="btn primary" href="?page=register">Create account</a><a class="btn secondary" href="?page=insights">View data titbits</a><a class="btn secondary" href="?page=pricing">Compare tiers</a></div>
         </div>
