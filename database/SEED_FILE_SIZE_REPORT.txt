@@ -1,48 +1,46 @@
 Angani Data seed file size report
-=================================
-All database seed files are already split and are below 1MB each.
+Generated after access-tier/schema update. All seed files should remain below 1MB.
 
-01_countries.sql	14,153 bytes	13.8 KB
-02_airlines_001.sql	899,820 bytes	878.7 KB
-02_airlines_002.sql	322,951 bytes	315.4 KB
-03_aircraft_registrations_001.sql	899,926 bytes	878.8 KB
-03_aircraft_registrations_002.sql	899,927 bytes	878.8 KB
-03_aircraft_registrations_003.sql	899,898 bytes	878.8 KB
-03_aircraft_registrations_004.sql	899,992 bytes	878.9 KB
-03_aircraft_registrations_005.sql	899,959 bytes	878.9 KB
-03_aircraft_registrations_006.sql	261,080 bytes	255.0 KB
-04_aircraft_types.sql	49,511 bytes	48.4 KB
-05_airports.sql	4,734 bytes	4.6 KB
-06_airline_destinations.sql	49,840 bytes	48.7 KB
-07_regulatory_records.sql	114,204 bytes	111.5 KB
-08_dataset_files_001.sql	899,973 bytes	878.9 KB
-08_dataset_files_002.sql	899,909 bytes	878.8 KB
-08_dataset_files_003.sql	899,964 bytes	878.9 KB
-08_dataset_files_004.sql	899,953 bytes	878.9 KB
-08_dataset_files_005.sql	899,896 bytes	878.8 KB
-08_dataset_files_006.sql	744,008 bytes	726.6 KB
-09_dataset_records_001.sql	899,819 bytes	878.7 KB
-09_dataset_records_002.sql	899,895 bytes	878.8 KB
-09_dataset_records_003.sql	899,714 bytes	878.6 KB
-09_dataset_records_004.sql	899,837 bytes	878.7 KB
-09_dataset_records_005.sql	899,895 bytes	878.8 KB
-09_dataset_records_006.sql	899,790 bytes	878.7 KB
-09_dataset_records_007.sql	899,885 bytes	878.8 KB
-09_dataset_records_008.sql	899,678 bytes	878.6 KB
-09_dataset_records_009.sql	899,675 bytes	878.6 KB
-09_dataset_records_010.sql	899,772 bytes	878.7 KB
-09_dataset_records_011.sql	899,909 bytes	878.8 KB
-09_dataset_records_012.sql	899,751 bytes	878.7 KB
-09_dataset_records_013.sql	899,739 bytes	878.7 KB
-09_dataset_records_014.sql	899,943 bytes	878.9 KB
-09_dataset_records_015.sql	899,979 bytes	878.9 KB
-09_dataset_records_016.sql	899,685 bytes	878.6 KB
-09_dataset_records_017.sql	899,977 bytes	878.9 KB
-09_dataset_records_018.sql	899,788 bytes	878.7 KB
-09_dataset_records_019.sql	899,996 bytes	878.9 KB
-09_dataset_records_020.sql	899,732 bytes	878.6 KB
-09_dataset_records_021.sql	899,896 bytes	878.8 KB
-09_dataset_records_022.sql	802,942 bytes	784.1 KB
-
-Largest seed file: 09_dataset_records_019.sql (899,996 bytes / 878.9 KB)
-Total seed files: 41
+01_countries.sql	14,153 bytes	OK
+02_airlines_001.sql	899,820 bytes	OK
+02_airlines_002.sql	322,951 bytes	OK
+03_aircraft_registrations_001.sql	899,926 bytes	OK
+03_aircraft_registrations_002.sql	899,927 bytes	OK
+03_aircraft_registrations_003.sql	899,898 bytes	OK
+03_aircraft_registrations_004.sql	899,992 bytes	OK
+03_aircraft_registrations_005.sql	899,959 bytes	OK
+03_aircraft_registrations_006.sql	261,080 bytes	OK
+04_aircraft_types.sql	49,511 bytes	OK
+05_airports.sql	4,734 bytes	OK
+06_airline_destinations.sql	49,840 bytes	OK
+07_regulatory_records.sql	114,204 bytes	OK
+08_dataset_files_001.sql	899,973 bytes	OK
+08_dataset_files_002.sql	899,909 bytes	OK
+08_dataset_files_003.sql	899,964 bytes	OK
+08_dataset_files_004.sql	899,953 bytes	OK
+08_dataset_files_005.sql	899,896 bytes	OK
+08_dataset_files_006.sql	744,008 bytes	OK
+09_dataset_records_001.sql	899,819 bytes	OK
+09_dataset_records_002.sql	899,895 bytes	OK
+09_dataset_records_003.sql	899,714 bytes	OK
+09_dataset_records_004.sql	899,837 bytes	OK
+09_dataset_records_005.sql	899,895 bytes	OK
+09_dataset_records_006.sql	899,790 bytes	OK
+09_dataset_records_007.sql	899,885 bytes	OK
+09_dataset_records_008.sql	899,678 bytes	OK
+09_dataset_records_009.sql	899,675 bytes	OK
+09_dataset_records_010.sql	899,772 bytes	OK
+09_dataset_records_011.sql	899,909 bytes	OK
+09_dataset_records_012.sql	899,751 bytes	OK
+09_dataset_records_013.sql	899,739 bytes	OK
+09_dataset_records_014.sql	899,943 bytes	OK
+09_dataset_records_015.sql	899,979 bytes	OK
+09_dataset_records_016.sql	899,685 bytes	OK
+09_dataset_records_017.sql	899,977 bytes	OK
+09_dataset_records_018.sql	899,788 bytes	OK
+09_dataset_records_019.sql	899,996 bytes	OK
+09_dataset_records_020.sql	899,732 bytes	OK
+09_dataset_records_021.sql	899,896 bytes	OK
+09_dataset_records_022.sql	802,942 bytes	OK
+10_platform_access_questions_insights.sql	8,856 bytes	OK
+11_aviation_schema_starter_seed.sql	20,123 bytes	OK

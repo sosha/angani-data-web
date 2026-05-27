@@ -1,125 +1,83 @@
-# Angani Data — PHP/MySQL Web App
+# Angani Data — PHP/MySQL Aviation Intelligence App
 
-This is the complete PHP/MySQL version of the Angani Data web app.
+This is the updated Angani Data web app. It keeps the existing aviation source datasets and adds the missing product layer: user accounts, access tiers, preset intelligence questions, route/equipment modelling, admin-managed homepage insights, and a more serious aviation-grade visual design.
 
-It includes the application, assets, schema, deployment guides, and the database seeds already split into small table/category-specific SQL files.
+## What changed
 
-## What is included
+- New aviation-grade UI using Angani-style navy, brass/gold, cream and aviation blue.
+- Replaced playful typography with IBM Plex Sans / IBM Plex Sans Condensed / IBM Plex Mono.
+- Added login, register, logout and account management.
+- Added subscription tiers and database-backed feature gates.
+- Added public homepage graphs/titbits: oldest aircraft, highest airport, smallest airline by fleet size, route competition, dataset coverage and regulatory depth.
+- Added preset questions users can answer after login.
+- Added admin area for tasks, users, tiers and homepage insight cards.
+- Added normalised aviation schema for organisations, key staff, AOCs, lessors, route markets, route services, schedules, route equipment, aircraft history, sources and change logs.
+- Kept the original raw dataset tables for imports and backwards compatibility.
 
-```text
-angani_data_php_mysql_complete_project/
-  index.php
-  favicon.ico
-  assets/
-  css/
-  js/
-  includes/
-    config.php
-    config.example.php
-    db.php
-    functions.php
-  database/
-    00_create_database.sql
-    01_schema.sql
-    02_seed_data.sql
-    seeds/
-      01_countries.sql
-      02_airlines_001.sql
-      02_airlines_002.sql
-      03_aircraft_registrations_001.sql
-      ...
-      09_dataset_records_022.sql
-    IMPORT_ORDER.md
-    SEED_FILE_SIZE_REPORT.txt
-    import_all_seeds.sh
-    import_all_seeds.php
-  DEPLOYMENT.md
-```
+## Demo accounts
 
-## Seed file structure
-
-The old single large seed file has been replaced with already-split SQL files inside:
+All seeded demo accounts use this password:
 
 ```text
-database/seeds/
+Angani@2026
 ```
 
-No seed SQL file is larger than 1MB. The largest generated file is listed in:
+Accounts:
 
 ```text
-database/SEED_FILE_SIZE_REPORT.txt
+admin@angani.co.uk   Enterprise/Admin
+analyst@angani.co.uk Analyst
+pro@angani.co.uk     Pro
 ```
 
-## Imported dataset counts
+## Installation
 
-- Countries: 252
-- Airlines: 5,490
-- Aircraft registrations: 35,522
-- Aircraft types: 248
-- Airports: 40
-- Airline destinations: 290
-- Regulatory records: 160
-- Dataset files: 22,591
-- Raw CSV records: 51,034
-
-## Local XAMPP setup
-
-Copy the folder to:
-
-```text
-C:\xampp\htdocs\angani-data
-```
-
-Then run:
+1. Create the database:
 
 ```bash
 mysql -u root -p < database/00_create_database.sql
-mysql -u root -p angani_data < database/01_schema.sql
-php database/import_all_seeds.php
 ```
 
-Then open:
-
-```text
-http://localhost/angani-data/
-```
-
-## Linux / VPS setup
-
-Create the database:
+2. Import the schema:
 
 ```bash
-mysql -u root -p < database/00_create_database.sql
 mysql -u root -p angani_data < database/01_schema.sql
 ```
 
-Import all split seed files:
+3. Update `includes/config.php` with your database credentials.
+
+4. Import the seed files:
 
 ```bash
 php database/import_all_seeds.php
 ```
 
-Or use the shell importer:
+5. Run locally:
 
 ```bash
-./database/import_all_seeds.sh angani_data root 127.0.0.1
+php -S localhost:8000
 ```
 
-## phpMyAdmin / cPanel setup
+Open:
 
-1. Create the database.
-2. Import `database/01_schema.sql`.
-3. Import the SQL files in `database/seeds/` in filename order.
-4. Update `includes/config.php` with your database credentials.
+```text
+http://localhost:8000
+```
 
-## App features
+## Important production notes
 
-- Premium Angani-styled data portal.
-- Main sections: Overview, Airlines, Airports, Aircraft, Regulatory, Datasets, Contact.
-- Airline filtering by Active, Defunct, and All statuses.
-- Active airlines selected by default.
-- Search and filter controls.
-- Airline detail pages with core data, aircraft, and destination records where linked data exists.
-- Airports and regulatory datasets included.
-- Coming-soon treatment for unpopulated datasets.
-- Angani logo favicon and brand assets included.
+- Change all demo passwords before going live.
+- Block web access to `/database`, `/scripts` and private admin utilities.
+- Add HTTPS and force HTTP to HTTPS redirect.
+- Add password reset and email verification before public launch.
+- Add payment integration before allowing real paid tier upgrades.
+- Review source licences before commercial redistribution of scraped data.
+
+## Files to review
+
+- `TASKS_TO_GET_100_PERCENT.md` — full build checklist.
+- `database/01_schema.sql` — current and new schema.
+- `database/seeds/10_platform_access_questions_insights.sql` — tiers, accounts, preset questions and homepage insights.
+- `database/seeds/11_aviation_schema_starter_seed.sql` — starter route/equipment/aircraft-history examples.
+- `index.php` — main router and pages.
+- `includes/functions.php` — auth, feature access, insights and preset query logic.

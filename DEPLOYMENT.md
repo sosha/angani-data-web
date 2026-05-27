@@ -1,97 +1,81 @@
-# Deployment Guide — Angani Data PHP/MySQL
+# Deployment — Angani Data PHP/MySQL
 
-This package is ready for deployment as a normal PHP/MySQL application.
+## Requirements
 
-## 1. Upload the project
+- PHP 8.1+
+- MySQL 8 or MariaDB 10.6+
+- PDO MySQL extension
+- Nginx or Apache
 
-Upload the full folder to your server, for example:
-
-```text
-/var/www/angani-data
-```
-
-or on cPanel:
-
-```text
-public_html/angani-data
-```
-
-## 2. Configure database credentials
-
-Edit:
-
-```text
-includes/config.php
-```
-
-Example:
-
-```php
-<?php
-return [
-    'host' => '127.0.0.1',
-    'port' => '3306',
-    'database' => 'angani_data',
-    'username' => 'angani_data_user',
-    'password' => 'CHANGE_THIS_PASSWORD',
-    'charset' => 'utf8mb4',
-];
-```
-
-## 3. Create database and schema
+## Database setup
 
 ```bash
 mysql -u root -p < database/00_create_database.sql
 mysql -u root -p angani_data < database/01_schema.sql
-```
-
-## 4. Import split seed files
-
-Use either importer.
-
-PHP importer:
-
-```bash
 php database/import_all_seeds.php
 ```
 
-Shell importer:
+Every file in `database/seeds/` is below 1MB so the data can also be imported manually through phpMyAdmin/cPanel if needed.
+
+## App config
+
+Copy/edit:
 
 ```bash
-./database/import_all_seeds.sh angani_data angani_data_user 127.0.0.1
+cp includes/config.example.php includes/config.php
+nano includes/config.php
 ```
 
-For phpMyAdmin/cPanel, import the files in `database/seeds/` in filename order. Every seed file is below 1MB.
+Set database host, database name, username and password.
 
-## 5. Nginx subdirectory deployment
+## Demo login
 
-To serve it under `/angani-data/` without disturbing an existing app, add this inside your existing Nginx `server {}` block. Replace the PHP-FPM socket if needed.
+```text
+admin@angani.co.uk / Angani@2026
+```
+
+Change this immediately in production.
+
+## Nginx hardening
+
+Block private folders:
 
 ```nginx
-location = /angani-data {
-    return 301 /angani-data/;
-}
+location ^~ /database/ { deny all; }
+location ^~ /scripts/ { deny all; }
+location ~ /includes/ { deny all; }
+```
 
-location /angani-data/ {
-    root /var/www;
-    index index.php index.html;
-    try_files $uri $uri/ /angani-data/index.php?$query_string;
-}
+Serve the app root as normal PHP:
 
-location ~ ^/angani-data/(.+\.php)$ {
-    root /var/www;
+```nginx
+location / {
+    try_files $uri $uri/ /index.php?$query_string;
+}
+location ~ \.php$ {
     include snippets/fastcgi-php.conf;
-    fastcgi_pass unix:/run/php/php8.2-fpm.sock;
+    fastcgi_pass unix:/run/php/php8.3-fpm.sock;
 }
 ```
 
-Then run:
+## Apache hardening
 
-```bash
-sudo nginx -t
-sudo systemctl reload nginx
+Create `.htaccess` rules or vhost rules to block:
+
+```apache
+RedirectMatch 403 ^/database/.*
+RedirectMatch 403 ^/scripts/.*
+RedirectMatch 403 ^/includes/.*
 ```
 
-## 6. Apache/cPanel
+## Production checklist
 
-The package includes `.htaccess` for standard Apache/cPanel hosting. Upload to a subfolder and visit the folder URL.
+- [ ] Change demo passwords.
+- [ ] Add HTTPS redirect.
+- [ ] Block private folders.
+- [ ] Add database backups.
+- [ ] Add password reset.
+- [ ] Add email verification.
+- [ ] Add payment integration before selling paid tiers.
+- [ ] Add cron jobs for import/scraper workers.
+- [ ] Review data-source licences before commercial redistribution.
