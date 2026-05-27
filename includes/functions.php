@@ -163,6 +163,11 @@ function render_record_card(string $key,array $cfg,array $r): string {
     if($card==='aircraft_type'){
         return '<article class="record-card" onclick="location.href=\''.e($url).'\'"><div class="record-top"><div class="avatar">'.e($r['icao_code'] ?? 'AC').'</div><span class="chip gold">'.e($r['category'] ?? 'Type').'</span></div><h3>'.e($title ?: ($r['common_name'] ?? 'Aircraft Type')).'</h3><p>'.e(($r['manufacturer'] ?? '').' · '.($r['model'] ?? '')).'</p><div class="mini-metrics"><span>IATA '.e($r['iata_code'] ?? '—').'</span><span>ICAO '.e($r['icao_code'] ?? '—').'</span></div><a class="btn small primary" href="'.e($url).'">View Type</a></article>';
     }
+    if($card==='country'){
+        $region=$r['region'] ?? '';
+        $subregion=$r['subregion'] ?? '';
+        return '<article class="record-card" onclick="location.href=\''.e($url).'\'"><div class="record-top"><div class="flag" style="font-size:2.2rem">'.flag_emoji($r['code'] ?? '').'</div><span class="chip gold">'.e($region ?: 'Region').'</span></div><h3>'.e($title ?: ($r['name'] ?? 'Country')).'</h3><p>'.e(($r['code'] ?? '').($subregion ? ' · '.$subregion : '')).'</p><div class="mini-metrics"><span>'.e($region ?: '—').'</span><span>'.e($subregion ?: '—').'</span></div><a class="btn small primary" href="'.e($url).'">View Country</a></article>';
+    }
     return '<article class="record-card" onclick="location.href=\''.e($url).'\'"><div class="record-top"><div class="avatar">'.e($cfg['icon'] ?? 'DB').'</div><span class="chip">'.e($cfg['label']).'</span></div><h3>'.e($title ?: $cfg['label']).'</h3><p>'.e($sub).'</p><a class="btn small primary" href="'.e($url).'">View Record</a></article>';
 }
 function render_table(array $rows, array $columns, ?string $moduleKey=null): string {
