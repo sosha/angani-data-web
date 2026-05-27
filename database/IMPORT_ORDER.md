@@ -1,29 +1,84 @@
-# Angani Data Seed Import Order
+# Import Order
 
-Import in this order:
+Import these files in filename order after `01_schema.sql`.
 
-1. `database/00_create_database.sql`
-2. `database/01_schema.sql`
-3. All files in `database/seeds/` in filename order.
-
-The CLI importer does step 3 automatically:
-
-```bash
-php database/import_all_seeds.php
-```
-
-The seed files are intentionally split below 1MB for cPanel/phpMyAdmin-friendly importing.
-
-## Seed groups
-
-- `01_countries.sql` — country master data
-- `02_airlines_*.sql` — airline source records
-- `03_aircraft_registrations_*.sql` — aircraft registration source records
-- `04_aircraft_types.sql` — aircraft type source records
-- `05_airports.sql` — airport source records
-- `06_airline_destinations.sql` — legacy destination rows
-- `07_regulatory_records.sql` — regulatory source rows
-- `08_dataset_files_*.sql` — raw CSV catalogue
-- `09_dataset_records_*.sql` — raw JSON row storage
-- `10_platform_access_questions_insights.sql` — tiers, demo users, preset questions and homepage insights
-- `11_aviation_schema_starter_seed.sql` — starter route/equipment/history data for the normalised schema
+- `01_countries.sql`
+- `02_airlines_001.sql`
+- `02_airlines_002.sql`
+- `03_aircraft_registrations_001.sql`
+- `03_aircraft_registrations_002.sql`
+- `03_aircraft_registrations_003.sql`
+- `03_aircraft_registrations_004.sql`
+- `03_aircraft_registrations_005.sql`
+- `03_aircraft_registrations_006.sql`
+- `04_aircraft_types.sql`
+- `05_airports.sql`
+- `06_airline_destinations.sql`
+- `07_regulatory_records.sql`
+- `08_dataset_files_001.sql`
+- `08_dataset_files_002.sql`
+- `08_dataset_files_003.sql`
+- `08_dataset_files_004.sql`
+- `08_dataset_files_005.sql`
+- `08_dataset_files_006.sql`
+- `09_dataset_records_001.sql`
+- `09_dataset_records_002.sql`
+- `09_dataset_records_003.sql`
+- `09_dataset_records_004.sql`
+- `09_dataset_records_005.sql`
+- `09_dataset_records_006.sql`
+- `09_dataset_records_007.sql`
+- `09_dataset_records_008.sql`
+- `09_dataset_records_009.sql`
+- `09_dataset_records_010.sql`
+- `09_dataset_records_011.sql`
+- `09_dataset_records_012.sql`
+- `09_dataset_records_013.sql`
+- `09_dataset_records_014.sql`
+- `09_dataset_records_015.sql`
+- `09_dataset_records_016.sql`
+- `09_dataset_records_017.sql`
+- `09_dataset_records_018.sql`
+- `09_dataset_records_019.sql`
+- `09_dataset_records_020.sql`
+- `09_dataset_records_021.sql`
+- `09_dataset_records_022.sql`
+- `10_platform_access_questions_insights.sql`
+- `11_aviation_schema_starter_seed.sql`
+- `12_uploaded_global_001.sql`
+- `12_uploaded_global_002.sql`
+- `12_uploaded_global_003.sql`
+- `13_country_zip_001.sql`
+- `13_country_zip_002.sql`
+- `13_country_zip_003.sql`
+- `13_country_zip_004.sql`
+- `13_country_zip_005.sql`
+- `13_country_zip_006.sql`
+- `13_country_zip_007.sql`
+- `13_country_zip_008.sql`
+- `13_country_zip_009.sql`
+- `13_country_zip_010.sql`
+- `13_country_zip_011.sql`
+- `13_country_zip_012.sql`
+- `13_country_zip_013.sql`
+- `13_country_zip_014.sql`
+- `13_country_zip_015.sql`
+- `13_country_zip_016.sql`
+- `13_country_zip_017.sql`
+- `13_country_zip_018.sql`
+- `13_country_zip_019.sql`
+- `13_country_zip_020.sql`
+- `13_country_zip_021.sql`
+- `13_country_zip_022.sql`
+- `13_country_zip_023.sql`
+- `13_country_zip_024.sql`
+- `13_country_zip_025.sql`
+- `13_country_zip_026.sql`
+- `13_country_zip_027.sql`
+- `13_country_zip_028.sql`
+- `13_country_zip_029.sql`
+- `13_country_zip_030.sql`
+- `13_country_zip_031.sql`
+- `13_country_zip_032.sql`
+- `13_country_zip_033.sql`
+- `13_country_zip_034.sql`

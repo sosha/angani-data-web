@@ -1,13 +1,11 @@
-# Deployment — Angani Data PHP/MySQL
+# Deployment Guide
 
-## Requirements
+## Local XAMPP
 
-- PHP 8.1+
-- MySQL 8 or MariaDB 10.6+
-- PDO MySQL extension
-- Nginx or Apache
-
-## Database setup
+1. Copy the project folder to `C:\xampp\htdocs\angani-data`.
+2. Start Apache and MySQL.
+3. Open a terminal inside the project folder.
+4. Run:
 
 ```bash
 mysql -u root -p < database/00_create_database.sql
@@ -15,67 +13,30 @@ mysql -u root -p angani_data < database/01_schema.sql
 php database/import_all_seeds.php
 ```
 
-Every file in `database/seeds/` is below 1MB so the data can also be imported manually through phpMyAdmin/cPanel if needed.
+5. Visit `http://localhost/angani-data/`.
 
-## App config
+## cPanel / shared hosting
 
-Copy/edit:
+1. Upload the project folder to your hosting account.
+2. Create a MySQL database and user.
+3. Edit `includes/config.php` with your cPanel database name, user and password.
+4. Import `database/01_schema.sql` first.
+5. Import all files in `database/seeds/` in filename order. Use `database/IMPORT_ORDER.md`.
+6. Log in as Admin and change the default password.
+
+## Linux server
 
 ```bash
-cp includes/config.example.php includes/config.php
-nano includes/config.php
+mysql -u DB_USER -p DB_NAME < database/01_schema.sql
+php database/import_all_seeds.php
 ```
 
-Set database host, database name, username and password.
+The importer reads `includes/config.php`.
 
-## Demo login
+## After deployment
 
-```text
-admin@angani.co.uk / Angani@2026
-```
-
-Change this immediately in production.
-
-## Nginx hardening
-
-Block private folders:
-
-```nginx
-location ^~ /database/ { deny all; }
-location ^~ /scripts/ { deny all; }
-location ~ /includes/ { deny all; }
-```
-
-Serve the app root as normal PHP:
-
-```nginx
-location / {
-    try_files $uri $uri/ /index.php?$query_string;
-}
-location ~ \.php$ {
-    include snippets/fastcgi-php.conf;
-    fastcgi_pass unix:/run/php/php8.3-fpm.sock;
-}
-```
-
-## Apache hardening
-
-Create `.htaccess` rules or vhost rules to block:
-
-```apache
-RedirectMatch 403 ^/database/.*
-RedirectMatch 403 ^/scripts/.*
-RedirectMatch 403 ^/includes/.*
-```
-
-## Production checklist
-
-- [ ] Change demo passwords.
-- [ ] Add HTTPS redirect.
-- [ ] Block private folders.
-- [ ] Add database backups.
-- [ ] Add password reset.
-- [ ] Add email verification.
-- [ ] Add payment integration before selling paid tiers.
-- [ ] Add cron jobs for import/scraper workers.
-- [ ] Review data-source licences before commercial redistribution.
+- Change the default admin password.
+- Review Admin → Plans.
+- Review Admin → Homepage Insights.
+- Review Admin → Imports / Exports.
+- Add/verify source URLs for high-value commercial/regulatory records.

@@ -1,83 +1,163 @@
-# Angani Data — PHP/MySQL Aviation Intelligence App
+# Angani Data — Aviation Intelligence Atlas
 
-This is the updated Angani Data web app. It keeps the existing aviation source datasets and adds the missing product layer: user accounts, access tiers, preset intelligence questions, route/equipment modelling, admin-managed homepage insights, and a more serious aviation-grade visual design.
+A PHP/MySQL aviation data product covering countries, airlines, airports, aircraft registry, aircraft types, lessors, infrastructure/AIM, regulatory standards, commercial fare intelligence, GDS, IATA/IOSA and aviation reference codes.
 
-## What changed
+## What is included
 
-- New aviation-grade UI using Angani-style navy, brass/gold, cream and aviation blue.
-- Replaced playful typography with IBM Plex Sans / IBM Plex Sans Condensed / IBM Plex Mono.
-- Added login, register, logout and account management.
-- Added subscription tiers and database-backed feature gates.
-- Added public homepage graphs/titbits: oldest aircraft, highest airport, smallest airline by fleet size, route competition, dataset coverage and regulatory depth.
-- Added preset questions users can answer after login.
-- Added admin area for tasks, users, tiers and homepage insight cards.
-- Added normalised aviation schema for organisations, key staff, AOCs, lessors, route markets, route services, schedules, route equipment, aircraft history, sources and change logs.
-- Kept the original raw dataset tables for imports and backwards compatibility.
+- Public aviation data catalogue with searchable modules and drill-down pages.
+- Separate Admin Console that does **not** look like the public frontend.
+- Generic CRUD for every configured database module.
+- CSV import/export for Admin.
+- CSV export for logged-in Pro/Enterprise users.
+- User accounts, role management and 3 access tiers: **Free**, **Pro**, **Enterprise**.
+- Homepage rotating insight cards controlled by Admin.
+- Public teaser charts for sign-up conversion.
+- Drill-down pages for airlines, airports, aircraft types and countries.
+- Data quality tables: imports, staging rows, export logs, source records and change log.
+- Expanded aviation modules for:
+  - Aircraft Types / Aircraft Intelligence
+  - Lessors
+  - IATA / IOSA
+  - GDS
+  - Reference Data / Aviation Standards & Codes
+  - Infrastructure & AIM
+  - Commercial Intelligence
+  - Airport frequencies, runways, terminals, services and hub airlines
+  - Airline digital properties, fleets, hubs, IT infrastructure and people
 
 ## Demo accounts
 
-All seeded demo accounts use this password:
-
 ```text
-Angani@2026
-```
-
-Accounts:
-
-```text
-admin@angani.co.uk   Enterprise/Admin
-analyst@angani.co.uk Analyst
-pro@angani.co.uk     Pro
+Admin: admin@angani.co.uk / Angani@2026
+Pro:   pro@angani.co.uk / Angani@2026
+Free:  free@angani.co.uk / Angani@2026
 ```
 
 ## Installation
 
-1. Create the database:
+1. Copy this folder to your web server, for example:
+
+```text
+C:\xampp\htdocs\angani-data
+```
+
+2. Create/import the database:
 
 ```bash
 mysql -u root -p < database/00_create_database.sql
-```
-
-2. Import the schema:
-
-```bash
 mysql -u root -p angani_data < database/01_schema.sql
-```
-
-3. Update `includes/config.php` with your database credentials.
-
-4. Import the seed files:
-
-```bash
 php database/import_all_seeds.php
 ```
 
-5. Run locally:
+Alternative import:
 
 ```bash
-php -S localhost:8000
+mysql -u root -p angani_data < database/02_seed_data.sql
 ```
 
-Open:
+3. Update database credentials in:
 
 ```text
-http://localhost:8000
+includes/config.php
 ```
 
-## Important production notes
+4. Open:
 
-- Change all demo passwords before going live.
-- Block web access to `/database`, `/scripts` and private admin utilities.
-- Add HTTPS and force HTTP to HTTPS redirect.
-- Add password reset and email verification before public launch.
-- Add payment integration before allowing real paid tier upgrades.
-- Review source licences before commercial redistribution of scraped data.
+```text
+http://localhost/angani-data/
+```
 
-## Files to review
+## Important seed note
 
-- `TASKS_TO_GET_100_PERCENT.md` — full build checklist.
-- `database/01_schema.sql` — current and new schema.
-- `database/seeds/10_platform_access_questions_insights.sql` — tiers, accounts, preset questions and homepage insights.
-- `database/seeds/11_aviation_schema_starter_seed.sql` — starter route/equipment/aircraft-history examples.
-- `index.php` — main router and pages.
-- `includes/functions.php` — auth, feature access, insights and preset query logic.
+The SQL seed files are split in `database/seeds/`. They include the current uploaded aviation datasets and are kept below approximately 1MB per file for easier cPanel/phpMyAdmin usage.
+
+## Admin actions
+
+After logging in as Admin:
+
+- Go to **Admin → Records & CRUD**.
+- Choose a database module from the sidebar.
+- Use **Add record**, **Edit**, **Import CSV**, or **Export CSV**.
+- Go to **Admin → Users** to manage accounts, roles, status and plans.
+- Go to **Admin → Homepage Insights** to rotate public teaser cards.
+- Go to **Admin → 100% Tasks** to review the readiness checklist.
+
+## Access tiers
+
+### Free
+
+Public discovery, limited browsing, reference codes, selected teaser insights.
+
+### Pro
+
+Full standard modules, drill-downs, preset questions and filtered CSV exports.
+
+### Enterprise
+
+Contact us for API access, bulk exports, team seats, scheduled exports and private/custom datasets.
+
+## Data design note
+
+Country folders are treated as ingestion sources. The app stores data in one normalised global database, with `country_code` used for filtering instead of creating separate country-specific tables.
+
+## Phase 2 Admin Console
+
+The package includes the Phase 2 admin backend: Command Center, module CRUD, CSV import/export, whole-database ZIP export, user management, plan/benefit editing, preset question management, homepage insight management, data quality review and the 100% readiness checklist.
+
+See `PHASE2_ADMIN_IMPLEMENTATION.md` for details.
+
+## Phase 3 Public/User App
+
+Phase 3 adds the public/user-facing app layer: homepage conversion flow, global search, database listings, drill-down pages, preset questions, charts/tidbits, login/register/account pages and Pro access gates.
+
+See `PHASE3_PUBLIC_APP_IMPLEMENTATION.md` for details.
+
+
+## Phase 4 Importers
+
+This package includes the Phase 4 importer layer for bringing the uploaded source datasets into the normalized PHP/MySQL application.
+
+Run all importers after schema setup and seed loading:
+
+```bash
+php scripts/importers/phase4_import.php --group=all
+```
+
+Import one country from the country ZIP:
+
+```bash
+php scripts/importers/phase4_import.php --group=country --country=KE
+```
+
+Import by dataset family:
+
+```bash
+php scripts/importers/phase4_import.php --group=aircraft
+php scripts/importers/phase4_import.php --group=reference
+php scripts/importers/phase4_import.php --group=commercial
+php scripts/importers/phase4_import.php --group=iata-iosa
+php scripts/importers/phase4_import.php --group=gds
+php scripts/importers/phase4_import.php --group=infrastructure
+```
+
+Detailed importer documentation is in `PHASE4_IMPORTERS_IMPLEMENTATION.md`.
+
+## Phase 5 final QA package
+
+This ZIP includes the final Phase 5 readiness report and deployment runbook:
+
+```text
+PHASE5_QA_AND_DEPLOYMENT_REPORT.md
+DEPLOYMENT_RUNBOOK.md
+qa/php_lint_phase5.txt
+qa/static_qa_phase5.txt
+qa/page_smoke_phase5.txt
+scripts/qa_phase5_check.php
+```
+
+Run final checks after deployment:
+
+```bash
+php scripts/qa_phase5_check.php
+php scripts/qa_phase5_check.php --db
+```

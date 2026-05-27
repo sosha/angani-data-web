@@ -1,6 +1,6 @@
 -- Angani Data split seed loader.
--- Run this from the application root: mysql -u USER -p angani_data < database/02_seed_data.sql
--- Each referenced file is under 1MB for phpMyAdmin/cPanel-friendly imports.
+-- Run from the application root: mysql -u USER -p angani_data < database/02_seed_data.sql
+-- Each referenced file is split for cPanel/phpMyAdmin-friendly imports.
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 SOURCE database/seeds/01_countries.sql;
@@ -44,4 +44,43 @@ SOURCE database/seeds/09_dataset_records_019.sql;
 SOURCE database/seeds/09_dataset_records_020.sql;
 SOURCE database/seeds/09_dataset_records_021.sql;
 SOURCE database/seeds/09_dataset_records_022.sql;
+SOURCE database/seeds/10_platform_access_questions_insights.sql;
+SOURCE database/seeds/11_aviation_schema_starter_seed.sql;
+SOURCE database/seeds/12_uploaded_global_001.sql;
+SOURCE database/seeds/12_uploaded_global_002.sql;
+SOURCE database/seeds/12_uploaded_global_003.sql;
+SOURCE database/seeds/13_country_zip_001.sql;
+SOURCE database/seeds/13_country_zip_002.sql;
+SOURCE database/seeds/13_country_zip_003.sql;
+SOURCE database/seeds/13_country_zip_004.sql;
+SOURCE database/seeds/13_country_zip_005.sql;
+SOURCE database/seeds/13_country_zip_006.sql;
+SOURCE database/seeds/13_country_zip_007.sql;
+SOURCE database/seeds/13_country_zip_008.sql;
+SOURCE database/seeds/13_country_zip_009.sql;
+SOURCE database/seeds/13_country_zip_010.sql;
+SOURCE database/seeds/13_country_zip_011.sql;
+SOURCE database/seeds/13_country_zip_012.sql;
+SOURCE database/seeds/13_country_zip_013.sql;
+SOURCE database/seeds/13_country_zip_014.sql;
+SOURCE database/seeds/13_country_zip_015.sql;
+SOURCE database/seeds/13_country_zip_016.sql;
+SOURCE database/seeds/13_country_zip_017.sql;
+SOURCE database/seeds/13_country_zip_018.sql;
+SOURCE database/seeds/13_country_zip_019.sql;
+SOURCE database/seeds/13_country_zip_020.sql;
+SOURCE database/seeds/13_country_zip_021.sql;
+SOURCE database/seeds/13_country_zip_022.sql;
+SOURCE database/seeds/13_country_zip_023.sql;
+SOURCE database/seeds/13_country_zip_024.sql;
+SOURCE database/seeds/13_country_zip_025.sql;
+SOURCE database/seeds/13_country_zip_026.sql;
+SOURCE database/seeds/13_country_zip_027.sql;
+SOURCE database/seeds/13_country_zip_028.sql;
+SOURCE database/seeds/13_country_zip_029.sql;
+SOURCE database/seeds/13_country_zip_030.sql;
+SOURCE database/seeds/13_country_zip_031.sql;
+SOURCE database/seeds/13_country_zip_032.sql;
+SOURCE database/seeds/13_country_zip_033.sql;
+SOURCE database/seeds/13_country_zip_034.sql;
 SET FOREIGN_KEY_CHECKS = 1;
