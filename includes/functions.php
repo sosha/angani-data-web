@@ -226,6 +226,7 @@ function render_related_sections(string $key,array $r): string {
         $html.=related_table('IATA membership', "SELECT membership_status,membership_type,joined_date,ended_date FROM airline_iata_membership WHERE iata_code=? OR icao_code=? OR airline_name=? LIMIT 5", [$iata,$icao,$name]);
         $html.=related_table('IOSA registration', "SELECT iosa_status,registration_number,valid_from,valid_until FROM airline_iosa_registration WHERE iata_code=? OR icao_code=? OR airline_name=? LIMIT 5", [$iata,$icao,$name]);
         $html.=related_table('Routes & schedules', "SELECT flight_number_prefix,service_type,status,start_date,end_date FROM airline_route_services WHERE airline_id=? LIMIT 20", [$r['id']]);
+        $html.=related_table('Destinations', "SELECT DISTINCT a.airport_name, cf.destination_iata, a.city_name, a.country_code FROM commercial_fares cf LEFT JOIN airports a ON a.iata_code=cf.destination_iata WHERE cf.airline_code=? LIMIT 50", [$iata]);
     }
     if($key==='airports'){
         $iata=$r['iata_code'] ?? ''; $icao=$r['icao_code'] ?? '';
