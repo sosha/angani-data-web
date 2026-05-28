@@ -216,9 +216,15 @@ function render_related_sections(string $key,array $r): string {
     if($key==='airlines'){
         $iata=$r['iata_code'] ?? ''; $icao=$r['icao_code'] ?? ''; $name=$r['name'] ?? '';
         $html.=related_table('Digital properties', 'SELECT category,platform,url_or_handle,is_primary FROM airline_digital_properties WHERE iata_code=? OR icao_code=? OR airline_name=? LIMIT 20', [$iata,$icao,$name]);
+        $html.=related_table('Fleet list', "SELECT registration,aircraft_model,aircraft_subtype,delivery_date,current_status FROM airline_fleet_list WHERE operator_airline LIKE ? OR operator_airline LIKE ? OR operator_airline LIKE ? LIMIT 20", ["%$iata%","%$icao%","%$name%"]);
         $html.=related_table('Fleet summary', 'SELECT aircraft_type,aircraft_count,configuration_lopa,average_age,engine_type FROM airline_fleet_summary WHERE iata_code=? OR icao_code=? LIMIT 20', [$iata,$icao]);
         $html.=related_table('Hubs and bases', 'SELECT airport_code,hub_type,region_served,description FROM airline_hubs WHERE iata_code=? OR icao_code=? LIMIT 20', [$iata,$icao]);
+        $html.=related_table('IT infrastructure', "SELECT system_category,system_name,provider,description FROM airline_it_infrastructure WHERE iata_code=? OR icao_code=? LIMIT 20", [$iata,$icao]);
+        $html.=related_table('Key personnel', "SELECT person_name,title,category,email FROM airline_key_personnel WHERE iata_code=? OR icao_code=? LIMIT 20", [$iata,$icao]);
+        $html.=related_table('Operational stats', "SELECT stat_year,pax_count,cargo_volume,revenue,staff_count FROM airline_operational_stats WHERE iata_code=? OR icao_code=? ORDER BY stat_year DESC LIMIT 10", [$iata,$icao]);
         $html.=related_table('Frequent flyer', 'SELECT program_name,points_unit,notes FROM frequent_flyer_programs WHERE airline_code=? OR iata_code=? OR icao_code=? OR airline_name=? LIMIT 10', [$iata,$iata,$icao,$name]);
+        $html.=related_table('IATA membership', "SELECT membership_status,membership_type,joined_date,ended_date FROM airline_iata_membership WHERE iata_code=? OR icao_code=? OR airline_name=? LIMIT 5", [$iata,$icao,$name]);
+        $html.=related_table('IOSA registration', "SELECT iosa_status,registration_number,valid_from,valid_until FROM airline_iosa_registration WHERE iata_code=? OR icao_code=? OR airline_name=? LIMIT 5", [$iata,$icao,$name]);
     }
     if($key==='airports'){
         $iata=$r['iata_code'] ?? ''; $icao=$r['icao_code'] ?? '';
