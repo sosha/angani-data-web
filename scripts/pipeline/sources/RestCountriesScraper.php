@@ -1,7 +1,7 @@
 <?php
 class RestCountriesScraper {
     public static function fetch(array $source, string &$rawContent): array {
-        $url = $source['url'] ?? 'https://restcountries.com/v3.1/all';
+        $url = $source['url'] ?? 'https://restcountries.com/v3.1/all?fields=cca2,cca3,name,region,subregion';
         $json = @file_get_contents($url, false, stream_context_create([
             'http' => ['timeout' => 30, 'method' => 'GET', 'header' => "Accept: application/json\r\n"],
         ]));

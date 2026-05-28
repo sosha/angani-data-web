@@ -191,7 +191,7 @@ INSERT INTO countries (iso_alpha_2, iso_alpha_3, name_common, name_official, con
 -- ============================================================
 INSERT INTO pipeline_sources (source_name, source_type, module_key, is_active, url, notes) VALUES
 ('REST Countries API', 'api', 'countries', 1,
- 'https://restcountries.com/v3.1/all',
+ 'https://restcountries.com/v3.1/all?fields=cca2,cca3,name,region,subregion',
  'Free API returning country list with static facts (area, capital, currencies, languages, timezones). No authentication required.'),
 ('CAAs Verified CSV', 'csv_upload', 'caas', 1,
  NULL,
