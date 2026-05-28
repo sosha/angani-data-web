@@ -119,7 +119,7 @@ function module_icon_html(string $key): string { static $map=['countries'=>'<i c
 function module_count(string $key): int { $cfg=module_config($key); if(!$cfg || !table_exists($cfg['table'])) return 0; try{return (int)scalar('SELECT COUNT(*) FROM '.$cfg['table']);}catch(Throwable $e){return 0;} }
 function public_url_prefix(): string { return defined('ANGANI_ADMIN_CONTEXT') ? '../' : ''; }
 function module_url(string $key): string { return public_url_prefix().'?page=module&module='.urlencode($key); }
-function detail_url(string $key,$id): string { return public_url_prefix().'?page=detail&module='.urlencode($key).'&id='.(int)$id; }
+function detail_url(string $key,$id): string { $s=$key==='countries' ? (string)$id : (int)$id; return public_url_prefix().'?page=detail&module='.urlencode($key).'&id='.urlencode($s); }
 
 function query_module_records(array $cfg, int $limit=24, int $offset=0, bool $forExport=false): array {
     $table=$cfg['table']; if(!table_exists($table)) return [[],0];
@@ -132,7 +132,7 @@ function query_module_records(array $cfg, int $limit=24, int $offset=0, bool $fo
     $country=getv('country'); if($country!=='' && in_array('country_code',$cols,true)) { $where[]='country_code=?'; $params[]=$country; }
     $sql=' FROM `'.$table.'`'.($where?' WHERE '.implode(' AND ',$where):'');
     $total=(int)scalar('SELECT COUNT(*)'.$sql,$params);
-    $order=in_array('last_modified',$cols,true)?' ORDER BY last_modified DESC':(in_array('updated_at',$cols,true)?' ORDER BY updated_at DESC':' ORDER BY id DESC');
+    $order=in_array('last_modified',$cols,true)?' ORDER BY last_modified DESC':(in_array('updated_at',$cols,true)?' ORDER BY updated_at DESC':(in_array('id',$cols,true)?' ORDER BY id DESC':(in_array('code',$cols,true)?' ORDER BY code ASC':(count($cols)?' ORDER BY '.$cols[0].' ASC':''))));
     if($forExport){ $data=rows('SELECT *'.$sql.$order.' LIMIT 5000',$params); }
     else { $data=rows('SELECT *'.$sql.$order.' LIMIT '.(int)$limit.' OFFSET '.(int)$offset,$params); }
     return [$data,$total];
@@ -150,13 +150,15 @@ function render_module_cards(string $key, array $rows): string {
 }
 function render_record_card(string $key,array $cfg,array $r): string {
     $title=$r[$cfg['title']] ?? ($r['name'] ?? 'Record'); $sub=$r[$cfg['subtitle']] ?? '';
-    $url=detail_url($key,$r['id'] ?? 0); $card=$cfg['card'] ?? 'generic';
+    $id=$r['id'] ?? $r['code'] ?? 0; $url=detail_url($key,$id); $card=$cfg['card'] ?? 'generic';
     if($card==='airline'){
         $logo=trim((string)($r['logo_url'] ?? '')); $mark=$logo?'<img class="card-logo" src="'.e($logo).'" alt="">':'<div class="avatar">'.e(initials($title)).'</div>';
-        return '<article class="record-card airline-card" onclick="location.href=\''.e($url).'\'"><div class="record-top"><div class="flag">'.flag_emoji($r['country_code'] ?? '').'</div>'.$mark.status_chip($r['status_bucket'] ?? $r['status'] ?? '').'</div><h3>'.e($title).'</h3><p>'.e(trim(($r['iata_code'] ?? '').' / '.($r['icao_code'] ?? '').' / '.($r['callsign'] ?? ''),' /')).'</p><div class="mini-metrics"><span>Fleet '.e($r['fleet_size'] ?? '—').'</span><span>'.e($r['alliance'] ?? 'No alliance').'</span></div><a class="btn small primary" href="'.e($url).'">View Airline</a></article>';
+        $cc=strtolower($r['country_code'] ?? ''); $flagPath=__DIR__.'/../assets/country_flag_icons/'.$cc.'.svg'; $flag=file_exists($flagPath)?'<img class="flag-svg small" src="assets/country_flag_icons/'.$cc.'.svg" alt="">':'<div class="flag">'.flag_emoji($r['country_code'] ?? '').'</div>';
+        return '<article class="record-card airline-card" onclick="location.href=\''.e($url).'\'"><div class="record-top">'.$flag.$mark.status_chip($r['status_bucket'] ?? $r['status'] ?? '').'</div><h3>'.e($title).'</h3><p>'.e(trim(($r['iata_code'] ?? '').' / '.($r['icao_code'] ?? '').' / '.($r['callsign'] ?? ''),' /')).'</p><div class="mini-metrics"><span>Fleet '.e($r['fleet_size'] ?? '—').'</span><span>'.e($r['alliance'] ?? 'No alliance').'</span></div><a class="btn small primary" href="'.e($url).'">View Airline</a></article>';
     }
     if($card==='airport'){
-        return '<article class="record-card" onclick="location.href=\''.e($url).'\'"><div class="record-top"><div class="flag">'.flag_emoji($r['country_code'] ?? '').'</div>'.status_chip($r['status'] ?? '').'</div><h3>'.e($title).'</h3><p>'.e(trim(($r['iata_code'] ?? '').' / '.($r['icao_code'] ?? '').' · '.($r['city_name'] ?? ''),' / ·')).'</p><div class="mini-metrics"><span>'.e($r['airport_type'] ?? 'Airport').'</span><span>'.e($r['elevation_ft'] ?? '—').' ft</span></div><a class="btn small primary" href="'.e($url).'">View Airport</a></article>';
+        $cc=strtolower($r['country_code'] ?? ''); $flagPath=__DIR__.'/../assets/country_flag_icons/'.$cc.'.svg'; $flag=file_exists($flagPath)?'<img class="flag-svg small" src="assets/country_flag_icons/'.$cc.'.svg" alt="">':'<div class="flag">'.flag_emoji($r['country_code'] ?? '').'</div>';
+        return '<article class="record-card" onclick="location.href=\''.e($url).'\'"><div class="record-top">'.$flag.status_chip($r['status'] ?? '').'</div><h3>'.e($title).'</h3><p>'.e(trim(($r['iata_code'] ?? '').' / '.($r['icao_code'] ?? '').' · '.($r['city_name'] ?? ''),' / ·')).'</p><div class="mini-metrics"><span>'.e($r['airport_type'] ?? 'Airport').'</span><span>'.e($r['elevation_ft'] ?? '—').' ft</span></div><a class="btn small primary" href="'.e($url).'">View Airport</a></article>';
     }
     if($card==='aircraft_type'){
         return '<article class="record-card" onclick="location.href=\''.e($url).'\'"><div class="record-top"><div class="avatar">'.e($r['icao_code'] ?? 'AC').'</div><span class="chip gold">'.e($r['category'] ?? 'Type').'</span></div><h3>'.e($title ?: ($r['common_name'] ?? 'Aircraft Type')).'</h3><p>'.e(($r['manufacturer'] ?? '').' · '.($r['model'] ?? '')).'</p><div class="mini-metrics"><span>IATA '.e($r['iata_code'] ?? '—').'</span><span>ICAO '.e($r['icao_code'] ?? '—').'</span></div><a class="btn small primary" href="'.e($url).'">View Type</a></article>';
@@ -172,14 +174,14 @@ function render_record_card(string $key,array $cfg,array $r): string {
 function render_table(array $rows, array $columns, ?string $moduleKey=null): string {
     if(!$rows) return '<div class="empty-state"><h3>No matching records</h3><p>Try another search or add records from Admin.</p></div>';
     $html='<div class="table-wrap"><table><thead><tr>'; foreach($columns as $c) $html.='<th>'.e(public_field_label($c)).'</th>'; if($moduleKey) $html.='<th>Action</th>'; $html.='</tr></thead><tbody>';
-    foreach($rows as $r){ $html.='<tr>'; foreach($columns as $c) $html.='<td>'.display_value($r[$c] ?? null).'</td>'; if($moduleKey) $html.='<td><a class="btn mini" href="'.e(detail_url($moduleKey,$r['id'] ?? 0)).'">Open</a></td>'; $html.='</tr>'; }
+    foreach($rows as $r){ $id=$r['id'] ?? $r['code'] ?? 0; $html.='<tr>'; foreach($columns as $c) $html.='<td>'.display_value($r[$c] ?? null).'</td>'; if($moduleKey) $html.='<td><a class="btn mini" href="'.e(detail_url($moduleKey,$id)).'">Open</a></td>'; $html.='</tr>'; }
     return $html.'</tbody></table></div>';
 }
 
 function render_admin_record_table(array $rows, array $columns, string $moduleKey): string {
     if(!$rows) return '<div class="empty-state"><h3>No matching records</h3><p>Use Add record or Import CSV to populate this module.</p></div>';
     $html='<div class="table-wrap"><table><thead><tr>'; foreach($columns as $c) $html.='<th>'.e(public_field_label($c)).'</th>'; $html.='<th>Admin actions</th></tr></thead><tbody>';
-    foreach($rows as $r){ $html.='<tr>'; foreach($columns as $c) $html.='<td>'.display_value($r[$c] ?? null).'</td>'; $html.='<td><a class="btn mini" href="?page=admin&tab=edit&module='.e($moduleKey).'&id='.(int)($r['id'] ?? 0).'">Edit</a> <a class="btn mini ghost" href="'.e(detail_url($moduleKey,$r['id'] ?? 0)).'">Preview</a></td></tr>'; }
+    foreach($rows as $r){ $id=$r['id'] ?? $r['code'] ?? 0; $html.='<tr>'; foreach($columns as $c) $html.='<td>'.display_value($r[$c] ?? null).'</td>'; $html.='<td><a class="btn mini" href="?page=admin&tab=edit&module='.e($moduleKey).'&id='.e((string)$id).'">Edit</a> <a class="btn mini ghost" href="'.e(detail_url($moduleKey,$id)).'">Preview</a></td></tr>'; }
     return $html.'</tbody></table></div>';
 }
 
