@@ -5,7 +5,7 @@ require __DIR__ . '/../includes/db.php';
 require __DIR__ . '/../includes/functions.php';
 
 try { handle_post_actions(); } catch (Throwable $e) { flash('error', $e->getMessage()); }
-if (getv('page') === 'logout') { logout_user(); redirect_to('../?page=home'); }
+if (getv('page') === 'logout') { if(!hash_equals(csrf_token(),getv('csrf'))) { flash('error','Invalid logout link.'); redirect_to('../?page=home'); } logout_user(); redirect_to('../?page=home'); }
 if (getv('page') === 'export') { export_module_csv(getv('module')); }
 if (getv('page') === 'export_all') { export_database_zip(); }
 
@@ -28,7 +28,7 @@ try { $stats = get_stats(); } catch (Throwable $e) { $dbError = $e->getMessage()
     <a class="brand-lockup" href="./"><img src="../assets/angani-logo-white.png" alt="Angani" class="brand-logo"><span><strong>Angani Data</strong><small>Admin Console</small></span></a>
     <nav class="main-nav">
         <a href="../?page=home">Public site</a>
-        <?php if ($user): ?><a href="?page=logout">Logout</a><?php endif; ?>
+        <?php if ($user): ?><a href="?page=logout&amp;csrf=<?=e(csrf_token())?>">Logout</a><?php endif; ?>
     </nav>
 </header>
 <main id="app"><?=flash_html()?>

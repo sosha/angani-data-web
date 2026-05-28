@@ -2,8 +2,6 @@
 require_once __DIR__ . '/modules.php';
 
 
-if (!function_exists('str_contains')) { function str_contains($haystack, $needle): bool { return $needle === '' || strpos($haystack, $needle) !== false; } }
-if (!function_exists('str_ends_with')) { function str_ends_with($haystack, $needle): bool { return $needle === '' || substr($haystack, -strlen($needle)) === $needle; } }
 
 function e($v): string { return htmlspecialchars((string)($v ?? ''), ENT_QUOTES, 'UTF-8'); }
 function getv(string $key, $default = ''): string { return trim((string)($_GET[$key] ?? $default)); }
@@ -37,11 +35,9 @@ function is_logged_in(): bool { return current_user() !== null; }
 function is_admin(): bool { $u=current_user(); return $u && ($u['role'] ?? '') === 'admin'; }
 function tier_order_for(?array $u=null): int { $u=$u ?: current_user(); return (int)($u['tier_order'] ?? 0); }
 function tier_by_code(string $code): ?array {
-    try { return row('SELECT * FROM subscription_tiers WHERE code=?', [$code]); }
-    catch (Throwable $e) {
-        foreach (fallback_tiers() as $tier) if (($tier['code'] ?? '') === $code) return $tier;
-        return null;
-    }
+    try { $r=row('SELECT * FROM subscription_tiers WHERE code=?', [$code]); if($r) return $r; } catch (Throwable $e) {}
+    foreach (fallback_tiers() as $tier) if (($tier['code'] ?? '') === $code) return $tier;
+    return null;
 }
 function tier_order_by_code(string $code): int { $r=tier_by_code($code); return (int)($r['display_order'] ?? 0); }
 function has_tier(string $code): bool { return is_admin() || tier_order_for() >= tier_order_by_code($code); }
@@ -92,6 +88,7 @@ function register_user(string $name,string $email,string $password): array {
     if(strlen($password)<8) return [false,'Use at least 8 characters for the password.'];
     if((int)scalar('SELECT COUNT(*) FROM users WHERE email=?', [$email])>0) return [false,'An account with that email already exists.'];
     $tier=tier_by_code('free');
+    if(!$tier) return [false,'Registration is not available right now (Free tier not configured). Contact the administrator.'];
     exec_sql('INSERT INTO users (name,email,password_hash,tier_id,role,status,created_at,updated_at) VALUES (?,?,?,?,"user","active",NOW(),NOW())', [$name,$email,password_hash($password,PASSWORD_DEFAULT),(int)$tier['id']]);
     $_SESSION['user_id']=(int)db()->lastInsertId();
     return [true,'Account created.'];
@@ -180,8 +177,8 @@ function render_admin_record_table(array $rows, array $columns, string $moduleKe
 }
 
 function render_detail_fields(array $cfg,array $r,bool $admin=false): string {
-    $fields=$cfg['detail'] ?? array_keys($r); $html='<div class="detail-grid">';
-    foreach($fields as $f){ if(!$admin && is_internal_field($f)) continue; $html.='<div class="detail-item"><small>'.e(public_field_label($f)).'</small><strong>'.display_value($r[$f] ?? null).'</strong></div>'; }
+    $fields=$cfg['detail'] ?? array_keys($r); $explicit=isset($cfg['detail']); $html='<div class="detail-grid">';
+    foreach($fields as $f){ if(!$admin && !$explicit && is_internal_field($f)) continue; $html.='<div class="detail-item"><small>'.e(public_field_label($f)).'</small><strong>'.display_value($r[$f] ?? null).'</strong></div>'; }
     return $html.'</div>';
 }
 function render_related_sections(string $key,array $r): string {
@@ -237,6 +234,7 @@ function chart_bars(array $rows,string $suffix=''): string { if(!$rows) return '
 function active_insight_cards(): array { try{return rows('SELECT * FROM insight_cards WHERE is_active=1 ORDER BY display_order, updated_at DESC LIMIT 8');}catch(Throwable $e){return [];} }
 function question_presets(): array { try{return rows('SELECT qp.*, st.code required_tier_code, st.name required_tier_name, st.display_order required_tier_order FROM question_presets qp LEFT JOIN subscription_tiers st ON st.id=qp.required_tier_id WHERE qp.is_active=1 ORDER BY qp.display_order, qp.id');}catch(Throwable $e){return [];} }
 function run_preset_query(string $key): array {
+    try {
     switch($key){
         case 'route_competitors': return run_insight_query('routes_with_competition');
         case 'oldest_aircraft': return run_insight_query('oldest_aircraft');
@@ -248,13 +246,13 @@ function run_preset_query(string $key): array {
         case 'short_runway_aircraft': return rows("SELECT at.full_designation, rr.iata_code, rr.icao_code, rr.min_takeoff_length_ft, rr.min_landing_length_ft, rr.surface_compatibility FROM aircraft_type_runway_requirements rr LEFT JOIN aircraft_types at ON at.icao_code=rr.icao_code WHERE rr.min_takeoff_length_ft IS NOT NULL ORDER BY rr.min_takeoff_length_ft ASC LIMIT 30");
         case 'saf_compatible_aircraft': return rows("SELECT at.full_designation, ed.iata_code, ed.icao_code, ed.engine_type, ed.engine_variants, ed.saf_compatible FROM aircraft_type_engine_data ed LEFT JOIN aircraft_types at ON at.icao_code=ed.icao_code WHERE LOWER(COALESCE(ed.saf_compatible,'')) LIKE '%yes%' OR LOWER(COALESCE(ed.saf_compatible,'')) LIKE '%true%' LIMIT 30");
         case 'sources_to_review': return rows("SELECT entity_type, entity_id, field_name, old_value, new_value, changed_at, change_source FROM entity_change_log ORDER BY changed_at DESC LIMIT 30");
-    }
+    }} catch(Throwable $e){ return []; }
     return [];
 }
 
 function handle_post_actions(): void {
     if(($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'POST') return; verify_csrf(); $action=postv('action');
-    if($action==='login'){ if(login_user(postv('email'),postv('password'))){flash('success','Logged in.'); redirect_to('?page=dashboard');} flash('error','Invalid email or password.'); redirect_to('?page=login'); }
+    if($action==='login'){ $attempts=(int)($_SESSION['login_attempts'] ?? 0); if($attempts>5) { usleep(3000000); flash('error','Too many attempts. Try again later.'); redirect_to('?page=login'); } if($attempts>0) usleep($attempts*200000); if(login_user(postv('email'),postv('password'))){$_SESSION['login_attempts']=0;flash('success','Logged in.'); redirect_to('?page=dashboard');} $_SESSION['login_attempts']=$attempts+1; flash('error','Invalid email or password.'); redirect_to('?page=login'); }
     if($action==='register'){ [$ok,$msg]=register_user(postv('name'),postv('email'),postv('password')); flash($ok?'success':'error',$msg); redirect_to($ok?'?page=dashboard':'?page=register'); }
     if($action==='update_account' && is_logged_in()){ exec_sql('UPDATE users SET name=?, updated_at=NOW() WHERE id=?',[postv('name'),(int)current_user()['id']]); flash('success','Account updated.'); redirect_to('?page=account'); }
     if(!is_admin()) return;
@@ -272,13 +270,14 @@ function handle_post_actions(): void {
 }
 function admin_save_record(): void {
     $key=postv('module'); $cfg=module_config($key); if(!$cfg) throw new RuntimeException('Unknown module.'); $table=$cfg['table']; $cols=table_columns($table); $id=(int)postv('id'); $fields=array_values(array_filter($cfg['fields'], fn($f)=>in_array($f,$cols,true) && $f!=='id'));
-    $data=[]; foreach($fields as $f){ $data[$f]=$_POST[$f] ?? null; }
-    if($id>0){ $sets=[]; $params=[]; foreach($data as $f=>$v){ $sets[]="`$f`=?"; $params[]=$v===''?null:$v; } $params[]=$id; exec_sql('UPDATE `'.$table.'` SET '.implode(',',$sets).' WHERE id=?',$params); flash('success','Record updated.'); redirect_to('?page=admin&tab=records&module='.$key); }
-    else { $names=array_keys($data); $vals=array_map(fn($v)=>$v===''?null:$v,array_values($data)); exec_sql('INSERT INTO `'.$table.'` (`'.implode('`,`',$names).'`) VALUES ('.implode(',',array_fill(0,count($names),'?')).')',$vals); flash('success','Record added.'); redirect_to('?page=admin&tab=records&module='.$key); }
+    $data=[]; foreach($fields as $f){ $data[$f]=postv($f); }
+    if($id>0){ $sets=[]; $params=[]; foreach($data as $f=>$v){ $sets[]="`$f`=?"; $params[]=$v; } $params[]=$id; exec_sql('UPDATE `'.$table.'` SET '.implode(',',$sets).' WHERE id=?',$params); flash('success','Record updated.'); redirect_to('?page=admin&tab=records&module='.$key); }
+    else { $names=array_keys($data); $vals=array_values($data); exec_sql('INSERT INTO `'.$table.'` (`'.implode('`,`',$names).'`) VALUES ('.implode(',',array_fill(0,count($names),'?')).')',$vals); flash('success','Record added.'); redirect_to('?page=admin&tab=records&module='.$key); }
 }
 function admin_delete_record(): void { $key=postv('module'); $id=(int)postv('id'); $cfg=module_config($key); if(!$cfg) throw new RuntimeException('Unknown module.'); exec_sql('DELETE FROM `'.$cfg['table'].'` WHERE id=?',[$id]); flash('success','Record deleted.'); redirect_to('?page=admin&tab=records&module='.$key); }
 function admin_save_user(): void {
     $id=(int)postv('user_id'); $name=postv('name'); $email=postv('email'); $tier=(int)postv('tier_id'); $role=postv('role'); $status=postv('status');
+    if($tier<=0) throw new RuntimeException('A valid tier/plan must be selected.');
     if($id>0) exec_sql('UPDATE users SET name=?, email=?, tier_id=?, role=?, status=?, updated_at=NOW() WHERE id=?',[$name,$email,$tier,$role,$status,$id]);
     else exec_sql('INSERT INTO users (name,email,password_hash,tier_id,role,status,created_at,updated_at) VALUES (?,?,?,?,?,?,NOW(),NOW())',[$name,$email,password_hash(postv('password','Angani@2026'),PASSWORD_DEFAULT),$tier,$role,$status]);
     flash('success','User saved.'); redirect_to('?page=admin&tab=users');
@@ -294,7 +293,9 @@ function admin_save_tier(): void {
 function admin_save_feature(): void {
     $tier=(int)postv('tier_id'); if($tier<=0) throw new RuntimeException('Missing tier.');
     $code=postv('feature_code'); $label=postv('feature_label'); if($code===''||$label==='') throw new RuntimeException('Feature code and label are required.');
-    exec_sql('INSERT INTO tier_features (tier_id,feature_code,feature_label,created_at) VALUES (?,?,?,NOW()) ON DUPLICATE KEY UPDATE feature_label=VALUES(feature_label)',[$tier,$code,$label]);
+    $existing=row('SELECT id FROM tier_features WHERE tier_id=? AND feature_code=?',[$tier,$code]);
+    if($existing) exec_sql('UPDATE tier_features SET feature_label=?, updated_at=NOW() WHERE id=?',[$label,(int)$existing['id']]);
+    else exec_sql('INSERT INTO tier_features (tier_id,feature_code,feature_label,created_at) VALUES (?,?,?,NOW())',[$tier,$code,$label]);
     flash('success','Plan benefit saved.'); redirect_to('?page=admin&tab=plans');
 }
 function admin_delete_feature(): void {
@@ -351,7 +352,8 @@ function admin_import_csv(): void {
         }
     }
     if(!$map) throw new RuntimeException('No CSV headers matched editable fields for this module. Use headers such as: '.implode(', ', array_slice($fields,0,8)).'.');
-    exec_sql('INSERT INTO import_batches (batch_name,source_file,module_key,status,started_at,created_by,notes) VALUES (?,?,?,"running",NOW(),?,?)',[basename($_FILES['csv_file']['name']),$_FILES['csv_file']['name'],$key,(int)current_user()['id'],postv('notes')]); $batch=(int)db()->lastInsertId();
+    $safeFilename=mb_substr(basename($_FILES['csv_file']['name']),0,255);
+    exec_sql('INSERT INTO import_batches (batch_name,source_file,module_key,status,started_at,created_by,notes) VALUES (?,?,?,"running",NOW(),?,?)',[$safeFilename,$safeFilename,$key,(int)current_user()['id'],postv('notes')]); $batch=(int)db()->lastInsertId();
     $imported=0; $failed=0; $rowNo=1;
     while(($row=fgetcsv($fh))!==false){
         $rowNo++;
