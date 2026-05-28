@@ -161,3 +161,16 @@ Run final checks after deployment:
 php scripts/qa_phase5_check.php
 php scripts/qa_phase5_check.php --db
 ```
+
+## Repair status
+
+This repository has been repaired according to the six-step stabilisation request:
+
+1. `index.php` merge conflict and routing fixed.
+2. DB layer standardised on PDO.
+3. Seed/import packaging corrected.
+4. Admin separated into `/admin/`.
+5. Phase 4 importers and Phase 5 QA files restored.
+6. Public UI and drill-downs polished.
+
+See `REPAIR_REPORT.md` for the exact change summary and QA results.

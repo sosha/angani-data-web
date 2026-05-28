@@ -1,6 +1,4 @@
 <?php
-require_once __DIR__ . '/db.php';
-
 function module_groups(): array {
     return [
         'Core' => ['countries','airlines','airports','aircraft','aircraft_types','lessors','routes'],

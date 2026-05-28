@@ -1,0 +1,23 @@
+# Local configuration and secrets
+includes/config.php
+.env
+*.pem
+*.key
+private*
+chatgpt_github_token*
+
+# Runtime/generated files
+exports/
+uploads/
+tmp/
+logs/
+qa/*.runtime.txt
+*.sql.gz
+*.zip
+!data/countries/countries.zip
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

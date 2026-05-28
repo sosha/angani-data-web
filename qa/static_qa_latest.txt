@@ -1,0 +1,18 @@
+[PASS] Schema file exists — database/01_schema.sql
+[PASS] Schema tables detected — 119 tables detected
+[PASS] All configured module tables exist — 82 modules checked
+[PASS] All configured module fields exist — No field mismatches
+[PASS] Modules use only Free / Pro / Enterprise tiers — 3-tier model enforced in module config
+[PASS] Public listings hide internal fields — No internal fields in list configs
+[PASS] Seed files exist — 80 seed files
+[PASS] No seed file exceeds 1MB — All seed files under 1MB
+[PASS] Seed INSERT statements match schema columns — 748 INSERT blocks checked
+[PASS] Global CSV source folder present — 39 CSV files found
+[PASS] Country ZIP source present — data/countries/countries.zip
+[PASS] Country ZIP importer has available ZIP reader — System unzip fallback available
+[PASS] Importer groups configured — global, country, aircraft, reference, commercial, iata-iosa, gds, infrastructure
+[PASS] Global importer maps have matching source files — 39 mapped files
+[PASS] Country importer maps configured — 45 country dataset mappings
+[PASS] PHP file set detected for linting — 13 PHP files
+
+Summary: 16/16 checks passed

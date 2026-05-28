@@ -1,0 +1,13 @@
+PASS home
+PASS search
+PASS catalogue
+PASS pricing
+PASS login
+PASS register
+PASS module
+PASS detail
+PASS dashboard
+PASS answer
+PASS account
+PASS contact
+PASS admin

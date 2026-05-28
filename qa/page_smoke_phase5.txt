@@ -1,0 +1,20 @@
+Phase 5 page smoke test
+/ 200 14802
+/index.php?page=home 200 14802
+/index.php?page=search 200 2547
+/index.php?page=catalogue 200 12846
+/index.php?page=pricing 200 3282
+/index.php?page=login 200 2204
+/index.php?page=register 200 2113
+/index.php?page=admin 200 1850
+/index.php?page=reference 200 2358
+/index.php?page=airlines 200 2345
+/index.php?page=airports 200 2345
+/index.php?page=aircraft_types 200 2369
+/index.php?page=infrastructure 200 2318
+/index.php?page=commercial 200 1846
+/index.php?page=gds 200 2318
+/index.php?page=iata-iosa 200 2376
+/index.php?page=module&module=lessors 200 1848
+/index.php?page=module&module=aircraft 200 1858
+/index.php?page=module&module=ref_booking_classes 200 2358
