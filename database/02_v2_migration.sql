@@ -115,7 +115,7 @@ DROP TABLE IF EXISTS caas;
 DROP TABLE IF EXISTS countries;
 
 CREATE TABLE countries (
-  iso_alpha_2 VARCHAR(2) NOT NULL PRIMARY KEY,
+  iso_alpha_2 VARCHAR(6) NOT NULL PRIMARY KEY,
   iso_alpha_3 VARCHAR(3) DEFAULT NULL,
   name_common VARCHAR(190) NOT NULL,
   name_official VARCHAR(255) DEFAULT NULL,
@@ -129,7 +129,7 @@ CREATE TABLE countries (
 
 CREATE TABLE caas (
   id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-  country_code VARCHAR(2) NOT NULL,
+  country_code VARCHAR(6) NOT NULL,
   name VARCHAR(255) NOT NULL,
   abbreviation VARCHAR(80) DEFAULT NULL,
   website VARCHAR(500) DEFAULT NULL,
@@ -141,7 +141,7 @@ CREATE TABLE caas (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE country_facts (
-  country_code VARCHAR(2) NOT NULL,
+  country_code VARCHAR(6) NOT NULL,
   fact_key VARCHAR(80) NOT NULL,
   fact_value TEXT DEFAULT NULL,
   source VARCHAR(190) DEFAULT NULL,
@@ -152,7 +152,7 @@ CREATE TABLE country_facts (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE country_dynamic_facts (
-  country_code VARCHAR(2) NOT NULL,
+  country_code VARCHAR(6) NOT NULL,
   metric_key VARCHAR(80) NOT NULL,
   year INT NOT NULL,
   value DECIMAL(20,2) DEFAULT NULL,
@@ -164,7 +164,7 @@ CREATE TABLE country_dynamic_facts (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE country_transport_stats (
-  country_code VARCHAR(2) NOT NULL,
+  country_code VARCHAR(6) NOT NULL,
   statistic_year INT NOT NULL,
   quarter TINYINT NOT NULL DEFAULT 0,
   mode ENUM('air','rail','road','sea') NOT NULL,
