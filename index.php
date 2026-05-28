@@ -78,6 +78,7 @@ function render_admin_page(): void {
     $nav=[
         'overview'=>'Command Center',
         'records'=>'Records & CRUD',
+        'pipeline'=>'Data Pipeline',
         'imports'=>'Imports / Exports',
         'quality'=>'Data Quality',
         'users'=>'Users',
@@ -97,6 +98,7 @@ function render_admin_page(): void {
     elseif($tab==='imports') render_admin_imports();
     elseif($tab==='quality') render_admin_quality();
     elseif($tab==='tasks') render_admin_tasks();
+    elseif($tab==='pipeline') render_admin_pipeline();
     elseif($tab==='edit') render_admin_edit($module,(int)getv('id'));
     else render_admin_records($module,$cfg);
     echo '</section></section>';
@@ -168,4 +170,63 @@ function render_admin_quality(): void {
     echo '<section class="panel"><h3>Import batches</h3>'.render_table($batches,$batches?array_keys($batches[0]):[],null).'</section><section class="panel"><h3>Export logs</h3>'.render_table($exports,$exports?array_keys($exports[0]):[],null).'</section>';
 }
 function render_admin_tasks(): void { $tasks=rows('SELECT * FROM admin_tasks ORDER BY sort_order,id'); echo '<div class="admin-head"><div><div class="eyebrow">Readiness</div><h1>100% implementation checklist</h1><p>Track launch readiness from inside the admin console.</p></div></div><div class="table-wrap"><table><thead><tr><th>Category</th><th>Task</th><th>Status</th><th>Priority</th><th>Action</th></tr></thead><tbody>'; foreach($tasks as $t){ echo '<tr><form style="display:contents" method="post">'.csrf_field().'<input type="hidden" name="action" value="admin_update_task"><input type="hidden" name="task_id" value="'.(int)$t['id'].'"><td>'.e($t['category']).'</td><td><strong>'.e($t['task_title']).'</strong><p>'.e($t['description']).'</p></td><td><select name="status">'; foreach(['pending','in_progress','done','blocked'] as $st) echo '<option '.($t['status']===$st?'selected':'').'>'.$st.'</option>'; echo '</select></td><td>'.e($t['priority']).'</td><td><button class="btn mini">Update</button></td></form></tr>'; } echo '</tbody></table></div>'; }
+function render_admin_pipeline(): void {
+    $sub=getv('section','sources');
+    echo '<div class="admin-head"><div><div class="eyebrow">Data Pipeline</div><h1>Pipeline manager</h1><p>Fetch, validate, review and publish data from external sources through the 4-stage pipeline.</p></div></div>';
+    echo '<nav class="admin-module-nav">';
+    foreach(['sources'=>'Sources','pending'=>'Pending Reviews','history'=>'Run History'] as $k=>$l){
+        echo '<a class="'.($sub===$k?'active':'').'" href="?page=admin&tab=pipeline&section='.e($k).'">'.e($l).'</a>';
+    }
+    echo '</nav>';
+    if($sub==='sources') render_pipeline_sources();
+    elseif($sub==='pending') render_pipeline_pending();
+    elseif($sub==='history') render_pipeline_history();
+}
+function render_pipeline_sources(): void {
+    $sources=rows('SELECT * FROM pipeline_sources ORDER BY module_key,source_name');
+    echo '<section class="panel"><h3>Add source</h3><form method="post" class="admin-form compact-form">'.csrf_field().'<input type="hidden" name="action" value="pipeline_add_source"><label><span>Source name</span><input name="source_name" required></label><label><span>Type</span><select name="source_type"><option value="api">API</option><option value="scraper">Web scraper</option><option value="csv_upload">CSV file</option><option value="url_csv">URL CSV</option></select></label><label><span>Module key</span><input name="module_key" placeholder="countries, caas, country_transport_stats" required></label><label><span>URL (for API / URL CSV)</span><input name="url" placeholder="https://..."></label><label><span>Notes</span><textarea name="notes" rows="2"></textarea></label><button class="btn ink">Add source</button></form></section>';
+    echo '<section class="panel"><h3>Sources</h3><div class="table-wrap"><table><thead><tr><th>Name</th><th>Type</th><th>Module</th><th>Status</th><th>Last run</th><th>Actions</th></tr></thead><tbody>';
+    foreach($sources as $s){
+        $status='<span class="chip '.($s['is_active']?'ok glow-green':'gold').'">'.($s['is_active']?'Active':'Inactive').'</span>';
+        $lastRun=$s['last_run_at'] ? e($s['last_run_at']).' <small>'.e($s['last_run_status'] ?? '').'</small>' : '—';
+        echo '<tr><td><strong>'.e($s['source_name']).'</strong></td><td><span class="chip">'.e($s['source_type']).'</span></td><td>'.e($s['module_key']).'</td><td>'.$status.'</td><td>'.$lastRun.'</td><td>';
+        echo '<form method="post" style="display:inline">'.csrf_field().'<input type="hidden" name="action" value="pipeline_run_source"><input type="hidden" name="source_id" value="'.(int)$s['id'].'"><button class="btn mini ink">Run now</button></form>';
+        echo '</td></tr>';
+    }
+    echo '</tbody></table></div></section>';
+}
+function render_pipeline_pending(): void {
+    $runs=rows("SELECT pr.*, ps.source_name FROM pipeline_runs pr LEFT JOIN pipeline_sources ps ON ps.id=pr.pipeline_source_id WHERE pr.status='pending_review' ORDER BY pr.started_at DESC LIMIT 20");
+    if(!$runs){ echo '<section class="panel"><h3>Pending reviews</h3><p class="muted">No runs pending review.</p></section>'; return; }
+    foreach($runs as $run){
+        $records=rows('SELECT * FROM staging_records WHERE pipeline_run_id=? ORDER BY id',[(int)$run['id']]);
+        echo '<section class="panel"><div class="topline"><h3>'.e($run['source_name'] ?: 'Source #'.$run['pipeline_source_id']).'</h3><span class="chip gold">'.e($run['module_key']).'</span><span class="chip">'.nfmt($run['records_fetched']).' fetched</span></div>';
+        echo '<p>Run #'.(int)$run['id'].' · '.e($run['started_at']).'</p>';
+        echo '<form method="post" style="display:inline">'.csrf_field().'<input type="hidden" name="action" value="pipeline_approve_run"><input type="hidden" name="run_id" value="'.(int)$run['id'].'"><button class="btn ink">Approve all</button></form> ';
+        echo '<form method="post" style="display:inline">'.csrf_field().'<input type="hidden" name="action" value="pipeline_reject_run"><input type="hidden" name="run_id" value="'.(int)$run['id'].'"><button class="btn ghost">Reject all</button></form>';
+        if($records){
+            echo '<div class="table-wrap"><table><thead><tr><th>Action</th><th>Key</th><th>Status</th><th>Actions</th></tr></thead><tbody>';
+            foreach($records as $r){
+                $data=json_decode($r['row_data'],true);
+                $key=$data['iso_alpha_2'] ?? $data['country_code'] ?? $data['name'] ?? '(no key)';
+                echo '<tr><td><span class="chip '.($r['action']==='insert'?'ok':($r['action']==='update'?'gold':($r['action']==='delete'?'danger':''))).'">'.e($r['action']).'</span></td><td>'.e($key).'</td><td><span class="chip '.($r['status']==='approved'?'ok glow-green':($r['status']==='rejected'?'danger':'gold')).'">'.e($r['status']).'</span></td><td>';
+                echo '<form method="post" style="display:inline">'.csrf_field().'<input type="hidden" name="action" value="pipeline_approve_staging"><input type="hidden" name="record_ids[]" value="'.(int)$r['id'].'"><button class="btn mini ink">Approve</button></form> ';
+                echo '<form method="post" style="display:inline">'.csrf_field().'<input type="hidden" name="action" value="pipeline_reject_staging"><input type="hidden" name="record_ids[]" value="'.(int)$r['id'].'"><button class="btn mini ghost">Reject</button></form>';
+                echo '</td></tr>';
+            }
+            echo '</tbody></table></div>';
+        }
+        echo '</section>';
+    }
+}
+function render_pipeline_history(): void {
+    $runs=rows('SELECT pr.*, ps.source_name FROM pipeline_runs pr LEFT JOIN pipeline_sources ps ON ps.id=pr.pipeline_source_id ORDER BY pr.started_at DESC LIMIT 100');
+    echo '<section class="panel"><h3>Run history</h3><div class="table-wrap"><table><thead><tr><th>ID</th><th>Source</th><th>Module</th><th>Status</th><th>Fetched</th><th>Ins</th><th>Upd</th><th>Started</th><th>Finished</th></tr></thead><tbody>';
+    foreach($runs as $r){
+        $status=$r['status'];
+        $cls=$status==='approved'?'ok glow-green':($status==='failed'?'danger':($status==='pending_review'?'gold':''));
+        echo '<tr><td>#'.(int)$r['id'].'</td><td>'.e($r['source_name'] ?: '—').'</td><td>'.e($r['module_key']).'</td><td><span class="chip '.$cls.'">'.e($status).'</span></td><td>'.nfmt($r['records_fetched']).'</td><td>'.nfmt($r['records_insert']).'</td><td>'.nfmt($r['records_update']).'</td><td>'.e($r['started_at'] ?: '—').'</td><td>'.e($r['finished_at'] ?: '—').'</td></tr>';
+    }
+    echo '</tbody></table></div></section>';
+}
 ?>

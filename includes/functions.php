@@ -6,6 +6,7 @@ require_once __DIR__ . '/modules.php';
 function e($v): string { return htmlspecialchars((string)($v ?? ''), ENT_QUOTES, 'UTF-8'); }
 function getv(string $key, $default = ''): string { return trim((string)($_GET[$key] ?? $default)); }
 function postv(string $key, $default = ''): string { return trim((string)($_POST[$key] ?? $default)); }
+function postv_array(string $key): array { $v=$_POST[$key] ?? []; return is_array($v) ? array_values($v) : []; }
 function nfmt($v): string { return number_format((float)($v ?? 0)); }
 function fmt($v): string { return ($v === null || $v === '' || $v == 0) ? '—' : number_format((float)$v); }
 function labelize(string $s): string { return ucwords(str_replace(['_','-'], ' ', $s)); }
@@ -108,10 +109,10 @@ function display_value($v): string { if($v===null || $v==='') return '—'; $s=(
 function get_stats(): array {
     $safe=function($sql){ try{return (int)scalar($sql);}catch(Throwable $e){return 0;} };
     return [
-        'airlines'=>$safe('SELECT COUNT(*) FROM airlines'), 'active_airlines'=>$safe("SELECT COUNT(*) FROM airlines WHERE status_bucket='active' OR LOWER(status)='active'"), 'airports'=>$safe('SELECT COUNT(*) FROM airports'), 'aircraft'=>$safe('SELECT COUNT(*) FROM aircraft_registrations'), 'aircraft_types'=>$safe('SELECT COUNT(*) FROM aircraft_types'), 'lessors'=>$safe('SELECT COUNT(*) FROM lessors'), 'navaids'=>$safe('SELECT COUNT(*) FROM navaids'), 'frequencies'=>$safe('SELECT COUNT(*) FROM airport_frequencies'), 'countries'=>$safe("SELECT COUNT(*) FROM countries WHERE code <> 'GLOBAL'"), 'regulatory'=>$safe('SELECT COUNT(*) FROM regulatory_records') + $safe('SELECT COUNT(*) FROM regulatory_authorities'), 'routes'=>$safe('SELECT COUNT(*) FROM airline_route_services'), 'users'=>$safe('SELECT COUNT(*) FROM users'), 'dataset_files'=>$safe('SELECT COUNT(*) FROM dataset_files')
+        'airlines'=>$safe('SELECT COUNT(*) FROM airlines'), 'active_airlines'=>$safe("SELECT COUNT(*) FROM airlines WHERE status_bucket='active' OR LOWER(status)='active'"), 'airports'=>$safe('SELECT COUNT(*) FROM airports'), 'aircraft'=>$safe('SELECT COUNT(*) FROM aircraft_registrations'), 'aircraft_types'=>$safe('SELECT COUNT(*) FROM aircraft_types'), 'lessors'=>$safe('SELECT COUNT(*) FROM lessors'), 'navaids'=>$safe('SELECT COUNT(*) FROM navaids'), 'frequencies'=>$safe('SELECT COUNT(*) FROM airport_frequencies'),         'countries'=>$safe("SELECT COUNT(*) FROM legacy_countries WHERE code <> 'GLOBAL'"), 'regulatory'=>$safe('SELECT COUNT(*) FROM regulatory_records') + $safe('SELECT COUNT(*) FROM regulatory_authorities'), 'routes'=>$safe('SELECT COUNT(*) FROM airline_route_services'), 'users'=>$safe('SELECT COUNT(*) FROM users'), 'dataset_files'=>$safe('SELECT COUNT(*) FROM dataset_files')
     ];
 }
-function country_name(?string $code): string { if(!$code) return 'Unknown'; try{$r=row('SELECT name FROM countries WHERE code=?', [$code]); return $r['name'] ?? $code;}catch(Throwable $e){return $code;} }
+function country_name(?string $code): string { if(!$code) return 'Unknown'; try{$r=row('SELECT name FROM legacy_countries WHERE code=?', [$code]); return $r['name'] ?? $code;}catch(Throwable $e){return $code;} }
 function flag_emoji(?string $code): string { $code=strtoupper((string)$code); if(strlen($code)!==2) return '▧'; $out=''; for($i=0;$i<2;$i++) $out .= html_entity_decode('&#'.(127462 + ord($code[$i]) - ord('A')).';', ENT_NOQUOTES, 'UTF-8'); return $out; }
 function status_chip(?string $status): string { $s=strtolower((string)($status ?: 'unknown')); $class = str_contains($s,'active') ? 'ok glow-green' : (str_contains($s,'defunct') || str_contains($s,'closed') ? 'danger' : 'gold'); return '<span class="chip '.$class.'">'.e(ucfirst($status ?: 'Unknown')).'</span>'; }
 function module_icon_html(string $key): string { static $map=['countries'=>'<i class="fas fa-globe"></i>','airlines'=>'<i class="fas fa-plane"></i>','airports'=>'<i class="fas fa-plane-departure"></i>','aircraft'=>'<i class="fas fa-plane"></i>','aircraft_types'=>'<i class="fas fa-tag"></i>','lessors'=>'<i class="fas fa-building"></i>','routes'=>'<i class="fas fa-route"></i>','airline_digital'=>'<i class="fas fa-laptop"></i>','frequent_flyer'=>'<i class="fas fa-star"></i>','airline_fleet_list'=>'<i class="fas fa-list"></i>','airline_fleet_summary'=>'<i class="fas fa-chart-bar"></i>','airline_hubs'=>'<i class="fas fa-code-branch"></i>','airline_it'=>'<i class="fas fa-server"></i>','airline_people'=>'<i class="fas fa-users"></i>','airline_stats'=>'<i class="fas fa-chart-line"></i>','airport_frequencies'=>'<i class="fas fa-broadcast-tower"></i>','airport_runways'=>'<i class="fas fa-road"></i>','airport_terminals'=>'<i class="fas fa-door-open"></i>','airport_services'=>'<i class="fas fa-concierge-bell"></i>','airport_hubs'=>'<i class="fas fa-code-branch"></i>','airport_financial'=>'<i class="fas fa-chart-pie"></i>','airport_ground_handling'=>'<i class="fas fa-truck"></i>','airport_ground_transport'=>'<i class="fas fa-bus"></i>','airport_it'=>'<i class="fas fa-server"></i>','airport_people'=>'<i class="fas fa-users"></i>','navaids'=>'<i class="fas fa-map-marker-alt"></i>','navaid_technical'=>'<i class="fas fa-wrench"></i>','navaid_operational'=>'<i class="fas fa-cogs"></i>','navaid_connectivity'=>'<i class="fas fa-network-wired"></i>','navaid_references'=>'<i class="fas fa-book"></i>','notam_sources'=>'<i class="fas fa-database"></i>','notams'=>'<i class="fas fa-exclamation-triangle"></i>','notam_classification'=>'<i class="fas fa-filter"></i>','notam_content'=>'<i class="fas fa-file-alt"></i>','notam_schedule'=>'<i class="fas fa-calendar-alt"></i>','notam_connectivity'=>'<i class="fas fa-network-wired"></i>','notam_references'=>'<i class="fas fa-book"></i>','regulatory'=>'<i class="fas fa-gavel"></i>','regulatory_authorities'=>'<i class="fas fa-university"></i>','regulatory_economic'=>'<i class="fas fa-file-invoice-dollar"></i>','regulatory_operational'=>'<i class="fas fa-certificate"></i>','regulatory_licensing'=>'<i class="fas fa-id-card"></i>','iata_membership'=>'<i class="fas fa-handshake"></i>','iosa_registration'=>'<i class="fas fa-clipboard-list"></i>','airline_iata'=>'<i class="fas fa-handshake"></i>','airline_iosa'=>'<i class="fas fa-clipboard-list"></i>','commercial_fares'=>'<i class="fas fa-dollar-sign"></i>','commercial_inventory'=>'<i class="fas fa-warehouse"></i>','commercial_rules'=>'<i class="fas fa-ruler"></i>','commercial_taxes'=>'<i class="fas fa-receipt"></i>','commercial_yield'=>'<i class="fas fa-chart-line"></i>','country_fare_policies'=>'<i class="fas fa-file-contract"></i>','gds'=>'<i class="fas fa-globe-americas"></i>','aircraft_profile'=>'<i class="fas fa-info-circle"></i>','aircraft_assets'=>'<i class="fas fa-images"></i>','aircraft_cabin_payload'=>'<i class="fas fa-weight-hanging"></i>','aircraft_engine_data'=>'<i class="fas fa-cog"></i>','aircraft_economic_data'=>'<i class="fas fa-chart-bar"></i>','aircraft_environmental'=>'<i class="fas fa-leaf"></i>','aircraft_manufacturer_support'=>'<i class="fas fa-tools"></i>','aircraft_performance'=>'<i class="fas fa-tachometer-alt"></i>','aircraft_runways'=>'<i class="fas fa-road"></i>','aircraft_technical_specs'=>'<i class="fas fa-microchip"></i>','aircraft_models'=>'<i class="fas fa-book"></i>','aircraft_model_history'=>'<i class="fas fa-history"></i>','aircraft_model_capacity'=>'<i class="fas fa-chair"></i>','aircraft_model_specs'=>'<i class="fas fa-cogs"></i>','aircraft_model_production'=>'<i class="fas fa-industry"></i>','aircraft_model_sources'=>'<i class="fas fa-link"></i>','ref_country_codes'=>'<i class="fas fa-globe"></i>','ref_service_types'=>'<i class="fas fa-tags"></i>','ref_meal_codes'=>'<i class="fas fa-utensils"></i>','ref_booking_classes'=>'<i class="fas fa-chair"></i>','ref_terminal_codes'=>'<i class="fas fa-door-closed"></i>','ref_reject_reasons'=>'<i class="fas fa-times-circle"></i>','ref_phonetic'=>'<i class="fas fa-font"></i>','dataset_files'=>'<i class="fas fa-file-csv"></i>','source_records'=>'<i class="fas fa-link"></i>','change_log'=>'<i class="fas fa-history"></i>','import_batches'=>'<i class="fas fa-upload"></i>','staging_records'=>'<i class="fas fa-database"></i>','export_logs'=>'<i class="fas fa-download"></i>','regulatory_environmental'=>'<i class="fas fa-leaf"></i>','regulatory_references'=>'<i class="fas fa-book"></i>','regulatory_safety'=>'<i class="fas fa-shield-alt"></i>']; return $map[$key] ?? '<i class="fas fa-database"></i>'; }
@@ -149,7 +150,7 @@ function query_module_records(array $cfg, int $limit=24, int $offset=0, bool $fo
 function country_select(string $name='country', string $selected=''): string {
     $html='<select name="'.e($name).'"><option value="">All countries</option>';
     try{
-        $rows=rows('SELECT code,name FROM countries ORDER BY name ASC');
+        $rows=rows('SELECT code,name FROM legacy_countries ORDER BY name ASC');
         foreach($rows as $r){
             $sel=($r['code']===$selected||$r['name']===$selected)?' selected':'';
             $html.='<option value="'.e($r['code']).'"'.$sel.'>'.e($r['name']).' ('.e($r['code']).')</option>';
@@ -278,9 +279,9 @@ function run_insight_query(string $key): array {
         case 'smallest_airlines_capacity': return rows("SELECT name label, CONCAT(COALESCE(country_code,''),' · fleet ',COALESCE(fleet_size,0)) detail, COALESCE(fleet_size,0) value FROM airlines WHERE (status_bucket='active' OR LOWER(status)='active') AND fleet_size IS NOT NULL AND fleet_size>0 ORDER BY fleet_size ASC LIMIT 8");
         case 'routes_with_competition': return rows("SELECT COALESCE(flight_number_prefix,'Route') label, COALESCE(service_type,'Service') detail, COUNT(*) value FROM airline_route_services GROUP BY route_market_id HAVING COUNT(*)>1 ORDER BY value DESC LIMIT 8");
         case 'dataset_coverage': return rows("SELECT COALESCE(category,'Other') label, CONCAT(COUNT(*),' files') detail, COALESCE(SUM(row_count),0) value FROM dataset_files GROUP BY category ORDER BY value DESC LIMIT 8");
-        case 'regulatory_depth': return rows("SELECT COALESCE(c.name,r.country_code) label, 'Regulatory records' detail, COUNT(*) value FROM regulatory_authorities r LEFT JOIN countries c ON c.code=r.country_code GROUP BY r.country_code,c.name ORDER BY value DESC LIMIT 8");
+        case 'regulatory_depth': return rows("SELECT COALESCE(c.name,r.country_code) label, 'Regulatory records' detail, COUNT(*) value FROM regulatory_authorities r LEFT JOIN legacy_countries c ON c.code=r.country_code GROUP BY r.country_code,c.name ORDER BY value DESC LIMIT 8");
         case 'short_runway_aircraft': return rows("SELECT COALESCE(at.full_designation, rr.icao_code) label, CONCAT('Landing ', COALESCE(rr.min_landing_length_ft,'—'), ' ft') detail, rr.min_takeoff_length_ft value FROM aircraft_type_runway_requirements rr LEFT JOIN aircraft_types at ON at.icao_code=rr.icao_code WHERE rr.min_takeoff_length_ft IS NOT NULL AND rr.min_takeoff_length_ft>0 ORDER BY rr.min_takeoff_length_ft ASC LIMIT 8");
-        case 'navaid_coverage': return rows("SELECT COALESCE(c.name,n.country_code) label, 'Navaids' detail, COUNT(*) value FROM navaids n LEFT JOIN countries c ON c.code=n.country_code GROUP BY n.country_code,c.name ORDER BY value DESC LIMIT 8");
+        case 'navaid_coverage': return rows("SELECT COALESCE(c.name,n.country_code) label, 'Navaids' detail, COUNT(*) value FROM navaids n LEFT JOIN legacy_countries c ON c.code=n.country_code GROUP BY n.country_code,c.name ORDER BY value DESC LIMIT 8");
     }} catch(Throwable $e){ return []; }
     return [];
 }
@@ -295,7 +296,7 @@ function run_preset_query(string $key): array {
         case 'highest_airports': return run_insight_query('highest_airports');
         case 'smallest_airlines_capacity': return run_insight_query('smallest_airlines_capacity');
         case 'fleet_by_country': return rows("SELECT COALESCE(country_code,'Unknown') country, COUNT(*) aircraft_records, ROUND(AVG(age),1) avg_age FROM aircraft_registrations GROUP BY country_code ORDER BY aircraft_records DESC LIMIT 30");
-        case 'regulatory_by_country': return rows("SELECT COALESCE(c.name,r.country_code) country, COUNT(*) regulatory_authorities FROM regulatory_authorities r LEFT JOIN countries c ON c.code=r.country_code GROUP BY r.country_code,c.name ORDER BY regulatory_authorities DESC LIMIT 30");
+        case 'regulatory_by_country': return rows("SELECT COALESCE(c.name,r.country_code) country, COUNT(*) regulatory_authorities FROM regulatory_authorities r LEFT JOIN legacy_countries c ON c.code=r.country_code GROUP BY r.country_code,c.name ORDER BY regulatory_authorities DESC LIMIT 30");
         case 'hub_airlines': return rows("SELECT airport_code, iata_code, icao_code, hub_type, region_served FROM airline_hubs ORDER BY airport_code LIMIT 30");
         case 'short_runway_aircraft': return rows("SELECT at.full_designation, rr.iata_code, rr.icao_code, rr.min_takeoff_length_ft, rr.min_landing_length_ft, rr.surface_compatibility FROM aircraft_type_runway_requirements rr LEFT JOIN aircraft_types at ON at.icao_code=rr.icao_code WHERE rr.min_takeoff_length_ft IS NOT NULL ORDER BY rr.min_takeoff_length_ft ASC LIMIT 30");
         case 'saf_compatible_aircraft': return rows("SELECT at.full_designation, ed.iata_code, ed.icao_code, ed.engine_type, ed.engine_variants, ed.saf_compatible FROM aircraft_type_engine_data ed LEFT JOIN aircraft_types at ON at.icao_code=ed.icao_code WHERE LOWER(COALESCE(ed.saf_compatible,'')) LIKE '%yes%' OR LOWER(COALESCE(ed.saf_compatible,'')) LIKE '%true%' LIMIT 30");
@@ -321,6 +322,12 @@ function handle_post_actions(): void {
     if($action==='admin_update_staging') { admin_update_staging(); }
     if($action==='admin_update_task') { exec_sql('UPDATE admin_tasks SET status=?, updated_at=NOW() WHERE id=?',[postv('status'),(int)postv('task_id')]); flash('success','Task updated.'); redirect_to('?page=admin&tab=tasks'); }
     if($action==='admin_import_csv') { admin_import_csv(); }
+    if($action==='pipeline_add_source') { pipeline_add_source(); }
+    if($action==='pipeline_run_source') { pipeline_run_source(); }
+    if($action==='pipeline_approve_run') { pipeline_approve_run(); }
+    if($action==='pipeline_reject_run') { pipeline_reject_run(); }
+    if($action==='pipeline_approve_staging') { pipeline_approve_staging(); }
+    if($action==='pipeline_reject_staging') { pipeline_reject_staging(); }
 }
 function admin_save_record(): void {
     $key=postv('module'); $cfg=module_config($key); if(!$cfg) throw new RuntimeException('Unknown module.'); $table=$cfg['table']; $cols=table_columns($table); $id=(int)postv('id'); $fields=array_values(array_filter($cfg['fields'], fn($f)=>in_array($f,$cols,true) && $f!=='id'));
@@ -531,4 +538,73 @@ function render_answer_visual(string $answerKey, array $rows): string {
     }
     if(!$chartable) return '';
     return '<section class="panel answer-chart"><h3>Visual summary</h3>'.chart_bars(array_slice($chartable,0,10)).'</section>';
+}
+
+function pipeline_add_source(): void {
+    $name=postv('source_name'); $type=postv('source_type'); $module=postv('module_key'); $url=postv('url'); $notes=postv('notes');
+    if(!$name||!$type||!$module) { flash('error','Name, type and module key are required.'); redirect_to('?page=admin&tab=pipeline&section=sources'); }
+    exec_sql('INSERT INTO pipeline_sources (source_name,source_type,module_key,url,notes,is_active) VALUES (?,?,?,?,?,1)',[$name,$type,$module,$url?:null,$notes?:null]);
+    flash('success','Pipeline source added.'); redirect_to('?page=admin&tab=pipeline&section=sources');
+}
+function pipeline_run_source(): void {
+    require_once __DIR__ . '/../scripts/pipeline/PipelineEngine.php';
+    $id=(int)postv('source_id'); if(!$id) { flash('error','Invalid source ID.'); redirect_to('?page=admin&tab=pipeline&section=sources'); }
+    try {
+        $engine=new PipelineEngine((int)current_user()['id']);
+        $result=$engine->run($id);
+        flash('success',"Source run complete: {$result['fetched']} fetched, {$result['valid']} valid, {$result['inserts']} inserts, {$result['updates']} updates — pending review.");
+    } catch(Throwable $e){
+        flash('error','Pipeline run failed: '.$e->getMessage());
+    }
+    redirect_to('?page=admin&tab=pipeline&section=pending');
+}
+function pipeline_approve_run(): void {
+    require_once __DIR__ . '/../scripts/pipeline/PipelineEngine.php';
+    $id=(int)postv('run_id'); if(!$id) { flash('error','Invalid run ID.'); redirect_to('?page=admin&tab=pipeline&section=pending'); }
+    try {
+        $engine=new PipelineEngine((int)current_user()['id']);
+        $result=$engine->approveRun($id);
+        flash('success',"Run approved: {$result['inserted']} inserted, {$result['updated']} updated, {$result['deleted']} deleted.");
+    } catch(Throwable $e){
+        flash('error','Approval failed: '.$e->getMessage());
+    }
+    redirect_to('?page=admin&tab=pipeline&section=pending');
+}
+function pipeline_reject_run(): void {
+    require_once __DIR__ . '/../scripts/pipeline/PipelineEngine.php';
+    $id=(int)postv('run_id'); if(!$id) { flash('error','Invalid run ID.'); redirect_to('?page=admin&tab=pipeline&section=pending'); }
+    try {
+        $engine=new PipelineEngine((int)current_user()['id']);
+        $engine->rejectRun($id);
+        flash('success','Run rejected.');
+    } catch(Throwable $e){
+        flash('error',$e->getMessage());
+    }
+    redirect_to('?page=admin&tab=pipeline&section=pending');
+}
+function pipeline_approve_staging(): void {
+    require_once __DIR__ . '/../scripts/pipeline/PipelineEngine.php';
+    $ids=postv_array('record_ids'); if(!$ids) { flash('error','No records selected.'); redirect_to('?page=admin&tab=pipeline&section=pending'); }
+    $ids=array_map('intval',$ids);
+    try {
+        $engine=new PipelineEngine((int)current_user()['id']);
+        $engine->approveStagingRecords($ids);
+        flash('success','Records approved.');
+    } catch(Throwable $e){
+        flash('error',$e->getMessage());
+    }
+    redirect_to('?page=admin&tab=pipeline&section=pending');
+}
+function pipeline_reject_staging(): void {
+    require_once __DIR__ . '/../scripts/pipeline/PipelineEngine.php';
+    $ids=postv_array('record_ids'); if(!$ids) { flash('error','No records selected.'); redirect_to('?page=admin&tab=pipeline&section=pending'); }
+    $ids=array_map('intval',$ids);
+    try {
+        $engine=new PipelineEngine((int)current_user()['id']);
+        $engine->rejectStagingRecords($ids);
+        flash('success','Records rejected.');
+    } catch(Throwable $e){
+        flash('error',$e->getMessage());
+    }
+    redirect_to('?page=admin&tab=pipeline&section=pending');
 }
