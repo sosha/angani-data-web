@@ -166,7 +166,7 @@ CREATE TABLE country_dynamic_facts (
 CREATE TABLE country_transport_stats (
   country_code VARCHAR(2) NOT NULL,
   statistic_year INT NOT NULL,
-  quarter TINYINT DEFAULT NULL,
+  quarter TINYINT NOT NULL DEFAULT 0,
   mode ENUM('air','rail','road','sea') NOT NULL,
   metric VARCHAR(80) NOT NULL,
   value DECIMAL(20,2) DEFAULT NULL,
