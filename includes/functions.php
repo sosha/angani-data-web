@@ -250,6 +250,7 @@ function render_related_sections(string $key,array $r): string {
         $html.=related_table('Airlines in country', 'SELECT name,iata_code,icao_code,status_bucket,fleet_size FROM airlines WHERE country_code=? LIMIT 20', [$cc]);
         $html.=related_table('Airports in country', 'SELECT airport_name,iata_code,icao_code,airport_type,elevation_ft FROM airports WHERE country_code=? LIMIT 20', [$cc]);
         $html.=related_table('Regulatory authorities', 'SELECT name,abbreviation,website FROM regulatory_authorities WHERE country_code=? LIMIT 20', [$cc]);
+        $html.=related_table('Aircraft registry', "SELECT registration,aircraft_type,type_code,operator_name,age FROM aircraft_registrations WHERE country_code=? LIMIT 20", [$cc]);
         $html.=related_table('Navaids', 'SELECT identifier_code,navaid_name,navaid_type,region_fir FROM navaids WHERE country_code=? LIMIT 20', [$cc]);
     }
     return $html;
