@@ -130,16 +130,37 @@ function query_module_records(array $cfg, int $limit=24, int $offset=0, bool $fo
         if($parts) $where[]='('.implode(' OR ',$parts).')';
     }
     $country=getv('country'); if($country!=='' && in_array('country_code',$cols,true)) { $where[]='country_code=?'; $params[]=$country; }
+    $status=getv('status'); if($status!==''){ $scol=in_array('status_bucket',$cols,true)?'status_bucket':(in_array('status',$cols,true)?'status':null); if($scol){ $where[]="`$scol`=?"; $params[]=$status; } }
     $sql=' FROM `'.$table.'`'.($where?' WHERE '.implode(' AND ',$where):'');
     $total=(int)scalar('SELECT COUNT(*)'.$sql,$params);
-    $order=in_array('last_modified',$cols,true)?' ORDER BY last_modified DESC':(in_array('updated_at',$cols,true)?' ORDER BY updated_at DESC':(in_array('id',$cols,true)?' ORDER BY id DESC':(in_array('code',$cols,true)?' ORDER BY code ASC':(count($cols)?' ORDER BY '.$cols[0].' ASC':''))));
+    $sort=getv('sort','default'); $dir=str_starts_with($sort,'-')?'DESC':'ASC'; $sort=ltrim($sort,'-');
+    if($sort==='default'){
+        $order=in_array('last_modified',$cols,true)?' ORDER BY last_modified DESC':(in_array('updated_at',$cols,true)?' ORDER BY updated_at DESC':(in_array('id',$cols,true)?' ORDER BY id DESC':(in_array('code',$cols,true)?' ORDER BY code ASC':(count($cols)?' ORDER BY '.$cols[0].' ASC':''))));
+    } elseif(in_array($sort,$cols,true)){
+        $order=' ORDER BY `'.str_replace('`','',$sort).'` '.$dir;
+    } else {
+        $order=in_array('id',$cols,true)?' ORDER BY id DESC':(in_array('code',$cols,true)?' ORDER BY code ASC':(count($cols)?' ORDER BY '.$cols[0].' ASC':''));
+    }
     if($forExport){ $data=rows('SELECT *'.$sql.$order.' LIMIT 5000',$params); }
     else { $data=rows('SELECT *'.$sql.$order.' LIMIT '.(int)$limit.' OFFSET '.(int)$offset,$params); }
     return [$data,$total];
 }
 
 function render_search_bar(string $key, array $cfg): string {
-    return '<form method="get" class="toolbar"><input type="hidden" name="page" value="module"><input type="hidden" name="module" value="'.e($key).'"><label class="searchbox"><span>Search</span><input name="q" value="'.e(getv('q')).'" placeholder="Search '.e($cfg['label']).'"></label><label class="searchbox small"><span>Country</span><input name="country" value="'.e(getv('country')).'" placeholder="KE"></label><button class="btn ink">Search</button><a class="btn ghost" href="'.e(module_url($key)).'">Reset</a>'.(can_export_module($key)?'<a class="btn ghost" href="?page=export&module='.e($key).'&'.e(http_build_query(['q'=>getv('q'),'country'=>getv('country')])).'">Export CSV</a>':'').'</form>'; }
+    $cols=table_columns($cfg['table']??'');
+    $sortOpts=[['default','Default']]; $nameCols=['name','airport_name','full_designation','airline_name','country_name','title','model_name','program_name','company']; foreach($nameCols as $n){ if(in_array($n,$cols,true)){ $sortOpts[]=[$n,$n]; $sortOpts[]=['-'.$n,$n.' ↓']; break; } }
+    if(in_array('country_code',$cols,true)){ $sortOpts[]=['country_code','Country']; $sortOpts[]=['-country_code','Country ↓']; }
+    if(in_array('status_bucket',$cols,true)||in_array('status',$cols,true)){ $sortOpts[]=['status','Status']; }
+    if(in_array('fleet_size',$cols,true)){ $sortOpts[]=['-fleet_size','Fleet size']; }
+    if(in_array('elevation_ft',$cols,true)){ $sortOpts[]=['-elevation_ft','Elevation']; }
+    $sops=''; $sv=getv('sort','default'); foreach($sortOpts as $o){ $sops.='<option value="'.e($o[0]).'"'.($sv===$o[0]?' selected':'').'>'.e($o[1]).'</option>'; }
+    $hasStatus=in_array('status_bucket',$cols,true)||in_array('status',$cols,true);
+    $statusOpts='<option value="">All</option>'; $curS=getv('status');
+    if($hasStatus){
+        $statuses=in_array('status_bucket',$cols,true)?['active','defunct','closed','unknown']:['active','inactive','closed','unknown'];
+        foreach($statuses as $s){ $statusOpts.='<option value="'.e($s).'"'.($curS===$s?' selected':'').'>'.e(ucfirst($s)).'</option>'; }
+    }
+    return '<form method="get" class="toolbar"><input type="hidden" name="page" value="module"><input type="hidden" name="module" value="'.e($key).'"><label class="searchbox"><span>Search</span><input name="q" value="'.e(getv('q')).'" placeholder="Search '.e($cfg['label']).'"></label><label class="searchbox small"><span>Country</span><input name="country" value="'.e(getv('country')).'" placeholder="KE"></label>'.($hasStatus?'<label class="searchbox tiny"><span>Status</span><select name="status">'.$statusOpts.'</select></label>':'').'<label class="searchbox tiny"><span>Sort</span><select name="sort">'.$sops.'</select></label><button class="btn ink">Filter</button><a class="btn ghost" href="'.e(module_url($key)).'">Reset</a>'.(can_export_module($key)?'<a class="btn ghost" href="?page=export&module='.e($key).'&'.e(http_build_query(['q'=>getv('q'),'country'=>getv('country'),'status'=>getv('status')])).'">Export CSV</a>':'').'</form>'; }
 function can_export_module(string $key): bool { return is_admin() || (is_logged_in() && (feature_allowed('csv_exports') || has_tier('pro'))); }
 
 function render_module_cards(string $key, array $rows): string {
