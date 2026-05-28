@@ -233,6 +233,9 @@ function render_related_sections(string $key,array $r): string {
         $html.=related_table('Runways', 'SELECT runway_ident,length_ft,width_ft,surface,lighting,ils_frequency FROM airport_runways WHERE iata_code=? OR icao_code=? LIMIT 20', [$iata,$icao]);
         $html.=related_table('Terminals', 'SELECT terminal_type,terminal_name,capacity,facilities,gates_count FROM airport_terminals WHERE iata_code=? OR icao_code=? LIMIT 20', [$iata,$icao]);
         $html.=related_table('Hub/base airlines', 'SELECT airline_name,relation,destinations_served FROM airport_hubs_and_airlines WHERE iata_code=? OR icao_code=? LIMIT 20', [$iata,$icao]);
+        $cc=$r['country_code'] ?? '';
+        $html.=related_table('Navaids in country', 'SELECT identifier_code,navaid_name,navaid_type,region_fir FROM navaids WHERE country_code=? LIMIT 20', [$cc]);
+        $html.=related_table('Connected navaids', "SELECT associated_airports,associated_airways,system_integration,interoperability_notes FROM navaid_connectivity WHERE associated_airports LIKE ? OR associated_airports LIKE ? LIMIT 20", ["%$iata%","%$icao%"]);
     }
     if($key==='aircraft_types'){
         $iata=$r['iata_code'] ?? ''; $icao=$r['icao_code'] ?? '';
