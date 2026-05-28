@@ -146,6 +146,18 @@ function query_module_records(array $cfg, int $limit=24, int $offset=0, bool $fo
     return [$data,$total];
 }
 
+function country_select(string $name='country', string $selected=''): string {
+    $html='<select name="'.e($name).'"><option value="">All countries</option>';
+    try{
+        $rows=rows('SELECT code,name FROM countries ORDER BY name ASC');
+        foreach($rows as $r){
+            $sel=($r['code']===$selected||$r['name']===$selected)?' selected':'';
+            $html.='<option value="'.e($r['code']).'"'.$sel.'>'.e($r['name']).' ('.e($r['code']).')</option>';
+        }
+    }catch(Throwable $e){}
+    return $html.'</select>';
+}
+
 function render_search_bar(string $key, array $cfg): string {
     $cols=table_columns($cfg['table']??'');
     $sortOpts=[['default','Default']]; $nameCols=['name','airport_name','full_designation','airline_name','country_name','title','model_name','program_name','company']; foreach($nameCols as $n){ if(in_array($n,$cols,true)){ $sortOpts[]=[$n,$n]; $sortOpts[]=['-'.$n,$n.' ↓']; break; } }
@@ -160,7 +172,7 @@ function render_search_bar(string $key, array $cfg): string {
         $statuses=in_array('status_bucket',$cols,true)?['active','defunct','closed','unknown']:['active','inactive','closed','unknown'];
         foreach($statuses as $s){ $statusOpts.='<option value="'.e($s).'"'.($curS===$s?' selected':'').'>'.e(ucfirst($s)).'</option>'; }
     }
-    return '<form method="get" class="toolbar"><input type="hidden" name="page" value="module"><input type="hidden" name="module" value="'.e($key).'"><label class="searchbox"><span>Search</span><input name="q" value="'.e(getv('q')).'" placeholder="Search '.e($cfg['label']).'"></label><label class="searchbox small"><span>Country</span><input name="country" value="'.e(getv('country')).'" placeholder="KE"></label>'.($hasStatus?'<label class="searchbox tiny"><span>Status</span><select name="status">'.$statusOpts.'</select></label>':'').'<label class="searchbox tiny"><span>Sort</span><select name="sort">'.$sops.'</select></label><button class="btn ink">Filter</button><a class="btn ghost" href="'.e(module_url($key)).'">Reset</a>'.(can_export_module($key)?'<a class="btn ghost" href="?page=export&module='.e($key).'&'.e(http_build_query(['q'=>getv('q'),'country'=>getv('country'),'status'=>getv('status')])).'">Export CSV</a>':'').'</form>'; }
+    return '<form method="get" class="toolbar"><input type="hidden" name="page" value="module"><input type="hidden" name="module" value="'.e($key).'"><label class="searchbox"><span>Search</span><input name="q" value="'.e(getv('q')).'" placeholder="Search '.e($cfg['label']).'"></label><label class="searchbox small"><span>Country</span>'.country_select('country',getv('country')).'</label>'.($hasStatus?'<label class="searchbox tiny"><span>Status</span><select name="status">'.$statusOpts.'</select></label>':'').'<label class="searchbox tiny"><span>Sort</span><select name="sort">'.$sops.'</select></label><button class="btn ink">Filter</button><a class="btn ghost" href="'.e(module_url($key)).'">Reset</a>'.(can_export_module($key)?'<a class="btn ghost" href="?page=export&module='.e($key).'&'.e(http_build_query(['q'=>getv('q'),'country'=>getv('country'),'status'=>getv('status')])).'">Export CSV</a>':'').'</form>'; }
 function can_export_module(string $key): bool { return is_admin() || (is_logged_in() && (feature_allowed('csv_exports') || has_tier('pro'))); }
 
 function render_module_cards(string $key, array $rows): string {
