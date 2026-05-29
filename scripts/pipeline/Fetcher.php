@@ -5,11 +5,10 @@ require_once __DIR__ . '/sources/CaaCsvScraper.php';
 require_once __DIR__ . '/sources/WorldBankScraper.php';
 require_once __DIR__ . '/sources/WorldBankDynamicFactsScraper.php';
 require_once __DIR__ . '/sources/OurAirportsScraper.php';
-require_once __DIR__ . '/sources/OurAirlinesScraper.php';
 require_once __DIR__ . '/sources/AirportFrequenciesScraper.php';
 require_once __DIR__ . '/sources/NavaidsScraper.php';
-require_once __DIR__ . '/sources/AircraftTypesScraper.php';
-require_once __DIR__ . '/sources/OpenFlightsAirlinesScraper.php';
+require_once __DIR__ . '/sources/OptdAirlinesScraper.php';
+require_once __DIR__ . '/sources/OptdAircraftTypesScraper.php';
 
 class Fetcher {
     public static function fetch(int $sourceId, array $source, string &$rawContent): array {
@@ -35,7 +34,7 @@ class Fetcher {
             return OurAirportsScraper::fetch($source, $rawContent);
         }
         if ($type === 'url_csv' && $module === 'airlines') {
-            return OpenFlightsAirlinesScraper::fetch();
+            return OptdAirlinesScraper::fetch();
         }
         if ($type === 'url_csv' && $module === 'airport_frequencies') {
             return AirportFrequenciesScraper::fetch($source, $rawContent);
@@ -44,7 +43,7 @@ class Fetcher {
             return NavaidsScraper::fetch($source, $rawContent);
         }
         if ($type === 'url_csv' && $module === 'aircraft_types') {
-            return AircraftTypesScraper::fetch($source, $rawContent);
+            return OptdAircraftTypesScraper::fetch();
         }
 
         throw new RuntimeException("No scraper configured for source type '$type' / module '$module'.");
