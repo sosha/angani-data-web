@@ -37,7 +37,6 @@ class WorldBankScraper {
                 $records[] = [
                     'country_code' => $countryId,
                     'statistic_year' => $year,
-                    'quarter' => null,
                     'mode' => 'air',
                     'metric' => $mapping['metric'],
                     'value' => (float)$entry['value'],
