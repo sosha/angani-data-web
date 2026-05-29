@@ -193,11 +193,17 @@ INSERT INTO pipeline_sources (source_name, source_type, module_key, is_active, u
 ('REST Countries API', 'api', 'countries', 1,
  'https://restcountries.com/v3.1/all?fields=cca2,cca3,name,region,subregion',
  'Free API returning country list with static facts (area, capital, currencies, languages, timezones). No authentication required.'),
+('REST Countries Facts', 'api', 'country_facts', 1,
+ 'https://restcountries.com/v3.1/all?fields=cca2,area,capital,languages,currencies,timezones',
+ 'Same API as countries but fetches static facts (area, capital, languages, currencies, timezones) into country_facts table.'),
 ('CAAs Verified CSV', 'csv_upload', 'caas', 1,
  NULL,
  'Manually curated and verified CSV at data/countries/caas.csv. Authoritative per Angani verification process.'),
 ('World Bank Transport API', 'api', 'country_transport_stats', 1,
  'https://api.worldbank.org/v2/country/all/indicator/IS.AIR.DPRT;IS.AIR.PSGR;IS.AIR.FRGT?format=json&per_page=5000',
- 'World Bank API for air transport indicators: aircraft departures (IS.AIR.DPRT), passengers carried (IS.AIR.PSGR), freight tonnes (IS.AIR.FRGT).');
+ 'World Bank API for air transport indicators: aircraft departures (IS.AIR.DPRT), passengers carried (IS.AIR.PSGR), freight tonnes (IS.AIR.FRGT).'),
+('World Bank Dynamic Facts', 'api', 'country_dynamic_facts', 1,
+ 'https://api.worldbank.org/v2/country/all/indicator/SP.POP.TOTL;NY.GDP.MKTP.CD?format=json&per_page=5000',
+ 'World Bank API for population (SP.POP.TOTL) and GDP (NY.GDP.MKTP.CD) per country.');
 
 SET FOREIGN_KEY_CHECKS = 1;
