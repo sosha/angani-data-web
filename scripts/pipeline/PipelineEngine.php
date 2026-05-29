@@ -79,20 +79,24 @@ class PipelineEngine {
 
     public function approveStagingRecords(array $recordIds): void {
         if (empty($recordIds)) return;
-        $placeholders = implode(',', array_fill(0, count($recordIds), '?'));
-        exec_sql(
-            "UPDATE staging_records SET status='approved', reviewed_by=?, reviewed_at=NOW() WHERE id IN ($placeholders)",
-            array_merge([$this->adminUserId], $recordIds)
-        );
+        foreach (array_chunk($recordIds, 1000) as $chunk) {
+            $placeholders = implode(',', array_fill(0, count($chunk), '?'));
+            exec_sql(
+                "UPDATE staging_records SET status='approved', reviewed_by=?, reviewed_at=NOW() WHERE id IN ($placeholders)",
+                array_merge([$this->adminUserId], $chunk)
+            );
+        }
     }
 
     public function rejectStagingRecords(array $recordIds): void {
         if (empty($recordIds)) return;
-        $placeholders = implode(',', array_fill(0, count($recordIds), '?'));
-        exec_sql(
-            "UPDATE staging_records SET status='rejected', reviewed_by=?, reviewed_at=NOW() WHERE id IN ($placeholders)",
-            array_merge([$this->adminUserId], $recordIds)
-        );
+        foreach (array_chunk($recordIds, 1000) as $chunk) {
+            $placeholders = implode(',', array_fill(0, count($chunk), '?'));
+            exec_sql(
+                "UPDATE staging_records SET status='rejected', reviewed_by=?, reviewed_at=NOW() WHERE id IN ($placeholders)",
+                array_merge([$this->adminUserId], $chunk)
+            );
+        }
     }
 
     private function createRun(int $sourceId, string $moduleKey): int {
