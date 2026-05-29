@@ -25,6 +25,8 @@ function render_admin_page(): void {
         'pipeline'=>'Data Pipeline',
         'imports'=>'Imports / Exports',
         'quality'=>'Data Quality',
+        'audit'=>'Data Audit',
+        'reports'=>'Reports',
         'users'=>'Users',
         'plans'=>'Plans & Access',
         'questions'=>'Preset Questions',
@@ -43,6 +45,8 @@ function render_admin_page(): void {
     elseif($tab==='quality') render_admin_quality();
     elseif($tab==='tasks') render_admin_tasks();
     elseif($tab==='pipeline') render_admin_pipeline();
+    elseif($tab==='audit') render_admin_data_audit();
+    elseif($tab==='reports') render_admin_reports();
     elseif($tab==='edit') render_admin_edit($module,getv('id'));
     else render_admin_records($module,$cfg);
     echo '</section></section>';
@@ -110,6 +114,45 @@ function render_admin_quality(): void {
     $needs=admin_safe_count("SELECT COUNT(*) FROM staging_import_records WHERE status IN ('pending','needs_review','conflict')"); $failed=admin_safe_count("SELECT COUNT(*) FROM import_batches WHERE status IN ('failed','needs_review')");
     echo '<div class="admin-head"><div><div class="eyebrow">Data Quality</div><h1>Review queue</h1><p>Imports should not blindly become trusted aviation intelligence. Review failed rows, empty modules and export usage.</p></div></div><div class="admin-kpi-grid">'.admin_metric('Rows needing review',$needs,'Staging queue',$needs?'warning':'success').admin_metric('Import issues',$failed,'Failed/needs-review batches',$failed?'danger':'success').admin_metric('Empty modules',count($empty),'Awaiting data').admin_metric('Export logs',count($exports),'Recent exports').'</div>';
     echo '<section class="panel"><h3>Empty / awaiting-data modules</h3>'; if(!$empty) echo '<p class="muted">No empty configured modules.</p>'; else { echo '<div class="admin-empty-list">'; foreach($empty as $k=>$c) echo '<a href="?page=admin&tab=records&module='.e($k).'"><strong>'.e($c['label']).'</strong><small>'.e($k).'</small></a>'; echo '</div>'; } echo '</section>';
+
+    // Data completeness tracker
+    echo '<section class="panel"><h3>Data completeness</h3><p class="muted">Column-level fill rates across primary tables. Shows how many records have a value vs total records.</p><div class="table-wrap"><table><thead><tr><th>Table</th><th>Total rows</th><th>Column</th><th>Filled</th><th>Empty</th><th>Fill %</th></tr></thead><tbody>';
+    $tables = ['airlines','airports','airport_frequencies','navaids','countries','aircraft_types','airline_fleet_list','airport_runways','airline_hubs','airline_digital_properties','airline_key_personnel','airline_operational_stats','commercial_fares','regulatory_authorities'];
+    $keyCols = ['airlines'=>['name','iata_code','icao_code','callsign','country','country_code','active','status','logo_url'],
+        'airports'=>['ident','gps_code','iata_code','name','type','iso_country','municipality','elevation_ft','coordinates'],
+        'airport_frequencies'=>['airport_ident','type','frequency_mhz','description'],
+        'navaids'=>['ident','name','type','frequency_khz','iso_country'],
+        'countries'=>['iso_alpha_2','iso_alpha_3','name_common','name_official','continent','un_region','flag','description'],
+        'aircraft_types'=>['icao_code','iata_code','manufacturer','model','type'],
+        'airline_fleet_list'=>['registration','aircraft_model','operator_airline','delivery_date','current_status'],
+        'airport_runways'=>['airport_ident','runway_ident','length_ft','surface','lighting'],
+        'airline_hubs'=>['airport_code','airline_name','hub_type','region_served'],
+        'airline_digital_properties'=>['platform','url_or_handle','is_primary'],
+        'airline_key_personnel'=>['person_name','title','category'],
+        'airline_operational_stats'=>['stat_year','pax_count','cargo_volume','revenue'],
+        'commercial_fares'=>['origin_iata','destination_iata','fare_amount','currency'],
+        'regulatory_authorities'=>['name','abbreviation','country_code','website']
+    ];
+    foreach ($tables as $tbl) {
+        try {
+            $total = (int)scalar("SELECT COUNT(*) FROM `$tbl`");
+            if (!$total) continue;
+            $first = true;
+            foreach (($keyCols[$tbl] ?? []) as $col) {
+                try {
+                    $filled = (int)scalar("SELECT COUNT(*) FROM `$tbl` WHERE `$col` IS NOT NULL AND `$col` != ''");
+                    $emptyCount = $total - $filled;
+                    $pct = $total > 0 ? round(($filled / $total) * 100) : 0;
+                    $bar = '<div style="height:6px;background:rgba(7,21,34,.08);border-radius:99px;overflow:hidden"><div style="width:'.$pct.'%;height:100%;background:'.($pct>80?'#26c56b':($pct>50?'#c79b45':'#b04747')).';border-radius:inherit"></div></div>';
+                    $cls = $pct > 80 ? ' success' : ($pct > 50 ? ' warning' : ' danger');
+                    echo '<tr><td>'.($first ? '<strong>'.e($tbl).'</strong>' : '').'</td><td>'.($first ? nfmt($total) : '').'</td><td>'.e($col).'</td><td class="admin-kpi'.$cls.'" style="border-left:none;padding:4px 14px">'.nfmt($filled).'/'.nfmt($total).'</td><td>'.nfmt($emptyCount).'</td><td>'.$pct.'% '.$bar.'</td></tr>';
+                    $first = false;
+                } catch (Throwable $e) { continue; }
+            }
+        } catch (Throwable $e) { continue; }
+    }
+    echo '</tbody></table></div></section>';
+
     echo '<section class="panel"><h3>Staging records</h3>'; if(!$staging) echo '<p class="muted">No staged import issues.</p>'; else { echo '<div class="table-wrap"><table><thead><tr><th>Module</th><th>Row</th><th>Status</th><th>Issue</th><th>Action</th></tr></thead><tbody>'; foreach($staging as $r){ echo '<tr><form style="display:contents" method="post">'.csrf_field().'<input type="hidden" name="action" value="admin_update_staging"><input type="hidden" name="staging_id" value="'.(int)$r['id'].'"><td>'.e($r['module_key']).'</td><td>'.e($r['source_row_number']).'</td><td><select name="status">'; foreach(['pending','needs_review','accepted','rejected','duplicate','conflict'] as $st) echo '<option '.($r['status']===$st?'selected':'').'>'.$st.'</option>'; echo '</select></td><td>'.display_value($r['issue_summary']).'</td><td><button class="btn mini">Update</button></td></form></tr>'; } echo '</tbody></table></div>'; } echo '</section>';
     echo '<section class="panel"><h3>Import batches</h3>'.render_table($batches,$batches?array_keys($batches[0]):[],null).'</section><section class="panel"><h3>Export logs</h3>'.render_table($exports,$exports?array_keys($exports[0]):[],null).'</section>';
 }
@@ -172,4 +215,178 @@ function render_pipeline_history(): void {
         echo '<tr><td>#'.(int)$r['id'].'</td><td>'.e($r['source_name'] ?: '—').'</td><td>'.e($r['module_key']).'</td><td><span class="chip '.$cls.'">'.e($status).'</span></td><td>'.nfmt($r['records_fetched']).'</td><td>'.nfmt($r['records_insert']).'</td><td>'.nfmt($r['records_update']).'</td><td>'.e($r['started_at'] ?: '—').'</td><td>'.e($r['finished_at'] ?: '—').'</td></tr>';
     }
     echo '</tbody></table></div></section>';
+}
+
+function render_admin_reports(): void {
+    echo '<div class="admin-head"><div><div class="eyebrow">Data Reports</div><h1>Report Generator</h1><p>Pre-compute derived statistics from existing data. Reports are flagged for re-run when their source tables change.</p></div></div>';
+    if (postv('action') === 'run_report') {
+        $rk = postv('report_key');
+        $pass = getenv('ANGANI_DB_PASS') ?: 'rootpassword';
+        $scripts = [
+            'country_air_transport_stats' => '/../scripts/reports/generate_country_stats.php',
+            'country_time_series' => '/../scripts/populate_country_time_series.php',
+        ];
+        if (isset($scripts[$rk])) {
+            $output = shell_exec('ANGANI_DB_PASS=' . escapeshellarg($pass) . ' php ' . escapeshellarg(__DIR__ . $scripts[$rk]) . ' 2>&1');
+            flash('success', 'Report "' . e($rk) . '" generated.');
+            redirect_to('?page=admin&tab=reports');
+        } else {
+            flash('error', 'Unknown report key.');
+        }
+    }
+    $reports = rows('SELECT * FROM report_dependencies ORDER BY report_key');
+    echo '<section class="panel"><h3>Report Status</h3><div class="table-wrap"><table><thead><tr><th>Report</th><th>Last Run</th><th>Status</th><th>Action</th></tr></thead><tbody>';
+    foreach ($reports as $rpt) {
+        $needsUpdate = (int)$rpt['needs_update'];
+        $statusLabel = $needsUpdate ? '<span class="chip gold">Needs update</span>' : '<span class="chip ok glow-green">Up to date</span>';
+        $lastRun = $rpt['last_run_at'] ? e($rpt['last_run_at']) : '<span class="muted">Never</span>';
+        echo '<tr><td><strong>' . e($rpt['report_label']) . '</strong><br><small>' . e($rpt['report_key']) . '</small>';
+        $tables = json_decode($rpt['dependent_tables'] ?? '[]', true);
+        if ($tables) echo '<br><small class="muted">Depends on: ' . e(implode(', ', $tables)) . '</small>';
+        echo '</td><td>' . $lastRun . '</td><td>' . $statusLabel . '</td><td>';
+        echo '<form method="post" style="display:inline">' . csrf_field() . '<input type="hidden" name="action" value="run_report"><input type="hidden" name="report_key" value="' . e($rpt['report_key']) . '"><button class="btn ink mini">Run now</button></form>';
+        echo '</td></tr>';
+    }
+    echo '</tbody></table></div></section>';
+    echo '<section class="panel"><h3>Recent Database Changes Affecting Reports</h3>';
+    try {
+        $tableList = [];
+        $allRpts = rows('SELECT dependent_tables FROM report_dependencies');
+        foreach ($allRpts as $r) {
+            $tbls = json_decode($r['dependent_tables'] ?? '[]', true);
+            foreach ($tbls as $t) { if ($t && !in_array($t, $tableList, true)) $tableList[] = $t; }
+        }
+        if ($tableList) {
+            $placeholders = implode(',', array_fill(0, count($tableList), '?'));
+            $auditEntries = rows("SELECT table_name, action, record_id, changed_by, notes, created_at FROM data_audit_log WHERE table_name IN ($placeholders) ORDER BY created_at DESC LIMIT 50", $tableList);
+            if ($auditEntries) {
+                echo '<div class="table-wrap"><table><thead><tr><th>Table</th><th>Action</th><th>Record</th><th>Changed By</th><th>Notes</th><th>When</th></tr></thead><tbody>';
+                foreach ($auditEntries as $ae) {
+                    echo '<tr><td><code>' . e($ae['table_name']) . '</code></td><td><span class="chip ' . ($ae['action'] === 'INSERT' ? 'ok' : ($ae['action'] === 'DELETE' ? 'danger' : 'gold')) . '">' . e($ae['action']) . '</span></td><td>' . e($ae['record_id'] ?? '—') . '</td><td>' . e($ae['changed_by'] ?? '—') . '</td><td>' . e($ae['notes'] ?? '') . '</td><td><small>' . e($ae['created_at']) . '</small></td></tr>';
+                }
+                echo '</tbody></table></div>';
+            } else { echo '<p class="muted">No recent changes to tracked tables.</p>'; }
+        }
+    } catch (Throwable $e) { echo '<p class="muted">Could not load change log.</p>'; }
+    echo '</section>';
+    echo '<section class="panel"><div class="topline"><h3>Pending Tasks</h3></div><ul>';
+    echo '<li><strong>Foreign Airline Operations</strong> — Requires airline destinations data to be populated first. Skipped in current report generator.</li>';
+    echo '<li><strong>Country Time Series</strong> — Data population requires external sources (World Bank, national statistics). Manual entry via Admin CRUD.</li>';
+    echo '</ul></section>';
+}
+
+function render_admin_data_audit(): void {
+    $selectedTable = getv('audit_table', 'airlines');
+    $action = postv('action');
+    $cfg = module_config($selectedTable);
+    $actualTable = $cfg['table'] ?? $selectedTable;
+
+    // Handle POST actions
+    if ($action === 'audit_attach_license') {
+        $auditId = (int)postv('audit_id');
+        $licenseId = (int)postv('license_id');
+        data_audit_update_license($auditId, $licenseId ?: null);
+        flash('success', 'License attached to audit entry.');
+        redirect_to('?page=admin&tab=audit&audit_table=' . e($selectedTable));
+    }
+    if ($action === 'audit_set_provenance') {
+        $method = postv('collection_method');
+        $url = postv('primary_source_url');
+        $licenseId = (int)postv('primary_license_id');
+        $notes = postv('provenance_notes');
+        data_provenance_set($actualTable, $method, $url ?: null, $licenseId ?: null, $notes ?: null);
+        flash('success', 'Table provenance updated.');
+        redirect_to('?page=admin&tab=audit&audit_table=' . e($selectedTable));
+    }
+
+    echo '<div class="admin-head"><div><div class="eyebrow">Transparency</div><h1>Data Audit Trail</h1><p>Chronological history of every INSERT, UPDATE, DELETE and IMPORT operation across all database tables. Attach licenses and document provenance.</p></div></div>';
+
+    // Module/table selector
+    echo '<form method="get" class="toolbar admin-toolbar">';
+    echo '<input type="hidden" name="page" value="admin"><input type="hidden" name="tab" value="audit">';
+    echo '<label class="searchbox"><span>Database / Table</span><select name="audit_table" onchange="this.form.submit()">';
+    echo '<option value="">— All tables —</option>';
+    $seen = [];
+    foreach (modules() as $k => $m) {
+        $t = $m['table'] ?? $k;
+        if (in_array($t, $seen, true)) continue;
+        $seen[] = $t;
+        echo '<option value="' . e($t) . '"' . ($t === $selectedTable ? ' selected' : '') . '>' . e($m['label']) . ' (' . e($t) . ')</option>';
+    }
+    echo '</select></label>';
+    echo '<button class="btn ink">View history</button>';
+    echo '<a class="btn ghost" href="?page=admin&tab=audit">Reset</a>';
+    echo '</form>';
+
+    // Table-level provenance card
+    echo '<section class="panel"><div class="topline"><h3>📋 Table Provenance</h3></div>';
+    $provenance = data_provenance_get($actualTable);
+    if ($provenance) {
+        echo '<div class="provenance-card"><p><strong>Collection method:</strong> ' . e($provenance['collection_method'] ?: 'Not documented') . '</p>';
+        if ($provenance['primary_source_url']) echo '<p><strong>Source URL:</strong> <a href="' . e($provenance['primary_source_url']) . '" target="_blank">' . e($provenance['primary_source_url']) . '</a></p>';
+        if ($provenance['primary_license_id']) {
+            $lic = row('SELECT name, url FROM data_licenses WHERE id=?', [(int)$provenance['primary_license_id']]);
+            if ($lic) echo '<p><strong>License:</strong> ' . e($lic['name']) . ($lic['url'] ? ' (<a href="' . e($lic['url']) . '" target="_blank">' . e($lic['url']) . '</a>)' : '') . '</p>';
+        }
+        if ($provenance['notes']) echo '<p><strong>Notes:</strong> ' . e($provenance['notes']) . '</p>';
+        echo '<p class="muted">Updated ' . e($provenance['updated_at'] ?? '') . ' by ' . e($provenance['updated_by'] ?? '') . '</p>';
+    } else {
+        echo '<p class="muted">No provenance documented for this table yet.</p>';
+    }
+    echo '<details style="margin-top:12px"><summary>Update provenance</summary>';
+    echo '<form method="post" class="stack-form">' . csrf_field() . '<input type="hidden" name="action" value="audit_set_provenance">';
+    echo '<label><span>Collection method</span><textarea name="collection_method" rows="3" placeholder="How was this data collected? e.g. Scraped from OurAirports API, Wikipedia List of Airline Codes...">' . e($provenance['collection_method'] ?? '') . '</textarea></label>';
+    echo '<label><span>Primary source URL</span><input name="primary_source_url" value="' . e($provenance['primary_source_url'] ?? '') . '" placeholder="https://..."></label>';
+    echo '<label><span>Primary license</span>' . data_audit_license_select('primary_license_id', $provenance['primary_license_id'] ?? null) . '</label>';
+    echo '<label><span>Notes</span><textarea name="provenance_notes" rows="2">' . e($provenance['notes'] ?? '') . '</textarea></label>';
+    echo '<button class="btn ink">Save provenance</button></form></details></section>';
+
+    // Audit log entries
+    if ($selectedTable) {
+        $entries = rows('SELECT al.*, l.name license_name, l.url license_url FROM data_audit_log al LEFT JOIN data_licenses l ON l.id=al.license_id WHERE al.table_name=? ORDER BY al.created_at DESC LIMIT 200', [$actualTable]);
+    } else {
+        $entries = rows('SELECT al.*, l.name license_name, l.url license_url FROM data_audit_log al LEFT JOIN data_licenses l ON l.id=al.license_id ORDER BY al.created_at DESC LIMIT 200');
+    }
+
+    echo '<section class="panel"><div class="topline"><h3>📜 Audit History</h3><span class="chip">' . count($entries) . ' entries</span></div>';
+    if (!$entries) {
+        echo '<p class="muted">No audit entries yet. Data modifications will be recorded here automatically.</p>';
+    } else {
+        echo '<div class="table-wrap"><table><thead><tr><th>When</th><th>Table</th><th>Action</th><th>Record</th><th>Changed by</th><th>Collection method</th><th>License</th><th>Notes</th><th>Attach license</th></tr></thead><tbody>';
+        foreach ($entries as $e) {
+            $actionClass = $e['action'] === 'INSERT' ? 'ok glow-green' : ($e['action'] === 'DELETE' ? 'danger' : ($e['action'] === 'TRUNCATE' ? 'gold' : ''));
+            echo '<tr>';
+            echo '<td><small>' . e($e['created_at']) . '</small></td>';
+            echo '<td><code>' . e($e['table_name']) . '</code></td>';
+            echo '<td><span class="chip ' . $actionClass . '">' . e($e['action']) . '</span></td>';
+            echo '<td><small>' . e($e['record_id'] ?? '—') . '</small></td>';
+            echo '<td><small>' . e($e['changed_by'] ?? '—') . '</small></td>';
+            echo '<td style="max-width:300px;word-break:break-word"><small>' . e(mb_substr($e['collection_method'] ?? '', 0, 120)) . '</small></td>';
+            echo '<td>';
+            if ($e['license_name']) {
+                echo '<span class="chip">' . e($e['license_name']) . '</span>';
+            } else {
+                echo '<span class="muted">—</span>';
+            }
+            echo '</td>';
+            echo '<td style="max-width:200px"><small>' . e(mb_substr($e['notes'] ?? '', 0, 80)) . '</small></td>';
+            echo '<td><form method="post" class="inline-form" style="display:flex;gap:4px">' . csrf_field() . '<input type="hidden" name="action" value="audit_attach_license"><input type="hidden" name="audit_id" value="' . (int)$e['id'] . '">';
+            echo data_audit_license_select('license_id', $e['license_id'] ?? null);
+            echo '<button class="btn mini">Set</button></form></td>';
+            echo '</tr>';
+            // Show old/new values expandable
+            if ($e['old_values'] || $e['new_values']) {
+                $old = json_decode($e['old_values'], true);
+                $new = json_decode($e['new_values'], true);
+                if ($old || $new) {
+                    echo '<tr class="audit-diff-row"><td colspan="9"><details><summary>View data diff</summary><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">';
+                    if ($old) echo '<div><strong>Previous values</strong><pre style="font-size:11px;max-height:200px;overflow:auto">' . e(json_encode($old, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)) . '</pre></div>';
+                    if ($new) echo '<div><strong>New values</strong><pre style="font-size:11px;max-height:200px;overflow:auto">' . e(json_encode($new, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)) . '</pre></div>';
+                    echo '</div></details></td></tr>';
+                }
+            }
+        }
+        echo '</tbody></table></div>';
+    }
+    echo '</section>';
 }

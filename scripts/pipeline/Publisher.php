@@ -35,6 +35,11 @@ class Publisher {
         );
 
         $inserted = 0; $updated = 0; $deleted = 0;
+        $adminUser = row('SELECT name FROM users WHERE id=?', [$adminUserId]);
+        $changedBy = $adminUser['name'] ?? 'pipeline';
+
+        // Load the pipeline source for collection_method
+        $run = row('SELECT pr.*, ps.source_name, ps.url FROM pipeline_runs pr LEFT JOIN pipeline_sources ps ON ps.id=pr.pipeline_source_id WHERE pr.id=?', [$runId]);
 
         foreach ($staging as $row) {
             $module = $row['module_key'];
@@ -47,12 +52,23 @@ class Publisher {
             try {
                 if ($row['action'] === 'insert') {
                     self::insertRecord($table, $data);
+                    $pkCol = self::$pkMap[$module] ?? 'id';
+                    $pkVal = is_array($pkCol) ? ($data[$pkCol[0]] ?? null) : ($data[$pkCol] ?? null);
+                    self::logAudit($table, 'INSERT', $pkVal, null, $data, $run, $changedBy);
                     $inserted++;
                 } elseif ($row['action'] === 'update') {
+                    $oldData = self::fetchOldRecord($table, $data, $module);
                     self::updateRecord($table, $data, $module);
+                    $pkCol = self::$pkMap[$module] ?? 'id';
+                    $pkVal = is_array($pkCol) ? ($data[$pkCol[0]] ?? null) : ($data[$pkCol] ?? null);
+                    self::logAudit($table, 'UPDATE', $pkVal, $oldData, $data, $run, $changedBy);
                     $updated++;
                 } elseif ($row['action'] === 'delete') {
+                    $pkCol = self::$pkMap[$module] ?? 'iso_alpha_2';
+                    $pkVal = is_array($pkCol) ? ($data[$pkCol[0]] ?? '') : ($data[$pkCol] ?? '');
+                    $oldData = row("SELECT * FROM `$table` WHERE `$pkCol`=?", [$pkVal]);
                     self::deleteRecord($table, $data, $module, $runId, $adminUserId);
+                    self::logAudit($table, 'DELETE', $pkVal, $oldData, null, $run, $changedBy);
                     $deleted++;
                 }
                 exec_sql(
@@ -142,5 +158,34 @@ class Publisher {
                 [$userId, $action, $targetType, $targetId, json_encode($details)]
             );
         } catch (Throwable $e) {}
+    }
+
+    private static function logAudit(string $table, string $action, ?string $recordId, ?array $oldValues, ?array $newValues, ?array $run, string $changedBy): void {
+        static $skip = ['data_audit_log','data_licenses','data_table_provenance','admin_action_log','entity_change_log'];
+        if (in_array($table, $skip, true)) return;
+        try {
+            $notes = 'Pipeline run #' . ($run['id'] ?? '?');
+            if (!empty($run['source_name'])) $notes .= ' — Source: ' . $run['source_name'];
+            $method = !empty($run['url']) ? 'Fetched from ' . $run['url'] : null;
+            exec_sql(
+                'INSERT INTO data_audit_log (table_name,record_id,action,collection_method,old_values,new_values,changed_by,notes) VALUES (?,?,?,?,?,?,?,?)',
+                [$table, $recordId, $action, $method,
+                 $oldValues ? json_encode($oldValues) : null,
+                 $newValues ? json_encode($newValues) : null,
+                 $changedBy, $notes]
+            );
+        } catch (Throwable $e) {}
+    }
+
+    private static function fetchOldRecord(string $table, array $data, string $module): ?array {
+        $pkCol = self::$pkMap[$module] ?? null;
+        if (!$pkCol) return null;
+        if (is_array($pkCol)) {
+            $conds = []; $params = [];
+            foreach ($pkCol as $pc) { $conds[] = "`$pc`=?"; $params[] = $data[$pc] ?? ''; }
+            return row("SELECT * FROM `$table` WHERE " . implode(' AND ', $conds), $params);
+        }
+        $pkValue = $data[$pkCol] ?? '';
+        return $pkValue ? row("SELECT * FROM `$table` WHERE `$pkCol`=?", [$pkValue]) : null;
     }
 }

@@ -113,14 +113,52 @@ function get_stats(): array {
     ];
 }
 function country_name(?string $code): string { if(!$code) return 'Unknown'; try{$r=row('SELECT name_common FROM countries WHERE iso_alpha_2=?', [$code]); return $r['name_common'] ?? $code;}catch(Throwable $e){return $code;} }
-function flag_emoji(?string $code): string { $code=strtoupper((string)$code); if(strlen($code)!==2) return '▧'; $out=''; for($i=0;$i<2;$i++) $out .= html_entity_decode('&#'.(127462 + ord($code[$i]) - ord('A')).';', ENT_NOQUOTES, 'UTF-8'); return $out; }
+function flag_emoji(?string $code): string { $code=strtoupper((string)$code); if(strlen($code)!==2) return ''; $out=''; for($i=0;$i<2;$i++) $out .= html_entity_decode('&#'.(127462 + ord($code[$i]) - ord('A')).';', ENT_NOQUOTES, 'UTF-8'); return $out; }
 function status_chip(?string $status): string { $s=strtolower((string)($status ?: 'unknown')); $class = str_contains($s,'active') ? 'ok glow-green' : (str_contains($s,'defunct') || str_contains($s,'closed') ? 'danger' : 'gold'); return '<span class="chip '.$class.'">'.e(ucfirst($status ?: 'Unknown')).'</span>'; }
 function module_icon_html(string $key): string { static $map=['countries'=>'<i class="fas fa-globe"></i>','airlines'=>'<i class="fas fa-plane"></i>','airports'=>'<i class="fas fa-plane-departure"></i>','aircraft'=>'<i class="fas fa-plane"></i>','aircraft_types'=>'<i class="fas fa-tag"></i>','lessors'=>'<i class="fas fa-building"></i>','routes'=>'<i class="fas fa-route"></i>','airline_digital'=>'<i class="fas fa-laptop"></i>','frequent_flyer'=>'<i class="fas fa-star"></i>','airline_fleet_list'=>'<i class="fas fa-list"></i>','airline_fleet_summary'=>'<i class="fas fa-chart-bar"></i>','airline_hubs'=>'<i class="fas fa-code-branch"></i>','airline_it'=>'<i class="fas fa-server"></i>','airline_people'=>'<i class="fas fa-users"></i>','airline_stats'=>'<i class="fas fa-chart-line"></i>','airport_frequencies'=>'<i class="fas fa-broadcast-tower"></i>','airport_runways'=>'<i class="fas fa-road"></i>','airport_terminals'=>'<i class="fas fa-door-open"></i>','airport_services'=>'<i class="fas fa-concierge-bell"></i>','airport_hubs'=>'<i class="fas fa-code-branch"></i>','airport_financial'=>'<i class="fas fa-chart-pie"></i>','airport_ground_handling'=>'<i class="fas fa-truck"></i>','airport_ground_transport'=>'<i class="fas fa-bus"></i>','airport_it'=>'<i class="fas fa-server"></i>','airport_people'=>'<i class="fas fa-users"></i>','navaids'=>'<i class="fas fa-map-marker-alt"></i>','navaid_technical'=>'<i class="fas fa-wrench"></i>','navaid_operational'=>'<i class="fas fa-cogs"></i>','navaid_connectivity'=>'<i class="fas fa-network-wired"></i>','navaid_references'=>'<i class="fas fa-book"></i>','notam_sources'=>'<i class="fas fa-database"></i>','notams'=>'<i class="fas fa-exclamation-triangle"></i>','notam_classification'=>'<i class="fas fa-filter"></i>','notam_content'=>'<i class="fas fa-file-alt"></i>','notam_schedule'=>'<i class="fas fa-calendar-alt"></i>','notam_connectivity'=>'<i class="fas fa-network-wired"></i>','notam_references'=>'<i class="fas fa-book"></i>','regulatory'=>'<i class="fas fa-gavel"></i>','regulatory_authorities'=>'<i class="fas fa-university"></i>','regulatory_economic'=>'<i class="fas fa-file-invoice-dollar"></i>','regulatory_operational'=>'<i class="fas fa-certificate"></i>','regulatory_licensing'=>'<i class="fas fa-id-card"></i>','iata_membership'=>'<i class="fas fa-handshake"></i>','iosa_registration'=>'<i class="fas fa-clipboard-list"></i>','airline_iata'=>'<i class="fas fa-handshake"></i>','airline_iosa'=>'<i class="fas fa-clipboard-list"></i>','commercial_fares'=>'<i class="fas fa-dollar-sign"></i>','commercial_inventory'=>'<i class="fas fa-warehouse"></i>','commercial_rules'=>'<i class="fas fa-ruler"></i>','commercial_taxes'=>'<i class="fas fa-receipt"></i>','commercial_yield'=>'<i class="fas fa-chart-line"></i>','country_fare_policies'=>'<i class="fas fa-file-contract"></i>','gds'=>'<i class="fas fa-globe-americas"></i>','aircraft_profile'=>'<i class="fas fa-info-circle"></i>','aircraft_assets'=>'<i class="fas fa-images"></i>','aircraft_cabin_payload'=>'<i class="fas fa-weight-hanging"></i>','aircraft_engine_data'=>'<i class="fas fa-cog"></i>','aircraft_economic_data'=>'<i class="fas fa-chart-bar"></i>','aircraft_environmental'=>'<i class="fas fa-leaf"></i>','aircraft_manufacturer_support'=>'<i class="fas fa-tools"></i>','aircraft_performance'=>'<i class="fas fa-tachometer-alt"></i>','aircraft_runways'=>'<i class="fas fa-road"></i>','aircraft_technical_specs'=>'<i class="fas fa-microchip"></i>','aircraft_models'=>'<i class="fas fa-book"></i>','aircraft_model_history'=>'<i class="fas fa-history"></i>','aircraft_model_capacity'=>'<i class="fas fa-chair"></i>','aircraft_model_specs'=>'<i class="fas fa-cogs"></i>','aircraft_model_production'=>'<i class="fas fa-industry"></i>','aircraft_model_sources'=>'<i class="fas fa-link"></i>','ref_country_codes'=>'<i class="fas fa-globe"></i>','ref_service_types'=>'<i class="fas fa-tags"></i>','ref_meal_codes'=>'<i class="fas fa-utensils"></i>','ref_booking_classes'=>'<i class="fas fa-chair"></i>','ref_terminal_codes'=>'<i class="fas fa-door-closed"></i>','ref_reject_reasons'=>'<i class="fas fa-times-circle"></i>','ref_phonetic'=>'<i class="fas fa-font"></i>','dataset_files'=>'<i class="fas fa-file-csv"></i>','source_records'=>'<i class="fas fa-link"></i>','change_log'=>'<i class="fas fa-history"></i>','import_batches'=>'<i class="fas fa-upload"></i>','staging_records'=>'<i class="fas fa-database"></i>','export_logs'=>'<i class="fas fa-download"></i>','regulatory_environmental'=>'<i class="fas fa-leaf"></i>','regulatory_references'=>'<i class="fas fa-book"></i>','regulatory_safety'=>'<i class="fas fa-shield-alt"></i>']; return $map[$key] ?? '<i class="fas fa-database"></i>'; }
 
 function module_count(string $key): int { $cfg=module_config($key); if(!$cfg || !table_exists($cfg['table'])) return 0; try{return (int)scalar('SELECT COUNT(*) FROM '.$cfg['table']);}catch(Throwable $e){return 0;} }
+
+function data_audit_log(string $tableName, string $action, ?string $recordId = null, ?array $oldValues = null, ?array $newValues = null, ?string $notes = null, ?string $collectionMethod = null, ?int $licenseId = null): void {
+    static $skipTables = ['data_audit_log','data_licenses','data_table_provenance','admin_action_log','entity_change_log','sessions','pipeline_runs','staging_records','archived_records','staging_import_records','import_batches','export_logs'];
+    if (in_array($tableName, $skipTables, true)) return;
+    $user = current_user();
+    try {
+        exec_sql('INSERT INTO data_audit_log (table_name,record_id,action,collection_method,old_values,new_values,changed_by,notes,license_id) VALUES (?,?,?,?,?,?,?,?,?)',
+            [$tableName, $recordId, $action, $collectionMethod,
+             $oldValues ? json_encode($oldValues) : null,
+             $newValues ? json_encode($newValues) : null,
+             $user['name'] ?? 'system', $notes, $licenseId]);
+    } catch (Throwable $e) {}
+}
+
+function data_audit_license_select(string $name = 'license_id', ?int $selected = null): string {
+    $out = '<select name="'.e($name).'"><option value="">— None —</option>';
+    try {
+        foreach (rows('SELECT id, name FROM data_licenses ORDER BY name') as $l) {
+            $out .= '<option value="'.(int)$l['id'].'"'.((int)$selected === (int)$l['id'] ? ' selected' : '').'>'.e($l['name']).'</option>';
+        }
+    } catch (Throwable $e) {}
+    return $out . '</select>';
+}
+
+function data_audit_update_license(int $auditId, int $licenseId): void {
+    try { exec_sql('UPDATE data_audit_log SET license_id=? WHERE id=?', [$licenseId, $auditId]); } catch (Throwable $e) {}
+}
+
+function data_provenance_get(string $tableName): ?array {
+    try { return row('SELECT * FROM data_table_provenance WHERE table_name=?', [$tableName]); } catch (Throwable $e) { return null; }
+}
+
+function data_provenance_set(string $tableName, string $collectionMethod, ?string $primarySourceUrl = null, ?int $licenseId = null, ?string $notes = null): void {
+    try {
+        exec_sql('INSERT INTO data_table_provenance (table_name,collection_method,primary_source_url,primary_license_id,notes,updated_by) VALUES (?,?,?,?,?,?) ON DUPLICATE KEY UPDATE collection_method=VALUES(collection_method), primary_source_url=VALUES(primary_source_url), primary_license_id=VALUES(primary_license_id), notes=VALUES(notes), updated_by=VALUES(updated_by)',
+            [$tableName, $collectionMethod, $primarySourceUrl, $licenseId, $notes, current_user()['name'] ?? 'system']);
+    } catch (Throwable $e) {}
+}
 function public_url_prefix(): string { return defined('ANGANI_ADMIN_CONTEXT') ? '../' : ''; }
 function module_url(string $key): string { return public_url_prefix().'?page=module&module='.urlencode($key); }
-function detail_url(string $key,$id): string { $s=$key==='countries' ? (string)$id : (int)$id; return public_url_prefix().'?page=detail&module='.urlencode($key).'&id='.urlencode($s); }
+function detail_url(string $key,$id): string { $pk=module_pk($key); $s=in_array($pk,['icao_code','ident','iso_alpha_2','code'],true)?(string)$id:(int)$id; return public_url_prefix().'?page=detail&module='.urlencode($key).'&id='.urlencode($s); }
 
 function query_module_records(array $cfg, int $limit=24, int $offset=0, bool $forExport=false): array {
     $table=$cfg['table']; if(!table_exists($table)) return [[],0];
@@ -186,25 +224,40 @@ function render_record_card(string $key,array $cfg,array $r): string {
     $title=$r[$cfg['title']] ?? ($r['name'] ?? 'Record'); $sub=$r[$cfg['subtitle']] ?? '';
     $pk=module_pk($key); $id=$r[$pk] ?? $r['id'] ?? $r['code'] ?? 0; $url=detail_url($key,$id); $card=$cfg['card'] ?? 'generic';
     if($card==='airline'){
-        $cc=strtolower($r['country_code'] ?? ''); $flagPath=__DIR__.'/../assets/country_flag_icons/'.$cc.'.svg'; $flag=file_exists($flagPath)?'<img class="flag-svg small" src="assets/country_flag_icons/'.$cc.'.svg" alt="">':'<div class="flag">'.flag_emoji($r['country_code'] ?? '').'</div>';
+        $cc=strtolower($r['country_code'] ?? ''); $flag=$cc?((file_exists(__DIR__.'/../assets/country_flag_icons/'.$cc.'.svg')?'<img class="flag-svg small" src="assets/country_flag_icons/'.$cc.'.svg" alt="">':'<div class="flag">'.flag_emoji($cc).'</div>')):'';
         $status=$r['active'] === 'Y' ? 'active' : ($r['active'] === 'N' ? 'defunct' : '');
-        return '<article class="record-card airline-card" onclick="location.href=\''.e($url).'\'"><div class="record-top">'.$flag.'<div class="avatar">'.e(initials($title)).'</div>'.status_chip($status).'</div><h3>'.e($title).'</h3><p>'.e(trim(($r['iata_code'] ?? '').' / '.($r['icao_code'] ?? '').' / '.($r['callsign'] ?? ''),' /')).'</p><div class="mini-metrics"><span>'.e($r['country'] ?? ($r['country_code'] ?? '')).'</span></div><a class="btn small primary" href="'.e($url).'">View Airline</a></article>';
+        $logo=($r['logo_url']??'')?'<img class="airline-logo" src="'.e($r['logo_url']).'" alt="'.e($title).' logo" loading="lazy">':'';
+        $topContent=$logo?:$flag;
+        return '<article class="record-card airline-card" onclick="location.href=\''.e($url).'\'"><div class="record-top">'.$topContent.status_chip($status).'</div><h3>'.e($title).'</h3><p>'.e(trim(($r['iata_code'] ?? '').' / '.($r['icao_code'] ?? '').' / '.($r['callsign'] ?? ''),' /')).'</p><div class="mini-metrics"><span>'.e($r['country'] ?? ($r['country_code'] ?? '')).'</span></div><a class="btn small primary" href="'.e($url).'">View Airline</a></article>';
     }
     if($card==='airport'){
-        $cc=strtolower($r['iso_country'] ?? ''); $flagPath=__DIR__.'/../assets/country_flag_icons/'.$cc.'.svg'; $flag=file_exists($flagPath)?'<img class="flag-svg small" src="assets/country_flag_icons/'.$cc.'.svg" alt="">':'<div class="flag">'.flag_emoji($r['iso_country'] ?? '').'</div>';
+        $cc=strtolower($r['iso_country'] ?? ''); $flag=$cc?((file_exists(__DIR__.'/../assets/country_flag_icons/'.$cc.'.svg')?'<img class="flag-svg small" src="assets/country_flag_icons/'.$cc.'.svg" alt="">':'<div class="flag">'.flag_emoji($cc).'</div>')):'';
         $icao=$r['gps_code'] ?? $r['ident'] ?? '';
-        return '<article class="record-card" onclick="location.href=\''.e($url).'\'"><div class="record-top">'.$flag.'</div><h3>'.e($title).'</h3><p>'.e(trim(($r['iata_code'] ?? '').' / '.$icao.' · '.($r['municipality'] ?? ''),' / ·')).'</p><div class="mini-metrics"><span>'.e($r['type'] ?? 'Airport').'</span><span>'.e($r['elevation_ft'] ?? '—').' ft</span></div><a class="btn small primary" href="'.e($url).'">View Airport</a></article>';
+        return '<article class="record-card" onclick="location.href=\''.e($url).'\'"><div class="record-top">'.$flag.'<span class="chip">'.e($r['type'] ?? 'Airport').'</span></div><h3>'.e($title).'</h3><p>'.e(trim(($r['iata_code'] ?? '').' / '.$icao.' · '.($r['municipality'] ?? ''),' / ·')).'</p><div class="mini-metrics"><span>'.e($r['elevation_ft'] ?? '—').' ft</span></div><a class="btn small primary" href="'.e($url).'">View Airport</a></article>';
     }
     if($card==='aircraft_type'){
-        return '<article class="record-card" onclick="location.href=\''.e($url).'\'"><div class="record-top"><div class="avatar">'.e($r['icao_code'] ?? 'AC').'</div><span class="chip gold">'.e($r['type'] ?? 'Type').'</span></div><h3>'.e($title ?: ($r['model'] ?? 'Aircraft Type')).'</h3><p>'.e(($r['manufacturer'] ?? '').' · '.($r['model'] ?? '')).'</p><div class="mini-metrics"><span>IATA '.e($r['iata_code'] ?? '—').'</span><span>ICAO '.e($r['icao_code'] ?? '—').'</span></div><a class="btn small primary" href="'.e($url).'">View Type</a></article>';
+        return '<article class="record-card" onclick="location.href=\''.e($url).'\'"><div class="record-top"><span class="chip gold">'.e($r['type'] ?? 'Type').'</span></div><h3>'.e($title ?: ($r['model'] ?? 'Aircraft Type')).'</h3><p>'.e(($r['manufacturer'] ?? '').' · '.($r['model'] ?? '')).'</p><div class="mini-metrics"><span>IATA '.e($r['iata_code'] ?? '—').'</span><span>ICAO '.e($r['icao_code'] ?? '—').'</span></div><a class="btn small primary" href="'.e($url).'">View Type</a></article>';
     }
     if($card==='country'){
-        $cc=strtolower($r['iso_alpha_2'] ?? '');
-        $flagPath=__DIR__.'/../assets/country_flag_icons/'.$cc.'.svg';
-        $flag=file_exists($flagPath) ? '<img class="flag-svg" src="assets/country_flag_icons/'.$cc.'.svg" alt="">' : '<div class="flag">'.flag_emoji($r['iso_alpha_2'] ?? '').'</div>';
-        return '<article class="record-card" onclick="location.href=\''.e($url).'\'"><div class="record-top">'.$flag.'<span class="chip">'.e($cfg['label']).'</span></div><h3>'.e($title ?: $cfg['label']).'</h3><p>'.e($sub).'</p><a class="btn small primary" href="'.e($url).'">View Country</a></article>';
+        $cc=strtolower($r['iso_alpha_2'] ?? ''); $flag=$cc?((file_exists(__DIR__.'/../assets/country_flag_icons/'.$cc.'.svg')?'<img class="flag-svg" src="assets/country_flag_icons/'.$cc.'.svg" alt="">':'<div class="flag">'.flag_emoji($cc).'</div>')):'';
+        $chip = $r['un_region'] ?? $r['continent'] ?? $cfg['label'];
+        $subLine = e($sub);
+        $aps=''; $al=''; $defunctNote='';
+        try{ $s=row('SELECT international_airports,domestic_airports,airlines,airlines_active,airlines_defunct FROM country_air_transport_stats WHERE iso_alpha_2=?',[$r['iso_alpha_2']??'']); if($s){
+            $totalAirports = ($s['international_airports']??0)+($s['domestic_airports']??0);
+            if($totalAirports) $aps='<i class="fas fa-plane-departure"></i> '.nfmt($totalAirports).' Airports';
+            $act = (int)($s['airlines_active']??0);
+            $def = (int)($s['airlines_defunct']??0);
+            $totalAl = (int)($s['airlines']??0);
+            if($totalAl){
+                $al = '<i class="fas fa-plane"></i> '.nfmt($act).($def ? ' ('.nfmt($def).')*' : '').' Airlines';
+                if($def) $defunctNote = '<sup class="muted" style="font-size:10px">*Defunct/inactive airlines</sup>';
+            }
+        } }catch(Throwable $e){}
+        if($aps||$al) $subLine = trim($aps.' '.$al);
+        return '<article class="record-card" onclick="location.href=\''.e($url).'\'"><div class="record-top">'.$flag.'<span class="chip">'.e($chip).'</span></div><h3>'.e($title ?: $cfg['label']).'</h3><p>'.$subLine.'</p>'.($defunctNote ? '<p style="margin:0">'.$defunctNote.'</p>' : '').'<a class="btn small primary" href="'.e($url).'">View Country</a></article>';
     }
-    return '<article class="record-card" onclick="location.href=\''.e($url).'\'"><div class="record-top"><div class="avatar">'.e($cfg['icon'] ?? 'DB').'</div><span class="chip">'.e($cfg['label']).'</span></div><h3>'.e($title ?: $cfg['label']).'</h3><p>'.e($sub).'</p><a class="btn small primary" href="'.e($url).'">View Record</a></article>';
+    return '<article class="record-card" onclick="location.href=\''.e($url).'\'"><div class="record-top"><span class="chip">'.e($cfg['label']).'</span></div><h3>'.e($title ?: $cfg['label']).'</h3><p>'.e($sub).'</p><a class="btn small primary" href="'.e($url).'">View Record</a></article>';
 }
 function render_table(array $rows, array $columns, ?string $moduleKey=null): string {
     if(!$rows) return '<div class="empty-state"><h3>No matching records</h3><p>Try another search or add records from Admin.</p></div>';
@@ -268,7 +321,7 @@ function render_related_sections(string $key,array $r): string {
         $cc=$r['iso_alpha_2'] ?? '';
         $html.=related_table('Airlines in country', 'SELECT name,iata_code,icao_code,active FROM airlines WHERE country_code=? LIMIT 20', [$cc]);
         $html.=related_table('Airports in country', 'SELECT name,iata_code,gps_code,type,elevation_ft FROM airports WHERE iso_country=? LIMIT 20', [$cc]);
-        $html.=related_table('Regulatory authorities', 'SELECT name,abbreviation,website FROM regulatory_authorities WHERE country_code=? LIMIT 20', [$cc]);
+        $html.=related_table('Regulatory authorities', 'SELECT name,abbreviation,website,icao_caa_link,wikipedia_url,official_register_link FROM regulatory_authorities WHERE country_code=? LIMIT 20', [$cc]);
         $html.=related_table('Aircraft registry', "SELECT registration,aircraft_type,type_code,operator_name,age FROM aircraft_registrations WHERE country_code=? LIMIT 20", [$cc]);
         $html.=related_table('Navaids', 'SELECT ident,name,type,iso_country FROM navaids WHERE iso_country=? LIMIT 20', [$cc]);
     }
@@ -337,10 +390,18 @@ function handle_post_actions(): void {
 function admin_save_record(): void {
     $key=postv('module'); $cfg=module_config($key); if(!$cfg) throw new RuntimeException('Unknown module.'); $table=$cfg['table']; $cols=table_columns($table); $pk=module_pk($key); $id=postv('id'); $fields=array_values(array_filter($cfg['fields'], fn($f)=>in_array($f,$cols,true) && $f!==$pk));
     $data=[]; foreach($fields as $f){ $data[$f]=postv($f); }
-    if($id!==''){ $sets=[]; $params=[]; foreach($data as $f=>$v){ $sets[]="`$f`=?"; $params[]=$v; } $params[]=$id; exec_sql('UPDATE `'.$table.'` SET '.implode(',',$sets).' WHERE `'.$pk.'`=?',$params); flash('success','Record updated.'); redirect_to('?page=admin&tab=records&module='.$key); }
-    else { $names=array_keys($data); $vals=array_values($data); exec_sql('INSERT INTO `'.$table.'` (`'.implode('`,`',$names).'`) VALUES ('.implode(',',array_fill(0,count($names),'?')).')',$vals); flash('success','Record added.'); redirect_to('?page=admin&tab=records&module='.$key); }
+    if($id!==''){
+        $old=row('SELECT * FROM `'.$table.'` WHERE `'.$pk.'`=?',[$id]);
+        $sets=[]; $params=[]; foreach($data as $f=>$v){ $sets[]="`$f`=?"; $params[]=$v; } $params[]=$id; exec_sql('UPDATE `'.$table.'` SET '.implode(',',$sets).' WHERE `'.$pk.'`=?',$params);
+        data_audit_log($table, 'UPDATE', $id, $old ?? [], $data, 'Admin edit via CRUD');
+        flash('success','Record updated.'); redirect_to('?page=admin&tab=records&module='.$key);
+    } else {
+        $names=array_keys($data); $vals=array_values($data); exec_sql('INSERT INTO `'.$table.'` (`'.implode('`,`',$names).'`) VALUES ('.implode(',',array_fill(0,count($names),'?')).')',$vals);
+        data_audit_log($table, 'INSERT', $data[$pk] ?? null, null, $data, 'Admin add via CRUD');
+        flash('success','Record added.'); redirect_to('?page=admin&tab=records&module='.$key);
+    }
 }
-function admin_delete_record(): void { $key=postv('module'); $id=postv('id'); $cfg=module_config($key); if(!$cfg) throw new RuntimeException('Unknown module.'); $pk=module_pk($key); exec_sql('DELETE FROM `'.$cfg['table'].'` WHERE `'.$pk.'`=?',[$id]); flash('success','Record deleted.'); redirect_to('?page=admin&tab=records&module='.$key); }
+function admin_delete_record(): void { $key=postv('module'); $id=postv('id'); $cfg=module_config($key); if(!$cfg) throw new RuntimeException('Unknown module.'); $pk=module_pk($key); $old=row('SELECT * FROM `'.$cfg['table'].'` WHERE `'.$pk.'`=?',[$id]); exec_sql('DELETE FROM `'.$cfg['table'].'` WHERE `'.$pk.'`=?',[$id]); data_audit_log($cfg['table'], 'DELETE', $id, $old, null, 'Admin delete via CRUD'); flash('success','Record deleted.'); redirect_to('?page=admin&tab=records&module='.$key); }
 function admin_save_user(): void {
     $id=(int)postv('user_id'); $name=postv('name'); $email=postv('email'); $tier=(int)postv('tier_id'); $role=postv('role'); $status=postv('status');
     if($tier<=0) throw new RuntimeException('A valid tier/plan must be selected.');
@@ -405,7 +466,7 @@ function admin_import_csv(): void {
     if(empty($_FILES['csv_file']['tmp_name'])) throw new RuntimeException('Choose a CSV file to import.');
     $mode=postv('import_mode','append'); if(!in_array($mode,['append','truncate_append'],true)) $mode='append';
     $table=$cfg['table']; $cols=table_columns($table); $fields=$cfg['fields'];
-    if($mode==='truncate_append') exec_sql('DELETE FROM `'.$table.'`');
+    if($mode==='truncate_append') { data_audit_log($table, 'TRUNCATE', null, null, null, 'CSV import truncate mode'); exec_sql('DELETE FROM `'.$table.'`'); }
     $fh=fopen($_FILES['csv_file']['tmp_name'],'r'); if(!$fh) throw new RuntimeException('Could not read uploaded CSV.');
     $header=fgetcsv($fh); if(!$header) throw new RuntimeException('CSV has no header.');
     $map=[];
@@ -430,6 +491,7 @@ function admin_import_csv(): void {
             $names=array_keys($data);
             exec_sql('INSERT INTO `'.$table.'` (`'.implode('`,`',$names).'`) VALUES ('.implode(',',array_fill(0,count($names),'?')).')',array_values($data));
             $imported++;
+            data_audit_log($table, 'INSERT', $data[$cfg['title'] ?? null] ?? null, null, $data, 'CSV import', postv('notes'));
         } catch(Throwable $e){
             $failed++;
             exec_sql('INSERT INTO staging_import_records (import_batch_id,module_key,source_row_number,status,row_json,issue_summary) VALUES (?,?,?,?,?,?)',[$batch,$key,$rowNo,'needs_review',json_encode(array_combine($header,array_pad($row,count($header),'')),JSON_UNESCAPED_UNICODE),$e->getMessage()]);
