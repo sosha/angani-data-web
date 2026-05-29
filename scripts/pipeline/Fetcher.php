@@ -9,6 +9,7 @@ require_once __DIR__ . '/sources/OurAirlinesScraper.php';
 require_once __DIR__ . '/sources/AirportFrequenciesScraper.php';
 require_once __DIR__ . '/sources/NavaidsScraper.php';
 require_once __DIR__ . '/sources/AircraftTypesScraper.php';
+require_once __DIR__ . '/sources/OpenFlightsAirlinesScraper.php';
 
 class Fetcher {
     public static function fetch(int $sourceId, array $source, string &$rawContent): array {
@@ -34,7 +35,7 @@ class Fetcher {
             return OurAirportsScraper::fetch($source, $rawContent);
         }
         if ($type === 'url_csv' && $module === 'airlines') {
-            return OurAirlinesScraper::fetch($source, $rawContent);
+            return OpenFlightsAirlinesScraper::fetch();
         }
         if ($type === 'url_csv' && $module === 'airport_frequencies') {
             return AirportFrequenciesScraper::fetch($source, $rawContent);
