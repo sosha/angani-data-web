@@ -5,7 +5,10 @@ class RestCountriesScraper {
         $json = @file_get_contents($url, false, stream_context_create([
             'http' => ['timeout' => 30, 'method' => 'GET', 'header' => "Accept: application/json\r\n"],
         ]));
-        if ($json === false) throw new RuntimeException('Failed to fetch REST Countries API.');
+        if ($json === false) {
+            $err = error_get_last();
+            throw new RuntimeException('Failed to fetch REST Countries API: ' . ($err['message'] ?? 'unknown error'));
+        }
 
         $rawContent = $json;
         $data = json_decode($json, true);

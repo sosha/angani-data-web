@@ -62,6 +62,14 @@ class PipelineEngine {
     }
 
     public function approveRun(int $runId): array {
+        $records = rows(
+            'SELECT id FROM staging_records WHERE pipeline_run_id=? AND status="pending"',
+            [$runId]
+        );
+        if (!empty($records)) {
+            $ids = array_column($records, 'id');
+            $this->approveStagingRecords($ids);
+        }
         return Publisher::publish($runId, $this->adminUserId);
     }
 
