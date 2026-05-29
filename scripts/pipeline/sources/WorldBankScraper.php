@@ -29,16 +29,13 @@ class WorldBankScraper {
             foreach ($entries as $entry) {
                 if ($entry['value'] === null) continue;
                 $countryId = $entry['country']['id'] ?? '';
-                if (strlen($countryId) !== 3) continue;
-
-                $iso2 = self::iso3ToIso2($countryId);
-                if (!$iso2) continue;
+                if (!self::isValidCountryIso2($countryId)) continue;
 
                 $year = (int)($entry['date'] ?? 0);
                 if ($year < 2015 || $year > 2026) continue;
 
                 $records[] = [
-                    'country_code' => $iso2,
+                    'country_code' => $countryId,
                     'statistic_year' => $year,
                     'quarter' => null,
                     'mode' => 'air',
@@ -54,15 +51,16 @@ class WorldBankScraper {
         return $records;
     }
 
-    private static function iso3ToIso2(string $iso3): ?string {
-        static $map = null;
-        if ($map === null) {
-            $map = [];
+    private static function isValidCountryIso2(string $code): bool {
+        if (strlen($code) !== 2) return false;
+        static $valid = null;
+        if ($valid === null) {
+            $valid = [];
             try {
-                $rows = rows('SELECT iso_alpha_2, iso_alpha_3 FROM countries WHERE iso_alpha_3 IS NOT NULL');
-                foreach ($rows as $r) $map[$r['iso_alpha_3']] = $r['iso_alpha_2'];
+                $rows = rows('SELECT iso_alpha_2 FROM countries');
+                foreach ($rows as $r) $valid[$r['iso_alpha_2']] = true;
             } catch (Throwable $e) {}
         }
-        return $map[$iso3] ?? null;
+        return isset($valid[$code]);
     }
 }
