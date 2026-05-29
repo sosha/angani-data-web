@@ -82,13 +82,14 @@ DROP TABLE IF EXISTS archived_records;
 CREATE TABLE archived_records (
   id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   source_table VARCHAR(120) NOT NULL,
-  record_id INT UNSIGNED NOT NULL,
+  record_id VARCHAR(120) NOT NULL,
   record_data JSON NOT NULL,
   pipeline_run_id BIGINT UNSIGNED DEFAULT NULL,
   deleted_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   deleted_by INT UNSIGNED DEFAULT NULL,
   FOREIGN KEY (pipeline_run_id) REFERENCES pipeline_runs(id) ON DELETE SET NULL,
-  KEY idx_table (source_table)
+  KEY idx_table (source_table),
+  KEY idx_record (record_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS admin_action_log;
@@ -204,6 +205,21 @@ INSERT INTO pipeline_sources (source_name, source_type, module_key, is_active, u
  'World Bank API for air transport indicators: aircraft departures (IS.AIR.DPRT), passengers carried (IS.AIR.PSGR), freight tonnes (IS.AIR.FRGT).'),
 ('World Bank Dynamic Facts', 'api', 'country_dynamic_facts', 1,
  'https://api.worldbank.org/v2/country/all/indicator/SP.POP.TOTL;NY.GDP.MKTP.CD?format=json&per_page=5000',
- 'World Bank API for population (SP.POP.TOTL) and GDP (NY.GDP.MKTP.CD) per country.');
+ 'World Bank API for population (SP.POP.TOTL) and GDP (NY.GDP.MKTP.CD) per country.'),
+('OurAirports Airport Database', 'url_csv', 'airports', 1,
+ 'https://davidmegginson.github.io/ourairports-data/airports.csv',
+ 'OurAirports CC-BY-SA dataset with 80k+ airports worldwide. Ident, type, name, coordinates, elevation, country, municipality, IATA/ICAO codes, and metadata.'),
+('OurAirports Airlines Database', 'url_csv', 'airlines', 1,
+ 'https://davidmegginson.github.io/ourairports-data/airlines.csv',
+ 'OurAirports CC-BY-SA dataset with 6k+ airlines. ICAO/IATA codes, name, alias, callsign, country, active status.'),
+('OurAirports Airport Frequencies', 'url_csv', 'airport_frequencies', 1,
+ 'https://davidmegginson.github.io/ourairports-data/airport-frequencies.csv',
+ 'OurAirports CC-BY-SA dataset with 28k+ airport frequency records. Airport ident, type, description, frequency in MHz.'),
+('OurAirports Navaids', 'url_csv', 'navaids', 1,
+ 'https://davidmegginson.github.io/ourairports-data/navaids.csv',
+ 'OurAirports CC-BY-SA dataset with 11k+ navaids. Ident, name, type, frequency, coordinates, elevation, country.'),
+('OurAirports Aircraft Types', 'url_csv', 'aircraft_types', 1,
+ 'https://davidmegginson.github.io/ourairports-data/aircraft_types.csv',
+ 'OurAirports CC-BY-SA dataset with 750+ aircraft types. ICAO/IATA codes, manufacturer, model, engine type/count, WTC.');
 
 SET FOREIGN_KEY_CHECKS = 1;

@@ -8,6 +8,11 @@ class DiffEngine {
         'country_facts' => ['table' => 'country_facts', 'pk' => ['country_code', 'fact_key']],
         'country_dynamic_facts' => ['table' => 'country_dynamic_facts', 'pk' => ['country_code', 'metric_key', 'year']],
         'country_transport_stats' => ['table' => 'country_transport_stats', 'pk' => ['country_code', 'statistic_year', 'quarter', 'mode', 'metric']],
+        'airports' => ['table' => 'airports', 'pk' => 'ident'],
+        'airlines' => ['table' => 'airlines', 'pk' => 'icao_code'],
+        'airport_frequencies' => ['table' => 'airport_frequencies', 'pk' => 'id'],
+        'navaids' => ['table' => 'navaids', 'pk' => 'id'],
+        'aircraft_types' => ['table' => 'aircraft_types', 'pk' => 'icao_code'],
     ];
 
     public static function diff(string $moduleKey, array $validRecords): array {

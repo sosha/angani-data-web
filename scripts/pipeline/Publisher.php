@@ -8,6 +8,11 @@ class Publisher {
         'country_facts' => 'country_facts',
         'country_dynamic_facts' => 'country_dynamic_facts',
         'country_transport_stats' => 'country_transport_stats',
+        'airports' => 'airports',
+        'airlines' => 'airlines',
+        'airport_frequencies' => 'airport_frequencies',
+        'navaids' => 'navaids',
+        'aircraft_types' => 'aircraft_types',
     ];
 
     private static array $pkMap = [
@@ -16,6 +21,11 @@ class Publisher {
         'country_facts' => ['country_code', 'fact_key'],
         'country_dynamic_facts' => ['country_code', 'metric_key', 'year'],
         'country_transport_stats' => ['country_code', 'statistic_year', 'quarter', 'mode', 'metric'],
+        'airports' => 'ident',
+        'airlines' => 'icao_code',
+        'airport_frequencies' => 'id',
+        'navaids' => 'id',
+        'aircraft_types' => 'icao_code',
     ];
 
     public static function publish(int $runId, int $adminUserId): array {

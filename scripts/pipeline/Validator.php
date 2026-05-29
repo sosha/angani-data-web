@@ -52,6 +52,41 @@ class Validator {
         if (empty($rec['metric'])) throw new ValidationException("Row $i: missing metric");
         return $rec;
     }
+
+    private static function validateAirports(array $rec, int $i): array {
+        if (empty($rec['ident'])) throw new ValidationException("Row $i: missing ident");
+        if (empty($rec['name'])) throw new ValidationException("Row $i: missing airport name");
+        if (!empty($rec['iso_country']) && strlen($rec['iso_country']) !== 2) {
+            throw new ValidationException("Row $i: invalid iso_country '{$rec['iso_country']}'");
+        }
+        return $rec;
+    }
+
+    private static function validateAirlines(array $rec, int $i): array {
+        if (empty($rec['icao_code'])) throw new ValidationException("Row $i: missing icao_code");
+        if (empty($rec['name'])) throw new ValidationException("Row $i: missing airline name");
+        return $rec;
+    }
+
+    private static function validateAirportFrequencies(array $rec, int $i): array {
+        if (empty($rec['airport_ident'])) throw new ValidationException("Row $i: missing airport_ident");
+        if (empty($rec['frequency_mhz']) && $rec['frequency_mhz'] !== 0 && $rec['frequency_mhz'] !== '0') {
+            throw new ValidationException("Row $i: missing frequency_mhz");
+        }
+        return $rec;
+    }
+
+    private static function validateNavaids(array $rec, int $i): array {
+        if (empty($rec['ident'])) throw new ValidationException("Row $i: missing ident");
+        if (empty($rec['name'])) throw new ValidationException("Row $i: missing navaid name");
+        return $rec;
+    }
+
+    private static function validateAircraftTypes(array $rec, int $i): array {
+        if (empty($rec['icao_code'])) throw new ValidationException("Row $i: missing icao_code");
+        if (empty($rec['manufacturer'])) throw new ValidationException("Row $i: missing manufacturer");
+        return $rec;
+    }
 }
 
 class ValidationException extends Exception {}

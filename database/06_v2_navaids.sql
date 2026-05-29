@@ -1,0 +1,24 @@
+SET NAMES utf8mb4;
+SET FOREIGN_KEY_CHECKS = 0;
+
+RENAME TABLE navaids TO legacy_navaids;
+
+DROP TABLE IF EXISTS navaids;
+CREATE TABLE navaids (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  ident VARCHAR(20) NOT NULL,
+  name VARCHAR(255) NOT NULL,
+  type VARCHAR(40) DEFAULT NULL,
+  frequency_khz DECIMAL(10,3) DEFAULT NULL,
+  latitude_deg DECIMAL(12,7) DEFAULT NULL,
+  longitude_deg DECIMAL(12,7) DEFAULT NULL,
+  elevation_ft INT DEFAULT NULL,
+  iso_country VARCHAR(6) DEFAULT NULL,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  KEY idx_navaid_country (iso_country),
+  KEY idx_navaid_type (type),
+  FULLTEXT KEY ft_navaids (name, ident, type)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+SET FOREIGN_KEY_CHECKS = 1;

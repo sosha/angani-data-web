@@ -109,7 +109,7 @@ function display_value($v): string { if($v===null || $v==='') return '—'; $s=(
 function get_stats(): array {
     $safe=function($sql){ try{return (int)scalar($sql);}catch(Throwable $e){return 0;} };
     return [
-        'airlines'=>$safe('SELECT COUNT(*) FROM airlines'), 'active_airlines'=>$safe("SELECT COUNT(*) FROM airlines WHERE status_bucket='active' OR LOWER(status)='active'"), 'airports'=>$safe('SELECT COUNT(*) FROM airports'), 'aircraft'=>$safe('SELECT COUNT(*) FROM aircraft_registrations'), 'aircraft_types'=>$safe('SELECT COUNT(*) FROM aircraft_types'), 'lessors'=>$safe('SELECT COUNT(*) FROM lessors'), 'navaids'=>$safe('SELECT COUNT(*) FROM navaids'), 'frequencies'=>$safe('SELECT COUNT(*) FROM airport_frequencies'),         'countries'=>$safe("SELECT COUNT(*) FROM countries WHERE iso_alpha_2 NOT IN ('GB-ENG','GB-SCT','GB-NIR','GB-WLS')"), 'regulatory'=>$safe('SELECT COUNT(*) FROM regulatory_records') + $safe('SELECT COUNT(*) FROM regulatory_authorities'), 'routes'=>$safe('SELECT COUNT(*) FROM airline_route_services'), 'users'=>$safe('SELECT COUNT(*) FROM users'), 'dataset_files'=>$safe('SELECT COUNT(*) FROM dataset_files')
+        'airlines'=>$safe('SELECT COUNT(*) FROM airlines'), 'active_airlines'=>$safe("SELECT COUNT(*) FROM airlines WHERE active='Y'"), 'airports'=>$safe('SELECT COUNT(*) FROM airports'), 'aircraft'=>$safe('SELECT COUNT(*) FROM aircraft_registrations'), 'aircraft_types'=>$safe('SELECT COUNT(*) FROM aircraft_types'), 'lessors'=>$safe('SELECT COUNT(*) FROM lessors'), 'navaids'=>$safe('SELECT COUNT(*) FROM navaids'), 'frequencies'=>$safe('SELECT COUNT(*) FROM airport_frequencies'),         'countries'=>$safe("SELECT COUNT(*) FROM countries WHERE iso_alpha_2 NOT IN ('GB-ENG','GB-SCT','GB-NIR','GB-WLS')"), 'regulatory'=>$safe('SELECT COUNT(*) FROM regulatory_records') + $safe('SELECT COUNT(*) FROM regulatory_authorities'), 'routes'=>$safe('SELECT COUNT(*) FROM airline_route_services'), 'users'=>$safe('SELECT COUNT(*) FROM users'), 'dataset_files'=>$safe('SELECT COUNT(*) FROM dataset_files')
     ];
 }
 function country_name(?string $code): string { if(!$code) return 'Unknown'; try{$r=row('SELECT name_common FROM countries WHERE iso_alpha_2=?', [$code]); return $r['name_common'] ?? $code;}catch(Throwable $e){return $code;} }
@@ -186,16 +186,17 @@ function render_record_card(string $key,array $cfg,array $r): string {
     $title=$r[$cfg['title']] ?? ($r['name'] ?? 'Record'); $sub=$r[$cfg['subtitle']] ?? '';
     $pk=module_pk($key); $id=$r[$pk] ?? $r['id'] ?? $r['code'] ?? 0; $url=detail_url($key,$id); $card=$cfg['card'] ?? 'generic';
     if($card==='airline'){
-        $logo=trim((string)($r['logo_url'] ?? '')); $mark=$logo?'<img class="card-logo" src="'.e($logo).'" alt="">':'<div class="avatar">'.e(initials($title)).'</div>';
         $cc=strtolower($r['country_code'] ?? ''); $flagPath=__DIR__.'/../assets/country_flag_icons/'.$cc.'.svg'; $flag=file_exists($flagPath)?'<img class="flag-svg small" src="assets/country_flag_icons/'.$cc.'.svg" alt="">':'<div class="flag">'.flag_emoji($r['country_code'] ?? '').'</div>';
-        return '<article class="record-card airline-card" onclick="location.href=\''.e($url).'\'"><div class="record-top">'.$flag.$mark.status_chip($r['status_bucket'] ?? $r['status'] ?? '').'</div><h3>'.e($title).'</h3><p>'.e(trim(($r['iata_code'] ?? '').' / '.($r['icao_code'] ?? '').' / '.($r['callsign'] ?? ''),' /')).'</p><div class="mini-metrics"><span>Fleet '.e($r['fleet_size'] ?? '—').'</span><span>'.e($r['alliance'] ?? 'No alliance').'</span></div><a class="btn small primary" href="'.e($url).'">View Airline</a></article>';
+        $status=$r['active'] === 'Y' ? 'active' : ($r['active'] === 'N' ? 'defunct' : '');
+        return '<article class="record-card airline-card" onclick="location.href=\''.e($url).'\'"><div class="record-top">'.$flag.'<div class="avatar">'.e(initials($title)).'</div>'.status_chip($status).'</div><h3>'.e($title).'</h3><p>'.e(trim(($r['iata_code'] ?? '').' / '.($r['icao_code'] ?? '').' / '.($r['callsign'] ?? ''),' /')).'</p><div class="mini-metrics"><span>'.e($r['country'] ?? ($r['country_code'] ?? '')).'</span></div><a class="btn small primary" href="'.e($url).'">View Airline</a></article>';
     }
     if($card==='airport'){
-        $cc=strtolower($r['country_code'] ?? ''); $flagPath=__DIR__.'/../assets/country_flag_icons/'.$cc.'.svg'; $flag=file_exists($flagPath)?'<img class="flag-svg small" src="assets/country_flag_icons/'.$cc.'.svg" alt="">':'<div class="flag">'.flag_emoji($r['country_code'] ?? '').'</div>';
-        return '<article class="record-card" onclick="location.href=\''.e($url).'\'"><div class="record-top">'.$flag.status_chip($r['status'] ?? '').'</div><h3>'.e($title).'</h3><p>'.e(trim(($r['iata_code'] ?? '').' / '.($r['icao_code'] ?? '').' · '.($r['city_name'] ?? ''),' / ·')).'</p><div class="mini-metrics"><span>'.e($r['airport_type'] ?? 'Airport').'</span><span>'.e($r['elevation_ft'] ?? '—').' ft</span></div><a class="btn small primary" href="'.e($url).'">View Airport</a></article>';
+        $cc=strtolower($r['iso_country'] ?? ''); $flagPath=__DIR__.'/../assets/country_flag_icons/'.$cc.'.svg'; $flag=file_exists($flagPath)?'<img class="flag-svg small" src="assets/country_flag_icons/'.$cc.'.svg" alt="">':'<div class="flag">'.flag_emoji($r['iso_country'] ?? '').'</div>';
+        $icao=$r['gps_code'] ?? $r['ident'] ?? '';
+        return '<article class="record-card" onclick="location.href=\''.e($url).'\'"><div class="record-top">'.$flag.'</div><h3>'.e($title).'</h3><p>'.e(trim(($r['iata_code'] ?? '').' / '.$icao.' · '.($r['municipality'] ?? ''),' / ·')).'</p><div class="mini-metrics"><span>'.e($r['type'] ?? 'Airport').'</span><span>'.e($r['elevation_ft'] ?? '—').' ft</span></div><a class="btn small primary" href="'.e($url).'">View Airport</a></article>';
     }
     if($card==='aircraft_type'){
-        return '<article class="record-card" onclick="location.href=\''.e($url).'\'"><div class="record-top"><div class="avatar">'.e($r['icao_code'] ?? 'AC').'</div><span class="chip gold">'.e($r['category'] ?? 'Type').'</span></div><h3>'.e($title ?: ($r['common_name'] ?? 'Aircraft Type')).'</h3><p>'.e(($r['manufacturer'] ?? '').' · '.($r['model'] ?? '')).'</p><div class="mini-metrics"><span>IATA '.e($r['iata_code'] ?? '—').'</span><span>ICAO '.e($r['icao_code'] ?? '—').'</span></div><a class="btn small primary" href="'.e($url).'">View Type</a></article>';
+        return '<article class="record-card" onclick="location.href=\''.e($url).'\'"><div class="record-top"><div class="avatar">'.e($r['icao_code'] ?? 'AC').'</div><span class="chip gold">'.e($r['type'] ?? 'Type').'</span></div><h3>'.e($title ?: ($r['model'] ?? 'Aircraft Type')).'</h3><p>'.e(($r['manufacturer'] ?? '').' · '.($r['model'] ?? '')).'</p><div class="mini-metrics"><span>IATA '.e($r['iata_code'] ?? '—').'</span><span>ICAO '.e($r['icao_code'] ?? '—').'</span></div><a class="btn small primary" href="'.e($url).'">View Type</a></article>';
     }
     if($card==='country'){
         $cc=strtolower($r['iso_alpha_2'] ?? '');
@@ -228,6 +229,7 @@ function render_related_sections(string $key,array $r): string {
     $html='';
     if($key==='airlines'){
         $iata=$r['iata_code'] ?? ''; $icao=$r['icao_code'] ?? ''; $name=$r['name'] ?? '';
+        $cc=$r['country_code'] ?? '';
         $html.=related_table('Digital properties', 'SELECT category,platform,url_or_handle,is_primary FROM airline_digital_properties WHERE iata_code=? OR icao_code=? OR airline_name=? LIMIT 20', [$iata,$icao,$name]);
         $html.=related_table('Fleet list', "SELECT registration,aircraft_model,aircraft_subtype,delivery_date,current_status FROM airline_fleet_list WHERE operator_airline=? OR operator_airline LIKE ? LIMIT 20", [$name,"%$name%"]);
         $html.=related_table('Fleet summary', 'SELECT aircraft_type,aircraft_count,configuration_lopa,average_age,engine_type FROM airline_fleet_summary WHERE iata_code=? OR icao_code=? LIMIT 20', [$iata,$icao]);
@@ -238,17 +240,20 @@ function render_related_sections(string $key,array $r): string {
         $html.=related_table('Frequent flyer', 'SELECT program_name,points_unit,notes FROM frequent_flyer_programs WHERE airline_code=? OR iata_code=? OR icao_code=? OR airline_name=? LIMIT 10', [$iata,$iata,$icao,$name]);
         $html.=related_table('IATA membership', "SELECT membership_status,membership_type,joined_date,ended_date FROM airline_iata_membership WHERE iata_code=? OR icao_code=? OR airline_name=? LIMIT 5", [$iata,$icao,$name]);
         $html.=related_table('IOSA registration', "SELECT iosa_status,registration_number,valid_from,valid_until FROM airline_iosa_registration WHERE iata_code=? OR icao_code=? OR airline_name=? LIMIT 5", [$iata,$icao,$name]);
-        $html.=related_table('Routes & schedules', "SELECT flight_number_prefix,service_type,status,start_date,end_date FROM airline_route_services WHERE airline_id=? LIMIT 20", [$r['id']]);
-        $html.=related_table('Destinations', "SELECT DISTINCT a.airport_name, cf.destination_iata, a.city_name, a.country_code FROM commercial_fares cf LEFT JOIN airports a ON a.iata_code=cf.destination_iata WHERE cf.airline_code=? OR cf.airline_code=? LIMIT 50", [$iata,$icao]);
+        $html.=related_table('Routes & schedules', "SELECT flight_number_prefix,service_type,status,start_date,end_date FROM airline_route_services WHERE airline_id IN (SELECT id FROM legacy_airlines WHERE icao_code=?) LIMIT 20", [$icao]);
+        $html.=related_table('Destinations', "SELECT DISTINCT a.name, cf.destination_iata, a.municipality, a.iso_country FROM commercial_fares cf LEFT JOIN airports a ON a.iata_code=cf.destination_iata WHERE cf.airline_code=? OR cf.airline_code=? LIMIT 50", [$iata,$icao]);
+        if ($cc) {
+            $html.=related_table('Regulatory', 'SELECT name,abbreviation,website FROM regulatory_authorities WHERE country_code=? LIMIT 10', [$cc]);
+        }
     }
     if($key==='airports'){
-        $iata=$r['iata_code'] ?? ''; $icao=$r['icao_code'] ?? '';
+        $iata=$r['iata_code'] ?? ''; $icao=$r['gps_code'] ?? $r['ident'] ?? '';
         $html.=related_table('Frequencies', 'SELECT frequency_type,frequency_mhz,description FROM airport_frequencies WHERE iata_code=? OR icao_code=? LIMIT 25', [$iata,$icao]);
         $html.=related_table('Runways', 'SELECT runway_ident,length_ft,width_ft,surface,lighting,ils_frequency FROM airport_runways WHERE iata_code=? OR icao_code=? LIMIT 20', [$iata,$icao]);
         $html.=related_table('Terminals', 'SELECT terminal_type,terminal_name,capacity,facilities,gates_count FROM airport_terminals WHERE iata_code=? OR icao_code=? LIMIT 20', [$iata,$icao]);
         $html.=related_table('Hub/base airlines', 'SELECT airline_name,relation,destinations_served FROM airport_hubs_and_airlines WHERE iata_code=? OR icao_code=? LIMIT 20', [$iata,$icao]);
-        $cc=$r['country_code'] ?? '';
-        $html.=related_table('Navaids in country', 'SELECT identifier_code,navaid_name,navaid_type,region_fir FROM navaids WHERE country_code=? LIMIT 20', [$cc]);
+        $cc=$r['iso_country'] ?? $r['country_code'] ?? '';
+        $html.=related_table('Navaids in country', 'SELECT ident,name,type,iso_country FROM navaids WHERE iso_country=? LIMIT 20', [$cc]);
         $html.=related_table('Connected navaids', "SELECT associated_airports,associated_airways,system_integration,interoperability_notes FROM navaid_connectivity WHERE associated_airports LIKE ? OR associated_airports LIKE ? LIMIT 20", ["%$iata%","%$icao%"]);
     }
     if($key==='aircraft_types'){
@@ -261,11 +266,11 @@ function render_related_sections(string $key,array $r): string {
     }
     if($key==='countries'){
         $cc=$r['iso_alpha_2'] ?? '';
-        $html.=related_table('Airlines in country', 'SELECT name,iata_code,icao_code,status_bucket,fleet_size FROM airlines WHERE country_code=? LIMIT 20', [$cc]);
-        $html.=related_table('Airports in country', 'SELECT airport_name,iata_code,icao_code,airport_type,elevation_ft FROM airports WHERE country_code=? LIMIT 20', [$cc]);
+        $html.=related_table('Airlines in country', 'SELECT name,iata_code,icao_code,active FROM airlines WHERE country_code=? LIMIT 20', [$cc]);
+        $html.=related_table('Airports in country', 'SELECT name,iata_code,gps_code,type,elevation_ft FROM airports WHERE iso_country=? LIMIT 20', [$cc]);
         $html.=related_table('Regulatory authorities', 'SELECT name,abbreviation,website FROM regulatory_authorities WHERE country_code=? LIMIT 20', [$cc]);
         $html.=related_table('Aircraft registry', "SELECT registration,aircraft_type,type_code,operator_name,age FROM aircraft_registrations WHERE country_code=? LIMIT 20", [$cc]);
-        $html.=related_table('Navaids', 'SELECT identifier_code,navaid_name,navaid_type,region_fir FROM navaids WHERE country_code=? LIMIT 20', [$cc]);
+        $html.=related_table('Navaids', 'SELECT ident,name,type,iso_country FROM navaids WHERE iso_country=? LIMIT 20', [$cc]);
     }
     return $html;
 }
@@ -275,13 +280,13 @@ function run_insight_query(string $key): array {
     try {
     switch($key){
         case 'oldest_aircraft': return rows("SELECT registration label, CONCAT(COALESCE(aircraft_type,'Unknown'),' · ',COALESCE(operator_name,operator_icao,'Unknown')) detail, ROUND(age,1) value FROM aircraft_registrations WHERE age IS NOT NULL AND age>0 ORDER BY age DESC LIMIT 8");
-        case 'highest_airports': return rows("SELECT airport_name label, CONCAT(COALESCE(city_name,municipality,''),' · ',COALESCE(country_code,'')) detail, elevation_ft value FROM airports WHERE elevation_ft IS NOT NULL ORDER BY elevation_ft DESC LIMIT 8");
-        case 'smallest_airlines_capacity': return rows("SELECT name label, CONCAT(COALESCE(country_code,''),' · fleet ',COALESCE(fleet_size,0)) detail, COALESCE(fleet_size,0) value FROM airlines WHERE (status_bucket='active' OR LOWER(status)='active') AND fleet_size IS NOT NULL AND fleet_size>0 ORDER BY fleet_size ASC LIMIT 8");
+        case 'highest_airports': return rows("SELECT name label, CONCAT(COALESCE(municipality,''),' · ',COALESCE(iso_country,'')) detail, elevation_ft value FROM airports WHERE elevation_ft IS NOT NULL ORDER BY elevation_ft DESC LIMIT 8");
+        case 'smallest_airlines_capacity': return rows("SELECT name label, CONCAT(COALESCE(country_code,''),' · ',COALESCE(callsign,'')) detail, 1 value FROM airlines WHERE active='Y' ORDER BY name ASC LIMIT 8");
         case 'routes_with_competition': return rows("SELECT COALESCE(flight_number_prefix,'Route') label, COALESCE(service_type,'Service') detail, COUNT(*) value FROM airline_route_services GROUP BY route_market_id HAVING COUNT(*)>1 ORDER BY value DESC LIMIT 8");
         case 'dataset_coverage': return rows("SELECT COALESCE(category,'Other') label, CONCAT(COUNT(*),' files') detail, COALESCE(SUM(row_count),0) value FROM dataset_files GROUP BY category ORDER BY value DESC LIMIT 8");
         case 'regulatory_depth': return rows("SELECT COALESCE(c.name_common,r.country_code) label, 'Regulatory records' detail, COUNT(*) value FROM regulatory_authorities r LEFT JOIN countries c ON c.iso_alpha_2=r.country_code GROUP BY r.country_code,c.name_common ORDER BY value DESC LIMIT 8");
-        case 'short_runway_aircraft': return rows("SELECT COALESCE(at.full_designation, rr.icao_code) label, CONCAT('Landing ', COALESCE(rr.min_landing_length_ft,'—'), ' ft') detail, rr.min_takeoff_length_ft value FROM aircraft_type_runway_requirements rr LEFT JOIN aircraft_types at ON at.icao_code=rr.icao_code WHERE rr.min_takeoff_length_ft IS NOT NULL AND rr.min_takeoff_length_ft>0 ORDER BY rr.min_takeoff_length_ft ASC LIMIT 8");
-        case 'navaid_coverage': return rows("SELECT COALESCE(c.name_common,n.country_code) label, 'Navaids' detail, COUNT(*) value FROM navaids n LEFT JOIN countries c ON c.iso_alpha_2=n.country_code GROUP BY n.country_code,c.name_common ORDER BY value DESC LIMIT 8");
+        case 'short_runway_aircraft': return rows("SELECT COALESCE(at.model, rr.icao_code) label, CONCAT('Landing ', COALESCE(rr.min_landing_length_ft,'—'), ' ft') detail, rr.min_takeoff_length_ft value FROM aircraft_type_runway_requirements rr LEFT JOIN legacy_aircraft_types at ON at.icao_code=rr.icao_code WHERE rr.min_takeoff_length_ft IS NOT NULL AND rr.min_takeoff_length_ft>0 ORDER BY rr.min_takeoff_length_ft ASC LIMIT 8");
+        case 'navaid_coverage': return rows("SELECT COALESCE(c.name_common,n.iso_country) label, 'Navaids' detail, COUNT(*) value FROM navaids n LEFT JOIN countries c ON c.iso_alpha_2=n.iso_country GROUP BY n.iso_country,c.name_common ORDER BY value DESC LIMIT 8");
     }} catch(Throwable $e){ return []; }
     return [];
 }
@@ -298,8 +303,8 @@ function run_preset_query(string $key): array {
         case 'fleet_by_country': return rows("SELECT COALESCE(country_code,'Unknown') country, COUNT(*) aircraft_records, ROUND(AVG(age),1) avg_age FROM aircraft_registrations GROUP BY country_code ORDER BY aircraft_records DESC LIMIT 30");
         case 'regulatory_by_country': return rows("SELECT COALESCE(c.name_common,r.country_code) country, COUNT(*) regulatory_authorities FROM regulatory_authorities r LEFT JOIN countries c ON c.iso_alpha_2=r.country_code GROUP BY r.country_code,c.name_common ORDER BY regulatory_authorities DESC LIMIT 30");
         case 'hub_airlines': return rows("SELECT airport_code, iata_code, icao_code, hub_type, region_served FROM airline_hubs ORDER BY airport_code LIMIT 30");
-        case 'short_runway_aircraft': return rows("SELECT at.full_designation, rr.iata_code, rr.icao_code, rr.min_takeoff_length_ft, rr.min_landing_length_ft, rr.surface_compatibility FROM aircraft_type_runway_requirements rr LEFT JOIN aircraft_types at ON at.icao_code=rr.icao_code WHERE rr.min_takeoff_length_ft IS NOT NULL ORDER BY rr.min_takeoff_length_ft ASC LIMIT 30");
-        case 'saf_compatible_aircraft': return rows("SELECT at.full_designation, ed.iata_code, ed.icao_code, ed.engine_type, ed.engine_variants, ed.saf_compatible FROM aircraft_type_engine_data ed LEFT JOIN aircraft_types at ON at.icao_code=ed.icao_code WHERE LOWER(COALESCE(ed.saf_compatible,'')) LIKE '%yes%' OR LOWER(COALESCE(ed.saf_compatible,'')) LIKE '%true%' LIMIT 30");
+        case 'short_runway_aircraft': return rows("SELECT at.model, rr.iata_code, rr.icao_code, rr.min_takeoff_length_ft, rr.min_landing_length_ft, rr.surface_compatibility FROM aircraft_type_runway_requirements rr LEFT JOIN legacy_aircraft_types at ON at.icao_code=rr.icao_code WHERE rr.min_takeoff_length_ft IS NOT NULL ORDER BY rr.min_takeoff_length_ft ASC LIMIT 30");
+        case 'saf_compatible_aircraft': return rows("SELECT at.model, ed.iata_code, ed.icao_code, ed.engine_type, ed.engine_variants, ed.saf_compatible FROM aircraft_type_engine_data ed LEFT JOIN legacy_aircraft_types at ON at.icao_code=ed.icao_code WHERE LOWER(COALESCE(ed.saf_compatible,'')) LIKE '%yes%' OR LOWER(COALESCE(ed.saf_compatible,'')) LIKE '%true%' LIMIT 30");
         case 'sources_to_review': return rows("SELECT entity_type, entity_id, field_name, old_value, new_value, changed_at, change_source FROM entity_change_log ORDER BY changed_at DESC LIMIT 30");
     }} catch(Throwable $e){ return []; }
     return [];
