@@ -18,6 +18,7 @@ CREATE TABLE navaids (
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   KEY idx_navaid_country (iso_country),
   KEY idx_navaid_type (type),
+  UNIQUE KEY uq_navaid_ident_type_freq (ident, `type`, frequency_khz),
   FULLTEXT KEY ft_navaids (name, ident, type)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 

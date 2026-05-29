@@ -10,7 +10,8 @@ CREATE TABLE airport_frequencies (
   frequency_mhz DECIMAL(12,4) NOT NULL,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  KEY idx_freq_airport (airport_ident)
+  KEY idx_freq_airport (airport_ident),
+  UNIQUE KEY uq_airport_freq (airport_ident, `type`, frequency_mhz)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 SET FOREIGN_KEY_CHECKS = 1;
