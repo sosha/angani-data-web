@@ -50,6 +50,24 @@ if($key==='countries'){
     elseif($cc) $flagHtml='<span class="flag" style="font-size:28px;vertical-align:middle;margin-right:10px">'.flag_emoji($cc).'</span>';
     echo '<h1>'.$flagHtml.e($r[$cfg['title']] ?? 'Record').' <sub style="font-size:0.5em;font-weight:400;color:var(--ink-muted)">'.e($r[$cfg['subtitle']] ?? '').'</sub></h1>';
     if($r['description']??'') echo '<p style="margin-top:8px;max-width:700px;line-height:1.6">'.e($r['description']).'</p>';
+} elseif($key==='airlines'){
+    $logoHtml='';
+    if($r['logo_url']??''){
+        $src=e($r['logo_url']);
+        $logoHtml='<img class="hero-logo" src="'.$src.'" alt="'.e($r[$cfg['title']] ?? '').' logo">';
+    }
+    $statusChip='';
+    if($r['active']==='Y') $statusChip='<span class="chip ok glow-green" style="vertical-align:middle;margin-left:8px">Active</span>';
+    elseif($r['active']==='N') $statusChip='<span class="chip danger" style="vertical-align:middle;margin-left:8px">Defunct</span>';
+    echo '<h1>'.$logoHtml.e($r[$cfg['title']] ?? 'Record').' <sub style="font-size:0.5em;font-weight:400;color:var(--ink-muted)">'.e($r[$cfg['subtitle']] ?? '').'</sub>'.$statusChip.'</h1>';
+    $alCc=strtolower($r['country_code']??'');
+    if($alCc){
+        $alFlag=$alCc?((file_exists(__DIR__.'/assets/country_flag_icons/'.$alCc.'.svg')
+            ?'<img class="flag-svg small" src="assets/country_flag_icons/'.$alCc.'.svg" alt="" style="vertical-align:middle;margin-right:6px">'
+            :'<span class="flag" style="font-size:18px;vertical-align:middle;margin-right:6px">'.flag_emoji($alCc).'</span>')):'';
+        echo '<p style="margin-top:8px">'.$alFlag.e($r['country'] ?? $r['country_code'] ?? '').'</p>';
+    }
+    if($r['alias']??'') echo '<p style="margin-top:4px;max-width:700px;line-height:1.6;color:var(--ink-muted)">'.e($r['alias']).'</p>';
 } else {
     echo '<h1>'.e($r[$cfg['title']] ?? 'Record').'</h1><p>'.e($r[$cfg['subtitle']] ?? '').'</p>';
 }
@@ -95,14 +113,15 @@ if($key==='countries' && $tabParam==='overview'){
         }
     } catch(Throwable $e){}
 }
-// Default overview/fields for non-countries
-if($tabParam==='overview' && $key!=='countries'){
-    echo '<div class="detail-overview">';
-    if($r['logo_url']??'') echo '<img class="detail-logo" src="'.e($r['logo_url']).'" alt="'.e($r[$cfg['title']] ?? '').' logo" loading="lazy">';
-    if($key==='airlines'){ $cc=strtolower($r['country_code']??''); $flag=$cc?((file_exists(__DIR__.'/assets/country_flag_icons/'.$cc.'.svg')?'<img class="flag-svg" src="assets/country_flag_icons/'.$cc.'.svg" alt="">':'<div class="flag">'.flag_emoji($cc).'</div>')):''; if($flag) echo '<div class="overview-flags">'.$flag.'</div>'; }
-    echo '</div>';
+// Default overview/fields for non-countries, with airline-specific filtering
+if($tabParam==='overview' && $key==='airlines'){
+    $hideFields = ['active','updated_at','country_code','logo_url','icao_code','alias'];
+    $detailFields = $cfg['detail'] ?? [];
+    $filteredDetail = array_values(array_filter($detailFields, fn($f) => !in_array($f, $hideFields)));
+    echo render_detail_fields(array_merge($cfg, ['detail' => $filteredDetail]), $r, false);
+} elseif($tabParam==='overview' || $tabParam==='fields'){
+    if($key!=='countries') echo render_detail_fields($cfg,$r,false);
 }
-if(($tabParam==='overview'||$tabParam==='fields') && $key!=='countries') echo render_detail_fields($cfg,$r,false);
 $related=render_related_sections($key,$r);
 $relatedSections=explode('<section class="related">',$related);
 $sectionMap=[]; foreach($relatedSections as $sec){ if(!trim($sec)) continue; if(preg_match('/<h3>(.+?)<\/h3>/',$sec,$m)){ $secKey=strtolower(preg_replace('/[^a-z0-9]/','',$m[1])); $sectionMap[$secKey]='<section class="related">'.$sec; } }

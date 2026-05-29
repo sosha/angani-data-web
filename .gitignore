@@ -16,6 +16,10 @@ qa/*.runtime.txt
 *.zip
 !data/countries/countries.zip
 
+# Downloaded airline logo images (regenerate via scripts/download_airline_logos.php)
+assets/airline_logos/*.png
+assets/airline_logos/*.svg
+
 # OS/editor
 .DS_Store
 Thumbs.db
