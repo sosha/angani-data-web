@@ -3,6 +3,7 @@ define('ANGANI_ADMIN_CONTEXT', true);
 session_start();
 require __DIR__ . '/../includes/db.php';
 require __DIR__ . '/../includes/functions.php';
+require_once __DIR__ . '/../includes/admin_render.php';
 
 try { handle_post_actions(); } catch (Throwable $e) { flash('error', $e->getMessage()); }
 if (getv('page') === 'logout') { if(!hash_equals(csrf_token(),getv('csrf'))) { flash('error','Invalid logout link.'); redirect_to('../?page=home'); } logout_user(); redirect_to('../?page=home'); }
