@@ -148,8 +148,12 @@ foreach ($rows as $r) {
             $matchedAirline = $existing;
             $carrierIcao = $existing['icao_code'];
         } elseif ($existing) {
-            // ICAO exists but name doesn't match -> collision, try name match instead
-            echo "  [!] ICAO $icaoCode taken by '{$existing['name']}' (not '{$companyName}'), trying name match...\n";
+            // Same ICAO, same country, different name — likely a rename
+            echo "  → ICAO $icaoCode: renamed '{$existing['name']}' -> '{$companyName}'\n";
+            $db->prepare("UPDATE airlines SET name=?, active='Y', updated_at=NOW() WHERE icao_code=?")
+                ->execute([$companyName, $icaoCode]);
+            $matchedAirline = ['icao_code' => $icaoCode, 'name' => $companyName, 'active' => 'Y'];
+            $carrierIcao = $icaoCode;
         }
     }
 
@@ -196,6 +200,7 @@ foreach ($rows as $r) {
             $takenRow = $taken->fetch();
             if ($takenRow) {
                 echo "  ⚠ ICAO $icaoCode already taken by '{$takenRow['name']}' ({$takenRow['country_code']}) — skipping\n";
+                $carrierIcao = null;
                 $skipped++;
             } else {
                 $db->prepare("INSERT INTO airlines (icao_code, name, country, country_code, active, created_at, updated_at)
