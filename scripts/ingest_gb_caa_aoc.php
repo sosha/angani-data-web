@@ -138,9 +138,12 @@ function namesMatch(string $caaName, string $dbName): bool {
     if (!$a || !$b) return false;
     if ($a === $b) return true;
     // Remove common aviation stopwords and retry
-    $stopwords = ['air', 'airways', 'aviation', 'airlines', 'services', 'helicopter', 'helicopters', 'flight', 'fly', 'aero', 'limited', 'ltd', 'plc', 'international', 'group', 'company', 'uk', 'ni', 'gb'];
+    $stopwords = ['air', 'airways', 'aviation', 'airlines', 'services', 'helicopter', 'helicopters', 'flight', 'fly', 'aero', 'limited', 'ltd', 'plc', 'international', 'group', 'company', 'uk', 'ni', 'gb', 'operations', 'charter', 'club'];
     $wa = array_diff(explode(' ', $a), $stopwords);
     $wb = array_diff(explode(' ', $b), $stopwords);
+    // Don't match if both become empty (too generic)
+    if (!$wa && !$wb) return false;
+    if (!$wa || !$wb) return false;
     return implode(' ', $wa) === implode(' ', $wb);
 }
 
