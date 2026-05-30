@@ -1,0 +1,1265 @@
+Operator,Registration,Aircraft Type,MSN,Update Type,Status/Notes
+Abu Dhabi Aviation,A6-ADD,Dash 8 (DHC-8 315),627,Update,Back in service 11/2021
+Abu Dhabi Aviation,A6-ADE,Dash 8 (DHC-8 315),628,Update,Parked since 09/2021
+ABX Air,N650GT,Boeing 767 (767-231BDSF),22566 (29),New,Delivery 02/10/2021  Ex Atlas Air N650GT
+Aegean Airlines,SX-DGE,Airbus A320 (320-232),3990,Update,Parked since 09/2021
+Aegean Airlines,SX-DGC,Airbus A320 (320-232),4094,Update,Parked since 10/2021
+Aer Lingus,EI-CVA,Airbus A320 (320-214),1242,Update,In service
+Aer Lingus,EI-DEI,Airbus A320 (320-214),2374,Update,Parked since 10/2021
+Aer Lingus,EI-DEK,Airbus A320 (320-214),2399,Update,Parked since 09/2021
+Aer Lingus,EI-DUZ,Airbus A330 (330-302),847,Delete,To Vueling Airlines as EI-DUZ 08/11/2021
+Aero Nomad,EX-32003,Airbus A320 (320-232),1773,New,Delivery 15/10/2021  Ex Terra Avia ER-00021
+Aero Technologies,N402AT,Embraer 135/145 (135LR),702,New,Delivery 01/11/2021  Ex Aero Technologies 2-AERO
+Aero Technologies,2-AERO,Embraer 135/145 (135LR),702,Delete,To Aero Technologies as N402AT 01/11/2021
+AeroContractors,LY-FJI,Airbus A320 (320-232),2157,Delete,To Heston Airlines as LY-FJI 23/10/2021
+AeroContractors,LY-NZL,Airbus A320 (320-214),2388,New,Delivery 24/10/2021  Ex Heston Airlines LY-NZL
+AeroContractors,LY-VUT,Airbus A320 (320-232),3275,Update,Parked since 09/2021
+Aeroflot,VQ-BBC,Airbus A320 (320-214),3835,Delete,To Avianca as N955AV 09/11/2021
+Aeroflot,VQ-BCM,Airbus A320 (320-214),3923,Update,Back in service 11/2021
+Aeroflot,RA-89014,Sukhoi SuperJet 100 (100-95B),95025,Delete,To Rossiya as RA-89014 01/08/2021
+Aeroflot,RA-89101,Sukhoi SuperJet 100 (100-95B),95139,Delete,To Rossiya as RA-89101 01/07/2021
+Aeroflot,RA-89103,Sukhoi SuperJet 100 (100-95B),95142,Delete,To Rossiya as RA-89103 11/09/2021
+Aeroflot,RA-89104,Sukhoi SuperJet 100 (100-95B),95144,Update,Back in service 11/2021
+Aerolineas Argentinas,LV-CAD,Boeing 737 NG / Max (737-76N),32680 (2089),Update,Back in service 11/2021
+Aeromexico,XA-MIA,Boeing 737 NG / Max (737-852),35119 (2273),Update,Returned to lessor 11/2021
+Aeromexico,EI-GZA,Boeing 737 NG / Max (737-8MAX) 42837 (7456),New,Delivery 17/11/2021,
+Aeromexico,XA-CCM,Boeing 737 NG / Max (737-8MAX) 43758 (8073),New,Delivery 27/10/2021,
+Aeromexico Connect,XA-ALP,Embraer 190/195 (190LR),138,Update,Back in service 11/2021
+Aeromexico Connect,XA-ALQ,Embraer 190/195 (190IGW),287,Update,Stored 08/2021
+Aerovias DAP,CC-ANS,BAe 146 / Avro RJ (Bae Avro RJ85)2273,Update,Back in service 11/2021,
+Air Albania,TC-JZG,Boeing 737 NG / Max (737-8F2),60028 (6078),Delete,To THY Turkish Airlines as TC-JZG 01/11/2021
+Air Algerie,7T-VJV,Airbus A330 (330-202),644,Update,Back in service 11/2021
+Air Algerie,7T-VJK,Boeing 737 NG / Max (737-8D6),30203 (640),Update,Back in service 11/2021
+Air Arabia,A6-ANZ,Airbus A320 (320-214),6166,Update,Back in service 10/2021
+Air Arabia,A6-AOB,Airbus A320 (320-214),6234,Update,Back in service 11/2021
+Air Astana,EI-KBM,Airbus A320 (320-271N),10005,New,Delivery 23/10/2021  Ex Air Astana P4-KBM
+Air Astana,P4-KBM,Airbus A320 (320-271N),10005,Delete,To Air Astana as EI-KBM 23/10/2021
+Air Astana,EI-KBK,Airbus A320 (320-271N),9459,New,Delivery 12/11/2021  Ex Air Astana P4-KBK
+Air Astana,P4-KBK,Airbus A320 (320-271N),9459,Delete,To Air Astana as EI-KBK 12/11/2021
+Air Astana,EI-KBL,Airbus A320 (320-271N),9574,New,Delivery 11/11/2021  Ex Air Astana P4-KBL
+Air Astana,P4-KBL,Airbus A320 (320-271N),9574,Delete,To Air Astana as EI-KBL 11/11/2021
+Air Astana,EI-KDA,Airbus A321 (321-231),5357,New,Delivery 22/10/2021  Ex Air Astana P4-KDA
+Air Astana,P4-KDA,Airbus A321 (321-231),5357,Delete,To Air Astana as EI-KDA 22/10/2021
+Air Astana,EI-KHA,Embraer 190/195 (190-E2),20012,New,Delivery 22/10/2021  Ex Air Astana P4-KHA
+Air Astana,P4-KHA,Embraer 190/195 (190-E2),20012,Delete,To Air Astana as EI-KHA 22/10/2021
+Air Atlanta Icelandic,TF-LFC,Airbus A340 (340-642),440,New,Delivery 03/11/2021  Ex Air X Charter 9H-LFC
+Air Atlanta Icelandic,TF-AMN,Boeing 747 (747-4F6BDSF),27602 (1161),Update,Back in service 11/2021
+Air Atlanta Icelandic,TF-AAK,Boeing 747 (747-428),32868 (1325),New,Delivery 22/10/2021  Ex Saudi Arabian Airlines TF-AAK
+Air Austral,F-OLAV,Airbus A220 (220-371),55106,Update,Back in service 11/2021
+Air Austral,F-OMER,Airbus A220 (220-371),55116,Update,Back in service 11/2021
+Air Baltic,YL-CSK,Airbus A220 (CS300),55039,Update,Parked since 10/2021
+Air Baltic,YL-CSN,Airbus A220 (CS300),55043,Update,Parked since 09/2021
+Air Baltic,YL-AAV,Airbus A220 (220-371),55071,Update,Parked since 08/2021
+Air Busan,HL8357,Airbus A321 (321-251NX),10412,New,Delivery 29/10/2021
+Air Cairo,SU-BSN,Airbus A320 (320-214),3840,Delete,To Air41 Airways as 9A-SHO 19/11/2021
+Air Caledonie,F-OZIP,ATR 42/72 (72-600),1355,Update,Back in service 11/2021
+Air Caledonie,F-OZLI,ATR 42/72 (72-600),1380,Update,Back in service 10/2021
+Air Canada,C-GQCA,Airbus A320 (320-211),210,Delete,To Su Airlines as C5-SUA 06/11/2021
+Air Canada,C-FMSX,Airbus A320 (320-211),378,Update,Back in service 11/2021
+Air Canada,C-GEKH,Boeing 737 NG / Max (737-8MAX) 61231 (7449),New,Delivery 27/10/2021,
+Air Canada,C-GMIU,Boeing 737 NG / Max (737-8MAX) 61260 (8016),New,Delivery 02/11/2021,
+Air Canada Rouge,C-GITR,Airbus A319 (319-112),1577,Update,Back in service 11/2021
+Air Canada Rouge,C-GARJ,Airbus A319 (319-114),752,Update,Back in service 10/2021
+Air Canada Rouge,C-GBHR,Airbus A319 (319-114),785,Update,Back in service 11/2021
+Air Canada Rouge,C-GBIM,Airbus A319 (319-114),840,Update,Back in service 11/2021
+Air Canada Rouge,C-GFDU,Airbus A320 (320-214),3149,Update,Back in service 11/2021
+Air Canada Rouge,C-FYXF,Airbus A321 (321-211),5038,Update,Back in service 11/2021
+Air Canada Rouge,C-GHPJ,Airbus A321 (321-211),5733,Update,Back in service 11/2021
+Air Canada Rouge,C-GHQG,Airbus A321 (321-211),6210,Update,Back in service 11/2021
+Air Canada Rouge,C-GHLV,Boeing 767 (767-333ER),30852 (843),Update,Back in service 11/2021
+Air Caraibes,F-ORLY,Airbus A330 (330-323X),758,Update,Parked since 09/2021
+Air Caraibes,F-OSIV,ATR 42/72 (72-600),1467,Update,Back in service 10/2021
+Air China,B-326C,Airbus A321 (321-251NX),10266,New,Delivery 27/10/2021
+Air China,B-6073,Airbus A330 (330-243),780,Update,Back in service 11/2021
+Air China,B-6079,Airbus A330 (330-243),810,Update,Parked since 09/2021
+Air China,B-6081,Airbus A330 (330-243),839,Update,Parked since 10/2021
+Air China,B-651X,Comac ARJ21 (ARJ21-700),168,New,Delivery 13/11/2021
+Air China,B-2472,Boeing 747 (747-4J6),30158 (1243),Update,Back in service 11/2021
+Air China,B-2487,Boeing 747 (747-89L),44932 (1508),Update,Back in service 11/2021
+Air China,B-2836,Boeing 757 (757-2Z0PCF),27258 (595),Update,Back in service 10/2021
+Air China,B-1430,Boeing 777 (777-39LER),63357 (1516),Update,Parked since 10/2021
+Air Cote Ivoire,TU-TSI,Dash 8 (DHC-8 402),4514,Update,Parked since 08/2021
+Air Europa,EC-LXV,Boeing 737 NG / Max (737-85P),36594 (4666),Update,Parked since 10/2021
+Air Europa Express,EC-LCQ,Embraer 190/195 (195LR),303,Update,Returned to lessor 10/2021
+Air France,F-GUGD,Airbus A318 (318-111),2081,Update,Parked since 10/2021
+Air France,F-GUGO,Airbus A318 (318-111),2951,Update,Parked since 10/2021
+Air France,F-GRHP,Airbus A319 (319-111),1344,Update,Back in service 10/2021
+Air France,F-GKXY,Airbus A320 (320-214),4105,Update,Back in service 11/2021
+Air France,F-HBNI,Airbus A320 (320-214),4820,Update,Parked since 10/2021
+Air France,F-GTAU,Airbus A321 (321-212),3814,Update,Back in service 11/2021
+Air France,F-GTAX,Airbus A321 (321-212),3930,Update,Back in service 11/2021
+Air France,F-GMZE,Airbus A321 (321-111),544,Update,Parked since 10/2021
+Air France,F-GZCN,Airbus A330 (330-203),584,Update,Parked since 10/2021
+Air France,F-GZCO,Airbus A330 (330-203),657,Update,Parked since 10/2021
+Air France,F-HTYJ,Airbus A350 (350-941),500,Update,Back in service 10/2021
+Air France,F-GSPI,Boeing 777 (777-228ER),29008 (258),Update,Back in service 10/2021
+Air France,F-GSPU,Boeing 777 (777-228ER),32309 (383),Update,Back in service 11/2021
+Air France,F-GSQD,Boeing 777 (777-328ER),32726 (490),Update,Back in service 10/2021
+Air France,F-GZNO,Boeing 777 (777-328ER),38665 (1007),Update,Back in service 10/2021
+Air France,F-GZNL,Boeing 777 (777-328ER),40063 (1001),Update,Parked since 10/2021
+Air France,F-GZNU,Boeing 777 (777-328ER),61701 (1393),Update,Back in service 10/2021
+Air France,F-HZUB,Airbus A220 (220-371),55139,New,Delivery 09/11/2021
+Air France,F-HZUC,Airbus A220 (220-371),55140,New,Delivery 06/11/2021
+Air Georgian,C-GZGA,Beech 1900D (),UE306,Delete,To Panorama Foxed Wings as C-GZGA 21/09/2021
+Air Hamburg,D-AVOS,Embraer 135/145 (135BJ),1165,Update,Parked since 09/2021
+Air Hamburg,D-AHOI,Embraer 135/145 (135BJ),1171,Update,Back in service 11/2021
+Air Hamburg,D-AWIN,Embraer 135/145 (135EJ),1231,Update,Parked since 09/2021
+Air Incheon,HL8503,Boeing 737 NG / Max (737-85P),28535 (480),New,Delivery 22/10/2021  Ex Corendon Air TC-TJN
+Air India,VT-EDC,Airbus A320 (320-214),4201,Update,Parked since 10/2021
+Air India,VT-PPA,Airbus A321 (321-211),3130,Update,Parked since 10/2021
+Air India,VT-PPT,Airbus A321 (321-211),4078,Update,Parked since 09/2021
+Air India,VT-ALP,Boeing 777 (777-337ER),36314 (804),Update,Parked since 10/2021
+Air India,VT-ALQ,Boeing 777 (777-337ER),36315 (809),Update,Back in service 10/2021
+Air New Zealand,ZK-NHE,Airbus A320 (320-271N),10569,New,Delivery 06/11/2021
+Air New Zealand,ZK-NHF,Airbus A320 (320-271N),10589,New,Delivery 30/10/2021
+Air Nostrum,EC-NCD,ATR 42/72 (72-600),1059,Update,Back in service 11/2021
+Air Peace,5N-BYH,Embraer 190/195 (195-E2),20044,Update,Back in service 11/2021
+Air Senegal,YR-AMD,Boeing 737 (737-530),25271 (2117),New,Delivery 28/10/2021  Ex Blue Air YR-AMD
+Air Serbia,YU-APJ,Airbus A319 (319-132),1159,Update,Parked since 10/2021
+Air Transat,C-GEZX,Airbus A321 (321-211),7237,Update,Back in service 11/2021
+Air Transat,C-GUFR,Airbus A330 (330-243),251,Update,Back in service 11/2021
+Air Transat,C-GUBT,Airbus A330 (330-243),732,Update,Back in service 11/2021
+Air Transat,C-GTSR,Airbus A330 (330-243),966,Update,Back in service 10/2021
+Air Transport International N762CX,N257AZ,Boeing 767 (767-323ER),29605 (748),New,Delivery 01/12/2021  Ex American Airlines N398AN
+Air Urga,UR-ELJ,Saab 340 (340B),259,Update,Parked since 10/2021
+Air Urga,UR-ELZ,Saab 340 (340B),359,Update,Parked since 09/2021
+Air Wisconsin,N411ZW,Canadair RJ (CRJ-200ER),7569,Update,Parked since 10/2021
+Air Wisconsin,N427ZW,Canadair RJ (CRJ-200ER),7685,Update,Back in service 11/2021
+Air Wisconsin,N439AW,Canadair RJ (CRJ-200ER),7753,Update,Back in service 11/2021
+Air X Charter,9H-LFC,Airbus A340 (340-642),440,Delete,To Air Atlanta Icelandic as TF-LFC 03/11/2021
+Air X Charter,9H-YOU,Canadair RJ (CRJ-200),8085,Update,Parked since 10/2021
+Air41 Airways,9A-SHO,Airbus A320 (320-214),3840,New,Delivery 19/11/2021  Ex Air Cairo SU-BSN
+AirAsia,9M-AQB,Airbus A320 (320-216),4458,Update,Back in service 10/2021
+AirAsia,9M-AQM,Airbus A320 (320-216),5149,Update,Back in service 10/2021
+AirAsia,9M-AGT,Airbus A320 (320-216),8022,Update,Back in service 11/2021
+AirAsia,9M-RAL,Airbus A320 (320-251N),8707,Update,Back in service 11/2021
+AirAsia,9M-RAV,Airbus A320 (320-216),8746,New,Delivery 04/11/2021  Ex AirAsia Japan JA03DJ
+AirAsia,9M-RAP,Airbus A320 (320-251N),8874,Update,Back in service 11/2021
+AirAsia,9M-RAQ,Airbus A320 (320-251N),8991,Update,Back in service 10/2021
+AirAsia India,VT-BKK,Airbus A320 (320-214),4314,Update,Parked since 10/2021
+AirAsia India,VT-SXR,Airbus A320 (320-214),4562,Update,Parked since 10/2021
+AirAsia Japan,JA03DJ,Airbus A320 (320-216),8746,Delete,To AirAsia as 9M-RAV 04/11/2021
+AirBlue,AP-EDA,Airbus A320 (320-214),3974,Update,Stored 01/2021
+Airbus Industrie,F-WNEO,Airbus A320 (320-271N),6101,Update,Back in service 11/2021
+Airbus Industrie,F-GXLH,Airbus A330 (330-743L),1853,Update,Parked since 10/2021
+Airhub Airlines,9H-GTS,Airbus A320 (320-232),4384,New,Delivery 29/10/2021
+Airhub Airlines,9H-ZMK,Airbus A340 (340-313X),668,New,Delivery 22/10/2021
+Airlink South Africa,ZS-YAS,Embraer 190/195 (190IGW),218,Update,Correct registration
+Alaska Airlines,N635VA,Airbus A320 (320-214),3398,Update,Parked since 10/2021
+Alaska Airlines,N765AS,Boeing 737 (737-4Q8C),25102 (2350),Delete,To Aviation Horizons as P4-JAG 29/10/2021
+Alaska Airlines,N307AS,Boeing 737 NG / Max (737-990),30015 (838),Update,Back in service 10/2021
+Alaska Airlines,N924AK,Boeing 737 NG / Max (737-9MAX) 43333 (8131),New,Delivery 02/11/2021,
+Alexandria Airlines,SX-ACP,Airbus A321 (321-231),1015,Delete,To Olympus Airways as SX-ACP 02/11/2021
+Alitalia,EI-IMP,Airbus A319 (319-111),4859,Delete,To Bul Air as LZ-MAA 17/11/2021
+Alitalia,EI-DTD,Airbus A320 (320-216),3846,Update,Stored 11/2021
+All Nippon Airways,JA01VA,Airbus A320 (320-216),5844,Update,Stored 11/2021
+All Nippon Airways,JA03VA,Airbus A320 (320-216),5926,Update,Parked since 10/2021
+All Nippon Airways,JA147A,Airbus A321 (321-272N),10773,New,Delivery 17/11/2021
+All Nippon Airways,JA383A,Airbus A380 (380-841),266,Update,Parked since 10/2021
+All Nippon Airways,JA925A,Boeing 787 (787-9),61526 (1056),Update,Parked since 10/2021
+All Nippon Airways,JA936A,Boeing 787 (787-9),66523 (1094),Update,Parked since 10/2021
+Allegiant Air,N327NV,Airbus A319 (319-111),2556,Update,Parked since 10/2021
+Allegiant Air,N326NV,Airbus A319 (319-111),2586,Update,Back in service 11/2021
+Allegiant Air,N298NV,Airbus A320 (320-214),2800,New,Delivery 15/09/2021
+Allegiant Air,N289NV,Airbus A320 (320-214),4574,New,Delivery 18/10/2021
+Allegiant Air,N203NV,Airbus A320 (320-214),5384,New,Delivery 13/11/2021  Ex Peach Aviation JA806P
+Allegiant Air,N205NV,Airbus A320 (320-214),5724,New,Delivery 11/11/2021  Ex Peach Aviation JA810P
+Alliance Airlines,VH-FKA,Fokker 70/100 (F28-0100),11345,Update,Back in service 11/2021
+Aloha Air Cargo,N301KH,Boeing 737 (737-330F),27904 (2691),Update,Back in service 11/2021
+Amazon Prime Air,N967AZ,ATR 42/72 (72-212AF),714,On order,Delivery 09/11/2021  Ex Silver Airways N967AZ
+Amazon Prime Air,N929AZ,ATR 42/72 (72-212A),727,On order,Delivery 09/11/2021  Ex Silver Airways N929AZ
+Amazon Prime Air,N919AZ,ATR 42/72 (72-212AF),853,New,Delivery 19/10/2021
+Amazon Prime Air,EI-AZB,Boeing 737 NG / Max (737-8ASSF)29925 (588),New,Delivery 23/10/2021  Ex ASL Airlines Ireland EI-AZB,
+American Airlines,N601AW,Airbus A320 (320-232),1935,Update,Parked since 10/2021
+American Airlines,N649AW,Airbus A320 (320-232),803,Update,Parked since 10/2021
+American Airlines,N652AW,Airbus A320 (320-232),953,Update,Parked since 10/2021
+American Airlines,N439AN,Airbus A321 (321-253NX),10623,New,Delivery 02/11/2021
+American Airlines,N539UW,Airbus A321 (321-231),4082,Update,Back in service 11/2021
+American Airlines,N540UW,Airbus A321 (321-231),4107,Update,Back in service 11/2021
+American Airlines,N542UW,Airbus A321 (321-231),4134,Update,Back in service 11/2021
+American Airlines,N154AA,Airbus A321 (321-231),6928,Update,Parked since 10/2021
+American Airlines,N817NN,Boeing 737 NG / Max (737-823),29558 (3107),Update,Parked since 10/2021
+American Airlines,N398AN,Boeing 767 (767-323ER),29605 (748),Delete,To Air Transport International as N257AZ 01/12/2021
+American Airlines,N349AN,Boeing 767 (767-323ER),33088 (913),Delete,To DHL International Aviation as A9C-DHY 01/11/2021
+American Airlines,N788AN,Boeing 777 (777-223ER),30011 (283),Update,Parked since 10/2021
+American Airlines,N791AN,Boeing 777 (777-223ER),30254 (289),Update,Back in service 10/2021
+American Airlines,N796AN,Boeing 777 (777-223ER),30796 (316),Update,Back in service 11/2021
+American Airlines,N813AN,Boeing 787 (787-8),40631 (387),Update,Parked since 10/2021
+Ameriflight,N201YW,Embraer 120 Brasilia (120RT),201,Update,Back in service 11/2021
+Amerijet International,N373CM,Boeing 767 (767-338ERBDSF),24929 (343),Update,Back in service 10/2021
+AMK Aircraft Ltd,M-AAMK,Boeing 737 NG / Max (737-8MAX BBJ),63431 (7819),Update,Parked since 09/2021
+AnadoluJet,TC-JHA,Boeing 737 NG / Max (737-8F2),35740 (2673),New,Delivery 06/03/2021  Ex THY Turkish Airlines TC-JHA
+Anda Air,UR-COU,Douglas MD-80/90 (MD-83),49662 (1429),Update,Parked since 10/2021
+ARAMCO,N801XA,Boeing 737 NG / Max (737-8AL),61781 (6353),Update,Parked since 10/2021
+ARAMCO,N805XA,Boeing 737 NG / Max (737-8AL),61785 (6604),Update,Parked since 10/2021
+Ariana Afghan Airlines,YA-PID,Boeing 737 (737-4Y0),26085 (2468),Update,Parked since 08/2021
+Armenia Airways,EK-73792,Boeing 737 NG / Max (737-8FH),35092 (2160),New,Delivery 05/11/2021  Ex Georgian Airways 4L-TGC
+Asiana Airlines,HL7415,Boeing 747 (747-48EBDSF),25777 (946),Update,Back in service 10/2021
+ASL Airlines Belgium,OE-IXC,Boeing 737 NG / Max (737-8ASBCF),29940 (1265),New,Delivery 03/11/2021 Converted to freighter
+ASL Airlines France,F-GZTX,Boeing 737 (737-4Y0SF),25180 (2201),Update,Back in service 11/2021
+ASL Airlines France,F-GZTB,Boeing 737 (737-33VQC),29336 (3102),Update,Parked since 10/2021
+ASL Airlines Hungary,HA-FAZ,Boeing 737 (737-476SF),24446 (2569),Delete,To ASL Airlines Ireland as EI-STC 22/10/2021
+ASL Airlines Ireland,EI-HEC,Airbus A330 (330-322P2F),231,Update,Back in service 10/2021
+ASL Airlines Ireland,EI-FXC,ATR 42/72 (42-300F),310,Update,Back in service 11/2021
+ASL Airlines Ireland,EI-SOP,ATR 42/72 (72-212AF),583,Update,Parked since 10/2021
+ASL Airlines Ireland,EI-STC,Boeing 737 (737-476SF),24446 (2569),New,Delivery 22/10/2021  Ex ASL Airlines Hungary HA-FAZ
+ASL Airlines Ireland,EI-AZB,Boeing 737 NG / Max (737-8ASSF)29925 (588),Delete,To Amazon Prime Air as EI-AZB 23/10/2021,
+Atlas Air,N465MC,Boeing 747 (747-446),24784 (798),Update,Parked since 10/2021
+Atlas Air,N487MC,Boeing 747 (747-45EFSCD),30609 (1309),New,Delivery 06/01/2021  Ex El Al Israel Airlines N487MC
+Atlas Air,N650GT,Boeing 767 (767-231BDSF),22566 (29),Delete,To ABX Air as N650GT 02/10/2021
+Aura Airlines,EC-NOZ,Airbus A320 (320-232),4113,Delete,To Surinam Airways as EC-NOZ 12/11/2021
+Austrian Airlines,OE-LXD,Airbus A320 (320-216),3515,Update,Back in service 10/2021
+Austrian Airlines,OE-LZF,Airbus A320 (320-214),5841,Update,Parked since 09/2021
+Austrian Airlines,OE-LAW,Boeing 767 (767-3Z9ER),26417 (448),Delete,Stored 11/201 - To be scrapped
+Avcon Jet,OE-IBK,Embraer 135/145 (135BJ),1110,Update,Parked since 10/2021
+Avianca,N691AV,Airbus A319 (319-115),3691,Update,Back in service 11/2021
+Avianca,N422AV,Airbus A319 (319-115LR),4200,Update,Back in service 11/2021
+Avianca,N695AV,Airbus A319 (319-132),6099,Update,Back in service 10/2021
+Avianca,N951AV,Airbus A320 (320-214),3574,New,Delivery 18/11/2021
+Avianca,N955AV,Airbus A320 (320-214),3835,On order,Delivery 09/11/2021  Ex Aeroflot VQ-BBC
+Avianca,N956AV,Airbus A320 (320-214),6050,New,Delivery 05/11/2021  Ex Azul Linhas Aereas PR-AJE
+Avianca,N957AV,Airbus A320 (320-214),6057,New,Delivery 05/11/2021  Ex Avianca Brasil PR-ONX
+Avianca,N742AV,Airbus A320 (320-214),6692,Update,Parked since 10/2021
+Avianca,HK-5273,Airbus A320 (320-214),8519,Update,Back in service 11/2021
+Avianca,N725AV,Airbus A321 (321-231),6219,Delete,To VivaAeroBus as XA-VBV 01/12/2021
+Avianca,N975AV,Airbus A330 (330-243),1224,Update,Back in service 11/2021
+Avianca Brasil,PR-ONX,Airbus A320 (320-214),6057,Delete,To Avianca as N957AV 05/11/2021
+Avianca El Salvador,N685TA,Airbus A320 (320-233),5068,Update,Back in service 11/2021
+Avianca El Salvador,N692AV,Airbus A321 (321-231),5936,Update,Parked since 09/2021
+Avianca Express,HK-5040,ATR 42/72 (72-600),1151,Update,Back in service 11/2021
+Aviation Horizons,P4-JAG,Boeing 737 (737-4Q8C),25102 (2350),On order,Delivery 29/10/2021  Ex Alaska Airlines N765AS
+Avion Express,LY-TKT,Airbus A319 (319-112),1102,Update,Stored 10/2021
+Avion Express,LY-VEC,Airbus A321 (321-211),3267,Update,Parked since 09/2021
+Avion Express Malta,9H-AMU,Airbus A320 (320-232),4174,New,Delivery 18/11/2021  Ex Wizz Air HA-LPZ
+Azul Linhas Aereas,PR-AJE,Airbus A320 (320-214),6050,Delete,To Avianca as N956AV 05/11/2021
+Azul Linhas Aereas,PR-AQN,ATR 42/72 (72-600),1115,Update,Back in service 10/2021
+Azur Air,VQ-BKF,Boeing 757 (757-2Q8),26268 (590),Update,Back in service 11/2021
+Azur Air Ukraine,UR-AZN,Boeing 757 (757-3CQ),32241 (960),New,Delivery 17/10/2021 Lsd From Bcc
+BA CityFlyer,G-LCAG,Embraer 190/195 (190SR),560,Update,Parked since 09/2021
+BA CityFlyer,G-LCAH,Embraer 190/195 (190SR),564,Update,Back in service 11/2021
+Badr Airlines,C5-BDC,Boeing 737 (737-55S),28475 (3096),Update,Back in service 11/2021
+Badr Airlines,4L-MWA,Boeing 737 NG / Max (737-8AL),35073 (2197),Delete,To MyWay Airlines as 4L-MWA 04/11/2021
+Bahrain Air Force,A9C-KAS,BAe 146 / Avro RJ (Bae Avro RJ100),3380 (380),New,Delivery 30/10/2021
+Bamboo Airways,VN-A586,Airbus A320 (320-232),2934,Update,Back in service 11/2021
+Bamboo Airways,VN-A583,Airbus A320 (320-232),3902,Update,Back in service 10/2021
+Bamboo Airways,VN-A591,Airbus A321 (321-251N),8312,Update,Back in service 11/2021
+Bamboo Airways,VN-A819,Boeing 787 (787-9),62736 (936),Update,Back in service 10/2021
+Bangkok Airways,HS-PPN,Airbus A319 (319-132),2362,Update,Back in service 10/2021
+Bangkok Airways,HS-PGU,Airbus A320 (320-232),2254,Update,Back in service 11/2021
+Bangkok Airways,HS-PGW,Airbus A320 (320-232),2509,Update,Back in service 11/2021
+Bangkok Airways,HS-PZE,ATR 42/72 (72-600),1303,Update,Back in service 10/2021
+Bangkok Airways,HS-PZH,ATR 42/72 (72-600),1377,Update,Back in service 11/2021
+Batik Air,PK-LAF,Airbus A320 (320-214),6164,Update,Back in service 11/2021
+Batik Air,PK-LAP,Airbus A320 (320-214),6697,Update,Stored 06/2021
+Batik Air,PK-LUV,Airbus A320 (320-214),7673,Update,Back in service 11/2021
+Batik Air,PK-LZY,Boeing 737 NG / Max (737-8GP),38309 (5375),Update,Back in service 10/2021
+Batik Air,PK-LDH,Boeing 737 NG / Max (737-8GP),39826 (5122),Update,Back in service 10/2021
+Batik Air Malaysia,9M-LND,Boeing 737 NG / Max (737-8GP),38316 (6159),Update,Returned to lessor 10/2021
+Belavia,EW-555PO,Embraer 190/195 (195-E2),20042,Update,Stored 10/2021
+Belavia,EW-563PO,Embraer 190/195 (195-E2),20049,Update,Stored 10/2021
+Bering Air,N148SK,Beech 1900D (1900D),UE148,Update,Parked since 10/2021
+Berkut Air,UP-A2002,Airbus A320 (320-251NACJ),8638,Update,Parked since 10/2021
+Berkut Air,UP-A2101,Airbus A321 (321-231CJ),5538,Update,Back in service 11/2021
+Berry Aviation,N428MS,Dash 8 (DHC-8 201),428,Update,Parked since 10/2021
+Bighorn Airways,N990BH,Dash 8 (DHC-8 106),265,Update,Parked since 10/2021
+Biman Bangladesh,S2-ADE,Airbus A310 (310-325),698,Update,Scrapped 08/2008
+Binter Canarias,EC-NJK,ATR 42/72 (72-600),1635,Update,Parked since 10/2021
+Binter Canarias,EC-LFA,ATR 42/72 (72-212A),902,Update,Back in service 11/2021
+Blue Air,YR-AMD,Boeing 737 (737-530),25271 (2117),Delete,To Air Senegal as YR-AMD 28/10/2021
+Blue Air,YR-BMS,Boeing 737 NG / Max (737-8Q8),30702 (1953),Update,Parked since 10/2021
+Blue Air,YR-BMT,Boeing 737 NG / Max (737-808),34710 (2144),Update,Parked since 10/2021
+Blue Bird Airways,9H-NOA,Boeing 737 (737-33A),27457 (2756),Update,Parked since 10/2021
+Blue Bird Airways,9H-AJW,Boeing 737 (737-3U3),28733 (2969),Update,Parked since 10/2021
+Blue Islands,G-ISLH,ATR 42/72 (42-300),173,Update,Parked since 10/2021
+Blue Panorama Airlines,9H-FSJ,Boeing 737 NG / Max (737-86N),29888,Update,Suspended operations on 27 oct 21
+Blue Panorama Airlines,9H-FRA,Boeing 737 NG / Max (737-85F),30007,Update,Suspended operations on 27 oct 21
+Blue Panorama Airlines,9H-GAW,Boeing 737 NG / Max (737-8Z0),30072,Update,Suspended operations on 27 oct 21
+Blue Panorama Airlines,9H-GAX,Boeing 737 NG / Max (737-8Z0),30073,Update,Suspended operations on 27 oct 21
+Blue Panorama Airlines,EI-GIM,Boeing 737 NG / Max (737-86Q),30289,Update,Suspended operations on 27 oct 21
+Blue Panorama Airlines,9H-CRI,Boeing 737 NG / Max (737-85F),30567,Update,Suspended operations on 27 oct 21
+Blue Panorama Airlines,I-LCFC,Boeing 737 NG / Max (737-86N),35210,Update,Suspended operations on 27 oct 21
+Blue Panorama Airlines,I-BPAD,Boeing 767 (767-3X2ER),26260,Update,Suspended operations on 27 oct 21
+Blue Square Aviation,9H-BGK,Canadair RJ (CRJ-200),8092,Update,Parked since 09/2021
+Boeing,N835BA,Boeing 737 NG / Max (737-7BCBBJ)30572 (491),Update,Parked since 10/2021,
+Boeing,N779XY,Boeing 777 (777-9),65799 (1581),Update,Parked since 10/2021
+British Airways,G-EUPG,Airbus A319 (319-131),1222,Update,Back in service 11/2021
+British Airways,G-EUPK,Airbus A319 (319-131),1236,Update,Back in service 11/2021
+British Airways,G-EUPL,Airbus A319 (319-131),1239,Update,Parked since 09/2021
+British Airways,G-EUPR,Airbus A319 (319-131),1329,Update,Parked since 09/2021
+British Airways,G-EUPS,Airbus A319 (319-131),1338,Update,Back in service 11/2021
+British Airways,G-EUPT,Airbus A319 (319-131),1380,Update,Parked since 09/2021
+British Airways,G-EUPU,Airbus A319 (319-131),1384,Update,Back in service 11/2021
+British Airways,G-EUPW,Airbus A319 (319-131),1440,Update,Parked since 09/2021
+British Airways,G-EUOF,Airbus A319 (319-131),1590,Update,Back in service 10/2021
+British Airways,G-DBCA,Airbus A319 (319-131),2098,Update,Back in service 11/2021
+British Airways,G-DBCF,Airbus A319 (319-131),2466,Update,Back in service 11/2021
+British Airways,G-DBCJ,Airbus A319 (319-131),2981,Update,Back in service 10/2021
+British Airways,G-TTNP,Airbus A320 (320-251N),10548,New,Delivery 10/11/2021
+British Airways,G-GATM,Airbus A320 (320-233),1892,Update,Parked since 10/2021
+British Airways,G-EUUM,Airbus A320 (320-232),1907,Update,Parked since 09/2021
+British Airways,G-EUYC,Airbus A320 (320-232),3721,Update,Parked since 09/2021
+British Airways,G-XLEF,Airbus A380 (380-841),151,Update,Back in service 11/2021
+British Airways,G-XLEG,Airbus A380 (380-841),161,Update,Back in service 11/2021
+British Airways,G-VIIJ,Boeing 777 (777-236ER),27492 (111),Update,Back in service 10/2021
+British Airways,G-YMMG,Boeing 777 (777-236ER),30308 (301),Update,Parked since 10/2021
+British Airways,G-YMML,Boeing 777 (777-236ER),30313 (334),Update,Parked since 10/2021
+British Airways,G-ZBJB,Boeing 787 (787-8),38610 (111),Update,Back in service 11/2021
+Brunei Gvmt,V8-OAS,Boeing 787 (787-8BBJ),44572 (325),Update,Back in service 11/2021
+Bul Air,LZ-MAA,Airbus A319 (319-111),4859,New,Delivery 17/11/2021  Ex Alitalia EI-IMP
+Bulgaria Air,LZ-FBC,Airbus A320 (320-214),2540,Update,Back in service 11/2021
+Bulgaria Air,LZ-BRU,BAe 146 / Avro RJ (Bae Avro RJ70)1258 (258),New,Delivery 19/10/2021  Ex Bulgaria Air LZ-TIM,
+Bulgaria Air,LZ-TIM,BAe 146 / Avro RJ (Bae Avro RJ70)1258 (258),Delete,To Bulgaria Air as LZ-BRU 19/10/2021,
+Bulgaria Air,LZ-SOF,Embraer 190/195 (190AR),492,Update,Back in service 11/2021
+Cactus Jack Airlines,N713TS,Embraer 190/195 (190ECJ),632,Update,Parked since 10/2021
+Camair Co,TJ-QDF,Dash 8 (DHC-8 402),4319,New,Delivery 04/11/2021
+Canadian North,C-GZCN,Boeing 737 (737-36N),28594 (3107),Update,Back in service 11/2021
+Canadian North,C-GCNW,Boeing 737 (737-36Q),28760 (2989),Update,Back in service 10/2021
+Capital Airlines Beijing,B-1691,Airbus A320 (320-232),6580,Update,Parked since 09/2021
+Capital Airlines Beijing,B-8551,Airbus A321 (321-231),7191,Update,Back in service 10/2021
+Caribbean Airlines,9Y-CAL,Boeing 737 NG / Max (737-8MAX) 43385 (7947),New,Delivery 17/11/2021,
+Caribbean Coast Guard,PH-CGA,Dash 8 (DHC-8 102A),275,Update,Parked since 10/2021
+Carpatair,YR-ABA,Airbus A319 (319-111),3041,New,Delivery 09/11/2021
+Cathay Dragon,B-LBF,Airbus A330 (330-343E),1545,Delete,To Cathay Pacific as B-LBF 24/10/2021
+Cathay Dragon,B-LBG,Airbus A330 (330-343E),1557,Delete,To Cathay Pacific as B-LBG 04/11/2021
+Cathay Dragon,B-LBH,Airbus A330 (330-343E),1567,Delete,To Cathay Pacific as B-LBH 13/11/2021
+Cathay Pacific,B-LAZ,Airbus A330 (330-343X),1387,Update,Back in service 09/2021
+Cathay Pacific,B-LBF,Airbus A330 (330-343E),1545,New,Delivery 24/10/2021  Ex Cathay Dragon B-LBF
+Cathay Pacific,B-LBG,Airbus A330 (330-343E),1557,New,Delivery 04/11/2021  Ex Cathay Dragon B-LBG
+Cathay Pacific,B-LBH,Airbus A330 (330-343E),1567,New,Delivery 13/11/2021  Ex Cathay Dragon B-LBH
+Cathay Pacific,B-LRT,Airbus A350 (350-941),137,Update,Back in service 11/2021
+Cathay Pacific,B-HNW,Boeing 777 (777-31H),32697 (396),Update,Back in service 11/2021
+Cathay Pacific,B-HNQ,Boeing 777 (777-367),34244 (567),Update,Back in service 10/2021
+Cayman Airways,VP-CKZ,Boeing 737 (737-36E),27626 (2792),Update,Returned to lessor 10/2021
+Cayman Airways,VP-CIY,Boeing 737 NG / Max (737-8MAX) 43308 (7785),Update,Back in service 10/2021,
+Cebu Pacific Airlines,RP-C4102,Airbus A320 (320-214),6418,Update,Back in service 11/2021
+Cebu Pacific Airlines,RP-C7285,ATR 42/72 (72-600),1443,Update,Back in service 10/2021
+Cebu Pacific Airlines,RP-C7286,ATR 42/72 (72-600),1453,Update,Back in service 10/2021
+Cebu Pacific Airlines,RP-C7287,ATR 42/72 (72-600),1468,Update,Back in service 10/2021
+Cebu Pacific Airlines,RP-C7289,ATR 42/72 (72-600),1499,Update,Back in service 11/2021
+Cebu Pacific Airlines,RP-C7251,ATR 42/72 (72-212A),784,Update,Stored 10/2021
+Central Mountain Air,C-GJBU,Dash 8 (DHC-8 314),531,New,Delivery 01/11/2021  Ex CommutAir N857CA
+Chalair Aviation,F-HBCS,ATR 42/72 (42-320),333,Delete,To Zimex Aviation as OE-HZB 13/10/2021
+Chalair Aviation,F-HAPL,ATR 42/72 (72-212A),654,Update,Parked since 09/2021
+Champion Air,N500DE,Embraer 135/145 (145EP),84,Update,Parked since 10/2021
+Champion Air LLC,N138DE,Embraer 135/145 (145LR),129,Update,Parked since 10/2021
+China Airlines,B-18658,Boeing 737 NG / Max (737-8SH),41335 (5560),Update,Back in service 11/2021
+China Eastern Airlines,B-325S,Airbus A320 (320-251N),10262,New,Delivery 14/10/2021
+China Eastern Airlines,B-327E,Airbus A320 (320-251N),10378,New,Delivery 17/11/2021
+China Eastern Airlines,B-325V,Airbus A320 (320-251N),10398,New,Delivery 18/11/2021
+China Eastern Airlines,B-326Z,Airbus A320 (320-251N),10491,New,Delivery 27/10/2021
+China Eastern Airlines,B-9970,Airbus A320 (320-214),5759,Update,Parked since 09/2021
+China Eastern Airlines,B-1678,Airbus A320 (320-232),6578,Update,Parked since 09/2021
+China Eastern Airlines,B-1029,Airbus A320 (320-214),7869,Update,Parked since 09/2021
+China Express Airlines,B-324E,Airbus A320 (320-271N),10383,Update,Back in service 11/2021
+China Postal Airlines,B-2825,Boeing 757 (757-21BPCF),25890 (585),Update,Back in service 11/2021
+China Southern Airlines,B-6786,Airbus A320 (320-232),4782,Update,Parked since 09/2021
+China Southern Airlines,B-9912,Airbus A320 (320-232),5561,Update,Parked since 09/2021
+China Southern Airlines,B-9916,Airbus A320 (320-232),5564,Update,Parked since 09/2021
+China Southern Airlines,B-1828,Airbus A320 (320-232),6078,Update,Parked since 09/2021
+China Southern Airlines,B-1829,Airbus A320 (320-232),6106,Update,Parked since 09/2021
+China Southern Airlines,B-2287,Airbus A321 (321-231),2080,Update,Parked since 09/2021
+China Southern Airlines,B-6267,Airbus A321 (321-231),2741,Update,Parked since 09/2021
+China Southern Airlines,B-6580,Airbus A321 (321-231),3951,Update,Parked since 09/2021
+China Southern Airlines,B-6660,Airbus A321 (321-231),4299,Update,Parked since 09/2021
+China Southern Airlines,B-6686,Airbus A321 (321-231),4387,Update,Parked since 09/2021
+China Southern Airlines,B-6979,Airbus A321 (321-231),5655,Update,Parked since 09/2021
+China Southern Airlines,B-8997,Airbus A321 (321-211),8054,Update,Back in service 10/2021
+China Southern Airlines,B-303X,Airbus A321 (321-271N),8610,Update,Parked since 09/2021
+China Southern Airlines,B-2473,Boeing 747 (747-41BFSCD),32803 (1306),Update,Parked since 09/2021
+Chinese Government,B-2479,Boeing 747 (747-89L),41193 (1510),Update,Parked since 09/2021
+CityJet,EI-FPA,Canadair RJ (CRJ-900LR),15398,Update,Back in service 10/2021
+Colorful Guizhou Airlines,B-326E,Airbus A320 (320-251N),10612,New,Delivery 03/11/2021
+Comair,ZS-ZWP,Boeing 737 NG / Max (737-86N),28612 (455),Update,Parked since 10/2021
+Comair,ZS-ZWM,Boeing 737 NG / Max (737-8KN),40248 (3768),Update,Parked since 09/2021
+COMCO,N610G,Boeing 757 (757-22L),29304 (870),Update,Parked since 10/2021
+Comlux Aviation Malta,9H-AVK,Airbus A320 (320-251NACJ),9455,New,Delivery 25/10/2021
+CommutAir,N857CA,Dash 8 (DHC-8 314),531,Delete,To Central Mountain Air as C-GJBU 01/11/2021
+CommutAir,N13132,Embraer 135/145 (145XR),708,Update,Stored 10/2021
+CommutAir,N11137,Embraer 135/145 (145XR),721,Update,Parked since 10/2021
+CommutAir,N14143,Embraer 135/145 (145XR),739,Update,Parked since 10/2021
+CommutAir,N21144,Embraer 135/145 (145XR),741,Update,Back in service 11/2021
+CommutAir,N11165,Embraer 135/145 (145XR),819,Update,Back in service 11/2021
+CommutAir,N16183,Embraer 135/145 (145XR),914,Update,Parked since 09/2021
+CommutAir,N11191,Embraer 135/145 (145XR),935,Update,Back in service 10/2021
+CommutAir,N11193,Embraer 135/145 (145XR),938,Update,Parked since 10/2021
+Congo Airways,9S-AKD,Airbus A320 (320-216),3412,Update,Parked since 09/2021
+Contour Aviation,N16501,Embraer 135/145 (135LR),145,Update,Back in service 11/2021
+Contour Aviation,N16511,Embraer 135/145 (135LR),267,Update,Back in service 11/2021
+COPA Airlines,HP-1712CMP,Boeing 737 NG / Max (737-8V3),40664 (3267),Update,Back in service 11/2021
+COPA Airlines,HP-1713CMP,Boeing 737 NG / Max (737-8V3),40890 (3455),Delete,To Wingo as HP-1713CMP 27/10/2021
+Corendon Air,TC-TJN,Boeing 737 NG / Max (737-85P),28535 (480),Delete,To Air Incheon as HL8503 22/10/2021
+Corendon Air,OM-GTH,Boeing 737 NG / Max (737-8BK),29644 (2231),Delete,To Go2Sky Airline as OM-GTH 01/09/2021
+Corsair,F-HKYS,Airbus A330 (330-941),1992,New,Delivery 17/11/2021
+Coulson Flying Tankers,N138CG,Boeing 737 (737-3H4),27928 (2742),Update,Parked since 10/2021
+CSA,OK-REQ,Airbus A319 (319-112),4713,Update,Back in service 10/2021
+Cyprus Airways,5B-DCW,Airbus A319 (319-114),1129,Delete,Stored 11/2021 - To be scrapped
+Dalian Airlines,B-5639,Boeing 737 NG / Max (737-89L),40033 (4004),Update,Parked since 09/2021
+Dalian Airlines,B-7891,Boeing 737 NG / Max (737-89L),43418 (6177),Update,Parked since 09/2021
+Dalian Airlines,B-1210,Boeing 737 NG / Max (737-89L),60881 (6737),Update,Parked since 09/2021
+Dan Air,YR-URS,Airbus A319 (319-132),3614,New,Delivery 01/10/2021 Ex Just Us Air YR-URS
+Danish Air Transport,OY-RUE,Douglas MD-80/90 (MD-83),49936 (1778),Update,Stored 10/2021
+Danu Oro Transportas,LY-DAT,ATR 42/72 (42-500),445,Update,Parked since 09/2021
+Deer Jet,B-6435,Airbus A319 (319-133X(CJ)),4428,Update,Parked since 09/2021
+Delta Air Lines,N334NB,Airbus A319 (319-114),1659,Update,Back in service 11/2021
+Delta Air Lines,N356NW,Airbus A320 (320-212),818,Update,Back in service 11/2021
+Delta Air Lines,N358NW,Airbus A320 (320-212),832,Update,Parked since 10/2021
+Delta Air Lines,N365NW,Airbus A320 (320-212),964,Update,Back in service 10/2021
+Delta Air Lines,N366NW,Airbus A320 (320-212),981,Update,Parked since 10/2021
+Delta Air Lines,N126DN,Airbus A321 (321-211),10297,New,Delivery 29/10/2021
+Delta Air Lines,N128DN,Airbus A321 (321-211),10300,New,Delivery 05/11/2021
+Delta Air Lines,N573DZ,Airbus A350 (350-941),250,On order,Reg  now known
+Delta Air Lines,N3762Y,Boeing 737 NG / Max (737-832),30817 (968),Update,Parked since 10/2021
+Delta Air Lines,N932DS,Boeing 737 NG / Max (737-9GPER)37290 (3918),New,Delivery 01/11/2021,
+Delta Air Lines,N678DL,Boeing 757 (757-232),25983 (465),Update,Back in service 11/2021
+Delta Air Lines,N539US,Boeing 757 (757-251),26486 (700),Update,Parked since 10/2021
+Delta Air Lines,N6716C,Boeing 757 (757-232),30838 (955),Update,Back in service 11/2021
+Delta Air Lines,N823DX,Boeing 757 (757-26D),33967 (1050),Update,Back in service 11/2021
+Delta Air Lines,N187DN,Boeing 767 (767-332ER),27582 (617),Update,Back in service 12/2021
+Delta Air Lines,N172DZ,Boeing 767 (767-332ER),29691 (719),Update,Parked since 10/2021
+Delta Air Lines,N173DZ,Boeing 767 (767-332ER),29692 (723),Update,Parked since 10/2021
+DHL Air,G-DHKB,Boeing 757 (757-256PCF),29312 (943),Delete,To DHL Air Austria as OE-LNJ 02/11/2021
+DHL Air Austria,OE-LNJ,Boeing 757 (757-256PCF),29312 (943),New,Delivery 02/11/2021  Ex DHL Air G-DHKB
+Dow Chemical,N870DC,Canadair RJ (CRJ-700),10314,Update,Back in service 11/2021
+Dubai Air Wing,A6-HMM,Boeing 747 (747-48EM),28551 (1131),Update,Parked since 09/2021
+East-West Express,UR-CRU,Airbus A319 (319-114),639,Update,Parked since 09/2021
+Eastern Airlines,N705KW,Boeing 767 (767-336ER),24342 (363),Update,Parked since 09/2021
+Eastern Airlines,N827KW,Boeing 777 (777-212ER),28525 (353),New,Delivery 05/11/2021  Ex Singapore Airlines 9V-SVB
+Eastern Airways,G-CGMC,Embraer 135/145 (135ER),198,Update,Parked since 10/2021
+Eastern Airways,G-CDKA,Saab 2000 (2000),6,Delete,To ACE Air Charter Express as N506FR 27/10/2021
+Eastern Australia,VH-TQL,Dash 8 (DHC-8 315),603,Update,Back in service 11/2021
+EasyJet,G-EZAO,Airbus A319 (319-111),2769,Update,Back in service 11/2021
+EasyJet,G-EZAV,Airbus A319 (319-111),2803,Update,Parked since 10/2021
+EasyJet,G-EZAY,Airbus A319 (319-111),2827,Update,Parked since 10/2021
+EasyJet,G-EZBH,Airbus A319 (319-111),2959,Update,Back in service 11/2021
+EasyJet,G-EZBI,Airbus A319 (319-111),3003,Update,Parked since 10/2021
+EasyJet,G-EZBT,Airbus A319 (319-111),3090,Update,Parked since 10/2021
+EasyJet,G-EZBW,Airbus A319 (319-111),3134,Update,Parked since 09/2021
+EasyJet,G-EZBY,Airbus A319 (319-111),3176,Update,Back in service 11/2021
+EasyJet,G-EZDD,Airbus A319 (319-111),3442,Update,Parked since 10/2021
+EasyJet,G-EZDH,Airbus A319 (319-111),3466,Update,Parked since 10/2021
+EasyJet,G-EZGN,Airbus A319 (319-111),4781,Update,Parked since 09/2021
+EasyJet,G-EZTM,Airbus A320 (320-214),4014,Update,Back in service 10/2021
+EasyJet,G-EZWG,Airbus A320 (320-214),5318,Delete,To EasyJet Europe as OE-ICL 03/11/2021
+EasyJet,G-EZWF,Airbus A320 (320-214),5319,Delete,To EasyJet Europe as OE-ICN 03/11/2021
+EasyJet Europe,OE-ICL,Airbus A320 (320-214),5318,New,Delivery 03/11/2021  Ex EasyJet G-EZWG
+EasyJet Europe,OE-ICN,Airbus A320 (320-214),5319,New,Delivery 03/11/2021  Ex EasyJet G-EZWF
+EasyJet Switzerland,HB-AYN,Airbus A320 (320-251N),10102,New,Delivery 18/11/2021
+EasyJet Switzerland,HB-AYE,Airbus A320 (320-251N),10114,New,Delivery 08/11/2021
+EAT Leipzig,D-AEAP,Airbus A300 (300-622RF),724,Update,Back in service 10/2021
+Egyptair,SU-GDE,Boeing 737 NG / Max (737-866),35569 (3043),Update,Back in service 11/2021
+El Al Israel Airlines,4X-EKA,Boeing 737 NG / Max (737-858),29957 (204),Update,Parked since 09/2021
+El Al Israel Airlines,4X-EKU,Boeing 737 NG / Max (737-8Z9),33834 (1938),Update,Parked since 09/2021
+El Al Israel Airlines,N487MC,Boeing 747 (747-45EFSCD),30609 (1309),Delete,To Atlas Air as N487MC 06/01/2021
+Emirates,A6-EEA,Airbus A380 (380-861),108,Update,Back in service 11/2021
+Emirates,A6-EED,Airbus A380 (380-861),111,Update,Back in service 11/2021
+Emirates,A6-EEN,Airbus A380 (380-861),135,Update,Back in service 10/2021
+Emirates,A6-EES,Airbus A380 (380-861),140,Update,Parked since 10/2021
+Emirates,A6-EEX,Airbus A380 (380-861),154,Update,Back in service 11/2021
+Emirates,A6-EOB,Airbus A380 (380-861),164,Update,Parked since 10/2021
+Emirates,A6-EUE,Airbus A380 (380-861),217,Update,Back in service 11/2021
+Emirates,A6-EUH,Airbus A380 (380-861),220,Update,Back in service 11/2021
+Emirates,A6-EUL,Airbus A380 (380-861),224,Update,Back in service 10/2021
+Emirates,A6-EUQ,Airbus A380 (380-842),229,Update,Parked since 09/2021
+Emirates,A6-ECF,Boeing 777 (777-31HER),35574 (690),Update,Back in service 11/2021
+Endeavor Air,N331CA,Canadair RJ (CRJ-700),10061,Update,Parked since 10/2021
+Endeavor Air,N340CA,Canadair RJ (CRJ-700),10062,Update,Parked since 10/2021
+Endeavor Air,N904XJ,Canadair RJ (CRJ-900),15135,Update,Back in service 11/2021
+Endeavor Air,N905XJ,Canadair RJ (CRJ-900),15137,Update,Parked since 09/2021
+Endeavor Air,N600LR,Canadair RJ (CRJ-900),15142,Update,Parked since 09/2021
+Endeavor Air,N932XJ,Canadair RJ (CRJ-900),15194,Update,Back in service 11/2021
+Endeavor Air,N200PQ,Canadair RJ (CRJ-900LR),15200,Update,Back in service 11/2021
+Endeavor Air,N8683B,Canadair RJ (CRJ-200LR),7683,Update,Parked since 09/2021
+Endeavor Air,N8783E,Canadair RJ (CRJ-440),7783,Update,Parked since 09/2021
+Envoy,N763CC,Embraer 170/175 (170SU),300,New,Delivery 20/10/2021
+Etihad Airways,A6-EIC,Airbus A320 (320-232),2167,Update,Parked since 09/2021
+Etihad Airways,A6-EIK,Airbus A320 (320-232),3676,Update,Back in service 11/2021
+Etihad Airways,A6-EIH,Airbus A320 (320-232),3693,Update,Parked since 10/2021
+Etihad Airways,A6-EIL,Airbus A320 (320-232),4066,Update,Back in service 11/2021
+Etihad Airways,A6-EIY,Airbus A320 (320-232),6226,Update,Parked since 10/2021
+Etihad Airways,A6-EJA,Airbus A320 (320-232),6527,Update,Parked since 10/2021
+Etihad Airways,A6-AEA,Airbus A321 (321-231),5836,Update,Parked since 09/2021
+Etihad Airways,A6-AEG,Airbus A321 (321-231),6731,Update,Back in service 10/2021
+Etihad Airways,A6-ETB,Boeing 777 (777-3FXER),34598 (543),Update,Parked since 09/2021
+Euro-Asia,UP-C8503,Canadair RJ (CRJ-200),8093,Update,Parked since 10/2021
+Eurowings,D-AKNT,Airbus A319 (319-112),2607,Update,Back in service 10/2021
+Eurowings,D-AKNV,Airbus A319 (319-112),2632,Update,Back in service 10/2021
+Eurowings,D-AEUD,Airbus A320 (320-214),3908,Delete,To Eurowings Europe as D-AEUD 13/09/2021
+Eurowings,D-AEUE,Airbus A320 (320-214),4161,Delete,To Eurowings Europe as D-AEUE 04/10/2021
+Eurowings,D-AEUH,Airbus A320 (320-214),4329,Delete,To Eurowings Europe as D-AEUH 20/09/2021
+Eurowings,D-ABFP,Airbus A320 (320-214),4606,Update,Back in service 10/2021
+Eurowings Discover,D-AIUW,Airbus A320 (320-214),7251,New,Delivery 06/11/2021
+Eurowings Discover,D-AIKB,Airbus A330 (330-343X),576,New,Delivery 31/10/2021
+Eurowings Discover,D-AIKH,Airbus A330 (330-343X),648,New,Delivery 01/11/2021
+Eurowings Europe,D-AEUD,Airbus A320 (320-214),3908,New,Delivery 13/09/2021  Ex Eurowings D-AEUD
+Eurowings Europe,D-AEUE,Airbus A320 (320-214),4161,New,Delivery 04/10/2021  Ex Eurowings D-AEUE
+Eurowings Europe,D-AEUH,Airbus A320 (320-214),4329,New,Delivery 20/09/2021  Ex Eurowings D-AEUH
+EVA Air,B-55411,Airbus A318 (318-112CJ),3886,Update,Back in service 11/2021
+EVA Air,B-16206,Airbus A321 (321-211),5808,Update,Back in service 10/2021
+EVA Air,B-16208,Airbus A321 (321-211),6024,Update,Back in service 11/2021
+EVA Air,B-16211,Airbus A321 (321-211),6179,Update,Back in service 11/2021
+EVA Air,B-16227,Airbus A321 (321-211),7344,Update,Back in service 10/2021
+Everts Air,N568SW,Embraer 120 Brasilia (120ER),343,Update,Parked since 10/2021
+EWM Investments,N900EM,Embraer 135/145 (135BJ),976,Update,Parked since 10/2021
+Express Air Cargo,TS-ICB,Boeing 737 (737-3G7F),24710 (1825),Update,Back in service 10/2021
+Expressjet,N844HK,Embraer 135/145 (145LR),838,Update,Correct operator
+Expressjet,N846HK,Embraer 135/145 (145LR),855,New,Delivery 04/10/2021  Ex Trans States Airlines N846HK
+Eznis Airways,EI-GVW,Boeing 737 NG / Max (737-7K2),38127 (3632),Update,Parked since 10/2021
+Federal Express,N733FD,Airbus A300 (300-605RF),715,Update,Parked since 10/2021
+Federal Express,N682FE,Airbus A300 (300-605RF),800,Update,Back in service 10/2021
+Federal Express,N901FX,ATR 42/72 (42-320F),172,Update,Parked since 10/2021
+Federal Express,N903FX,ATR 42/72 (42-320F),179,Update,Parked since 10/2021
+Federal Express,N936FD,Boeing 757 (757-2T7SF),23293 (56),Update,Back in service 10/2021
+Federal Express,N978FD,Boeing 757 (757-236SF),24119 (167),Update,Parked since 10/2021
+Federal Express,N918FD,Boeing 757 (757-23ASF),24290 (212),Update,Parked since 10/2021
+Federal Express,N914FD,Boeing 757 (757-28ASF),24367 (208),Update,Parked since 10/2021
+Federal Express,N985FD,Boeing 757 (757-230SF),24737 (267),Update,Back in service 10/2021
+Federal Express,N775FD,Boeing 757 (757-222SF),25043 (353),Update,Parked since 10/2021
+Federal Express,N848FD,Boeing 777 (777-F),66258 (1705),New,Delivery 26/10/2021
+Federal Express,N307FE,Douglas DC-10 (MD10-30F),48291 (412),Update,Back in service 10/2021
+Federal Express,N522FE,Douglas MD-11 (MD-11 F),48476 (510),Update,Parked since 10/2021
+Federal Express,N587FE,Douglas MD-11 (MD-11 F),48489 (492),Update,Parked since 10/2021
+Fiji Airways,DQ-FJV,Airbus A330 (330-243),1465,Update,Back in service 10/2021
+Fiji Airways,DQ-FAD,Boeing 737 NG / Max (737-8MAX) 64308 (7313),Update,Back in service 10/2021,
+Finnair,OH-LVC,Airbus A319 (319-112),1309,Update,Back in service 11/2021
+Finnair,OH-LZM,Airbus A321 (321-231),7552,Update,Back in service 10/2021
+Finnair,OH-LZN,Airbus A321 (321-231),7570,Update,Back in service 11/2021
+Firefly,9M-FYF,ATR 42/72 (72-212A),860,Update,Back in service 08/2021
+Firefly,9M-FYL,ATR 42/72 (72-212A),948,Update,Parked since 10/2021
+Flair Airlines,C-FLKJ,Boeing 737 NG / Max (737-8MAX) 64945 (7791),New,Delivery 16/11/2021,
+Fly Jet KZ,UP-CJ014,Canadair RJ (CRJ-200ER),7990,Update,Parked since 10/2021
+Fly Jet KZ,UP-EM019,Embraer 135/145 (135BJ),1113,Update,Parked since 09/2021
+Fly2Sky,LZ-MDO,Airbus A320 (320-214),879,Update,Back in service 11/2021
+FlyArystan,EI-KBA,Airbus A320 (320-232),5401,New,Delivery 12/11/2021  Ex FlyArystan P4-KBA
+FlyArystan,P4-KBA,Airbus A320 (320-232),5401,Delete,To FlyArystan as EI-KBA 12/11/2021
+FlyArystan,EI-KBE,Airbus A320 (320-232),5968,New,Delivery 21/10/2021  Ex FlyArystan P4-KBE
+FlyArystan,P4-KBE,Airbus A320 (320-232),5968,Delete,To FlyArystan as EI-KBE 21/10/2021
+FlyArystan,EI-KBN,Airbus A320 (320-232),6343,New,Delivery 12/11/2021  Ex FlyArystan P4-KBN
+FlyArystan,P4-KBN,Airbus A320 (320-232),6343,Delete,To FlyArystan as EI-KBN 12/11/2021
+Flybe,G-JECX,Dash 8 (DHC-8 402),4155,Delete,To Flybe (new) as G-JECX 05/11/2021
+Flybe (new),G-JECX,Dash 8 (DHC-8 402),4155,New,Delivery 05/11/2021  Ex Flybe G-JECX
+FlyDubai,A6-FER,Boeing 737 NG / Max (737-8KN),40268 (5163),Update,Back in service 11/2021
+FlyDubai,A6-FMU,Boeing 737 NG / Max (737-8MAX) 60996 (8128),New,Delivery 10/11/2021,
+FlyDubai,A6-FMV,Boeing 737 NG / Max (737-8MAX) 60997 (8136),New,Delivery 18/11/2021,
+FlyNamibia,V5-WIN,Embraer 135/145 (145LR),285,New,Delivery 01/11/2021 Ex Westair Aviation V5-WIN
+FlyNamibia,V5-WEJ,Embraer 135/145 (145MP),342,New,Delivery 01/11/2021  Ex Westair Aviation V5-WEJ
+Flynas,VP-CXN,Airbus A320 (320-214),2569,Update,Stored 08/2021
+Formula One,G-OFOM,BAe 146 / Avro RJ (Bae 146-100) 1144,Update,Parked since 10/2021,
+Fuji Dream Airlines,JA04FJ,Embraer 170/175 (170SE),129,Update,Back in service 11/2021
+Funair Corporation,N737AG,Boeing 737 NG / Max (737-7BF(BBJ)),30496 (301),Update,Parked since 10/2021
+GainJet Aviation,SX-RFA,Boeing 757 (757-23N),30232 (888),Update,Back in service 11/2021
+Galistair Malta,9H-VDB,Airbus A321 (321-211),1607,Update,Parked since 10/2021
+Garuda,PK-GPD,Airbus A330 (330-341),144,Update,Back in service 11/2021
+Garuda,PK-GMO,Boeing 737 NG / Max (737-8U3),30147 (3327),Update,Back in service 11/2021
+Garuda,PK-GFK,Boeing 737 NG / Max (737-86N),37887 (3463),Update,Back in service 11/2021
+Garuda,PK-GFR,Boeing 737 NG / Max (737-81D),39417 (3802),Update,Back in service 11/2021
+Garuda,PK-GNQ,Boeing 737 NG / Max (737-8U3),39954 (5284),Update,Back in service 11/2021
+Garuda,PK-GNN,Boeing 737 NG / Max (737-86N),41270 (5116),Update,Back in service 11/2021
+Garuda,PK-GIF,Boeing 777 (777-3U3ER),29148 (1203),Update,Back in service 10/2021
+Garuda,PK-GRT,Canadair RJ (CRJ-1000ER),19044,Update,Back in service 11/2021
+Genghis Khan Airlines,B-606C,Comac ARJ21 (ARJ21-700),135,Update,Parked since 09/2021
+Georgian Airways,4L-TGC,Boeing 737 NG / Max (737-8FH),35092 (2160),Delete,To Armenia Airways as EK-73792 05/11/2021
+GetJet Airlines,LY-EMU,Airbus A320 (320-233),2118,Update,Parked since 10/2021
+Global Jet Luxembourg,LX-LTI,Airbus A318 (318-112CJ ELITE),4169,Update,Parked since 09/2021
+Go First,VT-WGP,Airbus A320 (320-271N),8146,Update,Back in service 11/2021
+Go First,VT-WJW,Airbus A320 (320-271N),9530,Update,Back in service 11/2021
+Go First,VT-WJZ,Airbus A320 (320-271N),9597,New,Delivery 29/10/2021
+Go2Sky Airline,OM-GTH,Boeing 737 NG / Max (737-8BK),29644 (2231),New,Delivery 01/09/2021  Ex Corendon Air OM-GTH
+GoJet Airlines,N578GJ,Canadair RJ (CRJ-550),10083,Update,Back in service 11/2021
+GoJet Airlines,N508MJ,Canadair RJ (CRJ-700),10087,New,Delivery 08/10/2021  Ex Mesa Airlines N508MJ
+GoJet Airlines,N524GJ,Canadair RJ (CRJ-550),10097,Update,Parked since 10/2021
+GoJet Airlines,N516LR,Canadair RJ (CRJ-702),10258,Update,Back in service 11/2021
+GOL Transportes Aereos PR-GTP,PR-GUN,Boeing 737 NG / Max (737-8EH),37610 (3912),Update,Back in service 10/2021
+GOL Transportes Aereos PR-GTP,PR-GUP,Boeing 737 NG / Max (737-8HX),38876 (4114),Update,Back in service 10/2021
+GOL Transportes Aereos PR-GTP,PR-GUR,Boeing 737 NG / Max (737-8HX),38877 (4144),Update,Returned to lessor 11/2021
+GOL Transportes Aereos PR-GTP,PR-GUQ,Boeing 737 NG / Max (737-8EH),39604 (4160),Update,Back in service 10/2021
+GOL Transportes Aereos PR-GTP,PR-GXN,Boeing 737 NG / Max (737-8EH),39631 (4741),Update,Back in service 11/2021
+GOL Transportes Aereos PR-GTP,PR-GXV,Boeing 737 NG / Max (737-8EH),39639 (4931),Update,Back in service 11/2021
+GOL Transportes Aereos PR-GTP,PS-GPC,Boeing 737 NG / Max (737-8MAX) 44864 (7293),New,Delivery 14/10/2021,
+GOL Transportes Aereos PR-GTP,PR-XMW,Boeing 737 NG / Max (737-8MAX) 60237 (7946),New,Delivery 28/10/2021,
+Gulf Air,A9C-AF,Airbus A320 (320-214),4158,Update,Back in service 10/2021
+Gulf Air,A9C-AO,Airbus A320 (320-214),4860,Delete,To LATAM Brasil as PR-TQC 24/10/2021
+Gulf Wings,A6-ANK,Embraer 135/145 (135BJ),1045,Update,Parked since 10/2021
+GullivAir,LZ-AWY,Airbus A330 (330-223),939,Update,Back in service 10/2021
+GY Challenger,N999YG,Canadair RJ (CRJ-100SE),7075,Update,Parked since 10/2021
+Hainan Airlines,B-1098,Airbus A330 (330-343E),1875,Update,Back in service 11/2021
+Hainan Airlines,B-1505,Boeing 737 NG / Max (737-84P),39962 (5460),Update,Parked since 09/2021
+Hainan Airlines,B-1796,Boeing 737 NG / Max (737-84P),41569 (5331),Update,Parked since 09/2021
+Hainan Airlines,B-1490,Boeing 737 NG / Max (737-84P),62572 (6553),Update,Parked since 09/2021
+Hainan Airlines,B-207V,Boeing 787 (787-9),62732 (779),Update,Back in service 11/2021
+Hawaiian Airlines,N208HA,Airbus A321 (321-271N),8123,Update,Parked since 09/2021
+Hawaiian Airlines,N489HA,Boeing 717 (717-2BD),55002 (5003),Update,Parked since 10/2021
+Hawaiian Airlines,N480HA,Boeing 717 (717-22A),55125 (5070),Update,Back in service 10/2021
+Hawaiian Airlines,N483HA,Boeing 717 (717-22A),55128 (5079),Update,Back in service 10/2021
+Hawaiian Airlines,N487HA,Boeing 717 (717-22A),55132 (5098),Update,Parked since 10/2021
+Hawaiian Airlines,N490HA,Boeing 717 (717-2CM),55151 (5041),Update,Back in service 10/2021
+Hawaiian Airlines,N493HA,Boeing 717 (717-2BL),55184 (5142),Update,Parked since 10/2021
+Hawaiian Airlines,N495HA,Boeing 717 (717-2BL),55185 (5145),Update,Parked since 10/2021
+Hendrick Motorsports,N509RH,Embraer 135/145 (145LR),517,Update,Parked since 10/2021
+Hendrick Motorsports,N508RH,Embraer 135/145 (145LR),769,Update,Parked since 10/2021
+Heston Airlines,LY-FJI,Airbus A320 (320-232),2157,New,Delivery 23/10/2021 lsd from Genesis Aircraft  Ex AeroContractors LY-FJI
+Heston Airlines,LY-NZL,Airbus A320 (320-214),2388,Delete,To AeroContractors as LY-NZL 24/10/2021
+Heston Airlines,LY-VUT,Airbus A320 (320-232),3275,Update,Parked since 09/2021
+Hevilift Australia,VH-FVL,ATR 42/72 (72-212A),974,New,Delivery 04/10/2021  Ex Virgin Australia Regional Airlines VH-FVL
+HiFly Malta,9H-JAI,Airbus A340 (340-313X),236,Update,Parked since 10/2021
+Hillwood Airways,N737AT,Boeing 737 NG / Max (737-7HJ(BBJ)),36756 (2405),Update,Back in service 11/2021
+Hong Kong Airlines,B-LPJ,Airbus A320 (320-214),5514,Update,Parked since 09/2021
+Hong Kong Airlines,B-LPP,Airbus A320 (320-214),7035,Update,Parked since 09/2021
+Hong Kong Airlines,B-LNQ,Airbus A330 (330-343E),1668,Update,Parked since 09/2021
+Hong Kong Express Airways,B-LCL,Airbus A320 (320-271N),7209,Update,Back in service 11/2021
+Hop!,F-GRZE,Canadair RJ (CRJ-700),10032,Update,Parked since 10/2021
+Hop!,F-GRZO,Canadair RJ (CRJ-702),10265,Update,Stored 09/2021
+Horizon Air,N445QX,Dash 8 (DHC-8 402),4358,Update,Parked since 09/2021
+Hydro-Quebec,C-GHQP,Dash 8 (DHC-8 402),4004,Update,Back in service 11/2021
+iAero Airways,N811TJ,Boeing 737 (737-306SF),23538 (1288),Update,Parked since 10/2021
+iAero Airways,N263LM,Boeing 737 (737-4Q3),26603 (2618),New,Delivery 14/10/2021  Ex NewGen Airways HS-NGC
+iAero Airways,N916BR,Boeing 737 NG / Max (737-8AS),29916 (210),New,Delivery 09/10/2021  Ex Sun Express TC-SBJ
+iAero Airways,N471BS,Boeing 737 NG / Max (737-86J),30499 (567),Update,Back in service 11/2021
+IBC Airways,N261BC,Embraer 135/145 (145ER),82,Update,Stored 09/2021
+IBC Airways,N671BC,Saab 340 (340A),84,Update,Back in service 11/2021
+Iberia,EC-NRG,Airbus A330 (330-202),1864,New,Delivery 07/11/2021
+Iberia,EC-NRH,Airbus A330 (330-202),1882,New,Delivery 09/11/2021
+Icelandair,TF-ICP,Boeing 737 NG / Max (737-8MAX) 44360 (7486),Update,Back in service 11/2021,
+Icelandair,TF-ICB,Boeing 737 NG / Max (737-9MAX) 44568 (7425),Update,Back in service 10/2021,
+Icelandair,TF-FIC,Boeing 757 (757-23N),30735 (931),Update,In service
+IFL Group,N811FL,Canadair RJ (CRJ-100LRSF),7029,Update,Back in service 11/2021
+Imetame,PR-PFD,ATR 42/72 (72-600),1235,Update,Back in service 11/2021
+Indian Air Force,IN330,Boeing 737 NG / Max (737-8FV(P-8I)),64892 (8526),New,Delivery 18/10/2021
+Indigo,VT-IIJ,Airbus A320 (320-251N),10625,New,Delivery 27/10/2021
+Indigo,VT-IKE,Airbus A320 (320-232),2138,Update,Parked since 09/2021
+Indigo,VT-IDN,Airbus A320 (320-232),2334,Delete,To Super Air Jet as PK-SAA 02/11/2021
+Indigo,VT-IHH,Airbus A320 (320-214),3138,Update,Parked since 09/2021
+Indigo,VT-IGW,Airbus A320 (320-232),4506,Delete,To Super Air Jet as PK-SAK 30/09/2021
+Indigo,VT-IEC,Airbus A320 (320-232),4614,Delete,To Super Air Jet as PK-SAA 02/11/2021
+Indigo,VT-IEM,Airbus A320 (320-232),4947,Update,Parked since 10/2021
+Indigo,VT-IEN,Airbus A320 (320-232),4954,Update,Parked since 09/2021
+Indigo,VT-IHR,Airbus A320 (320-232),5218,Update,Stored 11/2021
+Indigo,VT-IEZ,Airbus A320 (320-232),5231,Update,Parked since 10/2021
+Indigo,VT-IFJ,Airbus A320 (320-232),5473,Update,Stored 09/2021
+Indigo,VT-IFM,Airbus A320 (320-232),5537,Update,Parked since 10/2021
+Indigo,VT-IFN,Airbus A320 (320-232),5577,Update,Parked since 10/2021
+Indigo,VT-IFP,Airbus A320 (320-232),5676,Update,Parked since 10/2021
+Indigo,VT-IFX,Airbus A320 (320-232),5898,Update,Stored 11/2021
+Indigo,VT-IRD,ATR 42/72 (72-600),1660,New,Delivery 02/11/2021
+Indonesia Airasia,PK-AZE,Airbus A320 (320-214),5098,Update,Back in service 10/2021
+Intel Corp,N286HF,Embraer 135/145 (145XR),1177,Update,Parked since 10/2021
+interCaribbean,VQ-THM,ATR 42/72 (42-500),621,New,Delivery 08/08/2021  Ex SATENA HK-4949
+interCaribbean,VQ-TBC,Embraer 120 Brasilia (120RT),283,Update,Back in service 11/2021
+Iran Air,EP-IBB,Airbus A300 (300-605R),727,Update,Parked since 10/2021
+Iran Air,EP-IEQ,Airbus A319 (319-112),1679,Update,Parked since 10/2021
+Iran Air,EP-ITM,ATR 42/72 (72-600),1510,Update,Parked since 10/2021
+Iran Aseman Airlines,EP-ATF,Fokker 70/100 (F28-0100),11476,Update,Parked since 10/2021
+Iranian Gvmt,EP-IGA,Airbus A340 (340-313X),257,Update,Parked since 08/2021
+Israeli Air Force,4X-ISR,Boeing 767 (767-338ER),30186 (796),Update,Parked since 08/2021
+Israir,OK-TVM,Boeing 737 NG / Max (737-8FN),37077 (3163),New,Delivery 04/11/2021  Ex SmartWings OK-TVM
+Israir,OK-TSD,Boeing 737 NG / Max (737-8Q8),41795 (4895),New,Delivery 10/11/2021  Ex SmartWings OK-TSD
+ITA Transportes Aereos,PS-SIL,Airbus A319 (319-112),3689,New,Delivery 08/11/2021
+Italian Air Force,MM62226,Boeing 767 (767-2EYER),33686 (912),Update,Parked since 10/2021
+Japan Airlines,JA13XJ,Airbus A350 (350-941),538,New,Delivery 12/11/2021
+Japan Airlines,JA324J,Boeing 737 NG / Max (737-846),35353 (3105),Update,Parked since 10/2021
+Japan Airlines,JA709J,Boeing 777 (777-246ER),32896 (489),Update,Parked since 10/2021
+Japan Airlines,JA824J,Boeing 787 (787-846),34834 (27),Update,Parked since 10/2021
+JC International Airlines,XU-995,Airbus A320 (320-214),7312,Update,Parked since 08/2021
+Jeju Air,HL8332,Boeing 737 NG / Max (737-8JP),39010 (3871),Update,Back in service 11/2021
+Jet Airways,VT-JWU,Airbus A330 (330-302),1391,Delete,To Nordwind Airlines as VP-BUJ 29/10/2021
+Jet Force V,N835BZ,Boeing 737 NG / Max (737-7AK(BBJ)),29866 (408),Update,Back in service 11/2021
+Jet2,G-GDFO,Boeing 737 (737-3U3),28740 (3003),Update,Parked since 10/2021
+Jet2,G-GDFN,Boeing 737 (737-33V),29332 (3072),Update,Parked since 10/2021
+Jet2,G-DRTJ,Boeing 737 NG / Max (737-86N),35647 (2927),Update,Parked since 10/2021
+Jet2,G-LSAI,Boeing 757 (757-21B),24016 (150),Update,Back in service 11/2021
+JetBlue Airways,N504JB,Airbus A320 (320-232),1156,Update,Parked since 10/2021
+JetBlue Airways,N505JB,Airbus A320 (320-232),1173,Update,Parked since 10/2021
+JetBlue Airways,N506JB,Airbus A320 (320-232),1235,Update,Back in service 11/2021
+JetBlue Airways,N520JB,Airbus A320 (320-232),1446,Update,Parked since 10/2021
+JetBlue Airways,N523JB,Airbus A320 (320-232),1506,Update,Back in service 11/2021
+JetBlue Airways,N584JB,Airbus A320 (320-232),2149,Update,Back in service 11/2021
+JetBlue Airways,N657JB,Airbus A320 (320-232),3119,Update,Back in service 11/2021
+JetBlue Airways,N3077J,Airbus A220 (220-371),55124,New,Delivery 29/10/2021
+JetOneX,N373JX,Boeing 747 (747-409),33735 (1354),New,Delivery 06/11/2021
+JetSMART,CC-AWM,Airbus A320 (320-271N),9410,Delete,To Volaris as XA-VSI 09/11/2021
+Jetstar,VH-VFY,Airbus A320 (320-232),6362,Update,Back in service 11/2021
+Jetstar,VH-VWX,Airbus A321 (321-231),3899,Update,Back in service 11/2021
+Jetstar,VH-VWW,Airbus A321 (321-231),3916,Update,Back in service 10/2021
+Jetstar,VH-VKJ,Boeing 787 (787-8),36236 (278),Update,Back in service 11/2021
+Jetstar Asia,9V-JSP,Airbus A320 (320-232),5323,Update,Back in service 11/2021
+Joe Gibbs Racing,N520JG,Canadair RJ (CRJ-701),10052,Update,Parked since 10/2021
+Joe Gibbs Racing,N519JG,Canadair RJ (CRJ-700),10217,Update,Parked since 10/2021
+Jordan Aviation,JY-JVA,Airbus A330 (330-243),409,Update,Back in service 10/2021
+Juneyao Airlines,B-326J,Airbus A320 (320-271N),10578,New,Delivery 04/11/2021
+Juneyao Airlines,B-6618,Airbus A320 (320-214),4102,Update,Parked since 10/2021
+Juneyao Airlines,B-208A,Boeing 787 (787-9),64314 (790),Update,Back in service 11/2021
+Just Us Air,YR-URS,Airbus A319 (319-132),3614,Delete,To Dan Air as YR-URS 01/10/2021
+K-Mile Asia,HS-KMC,Boeing 737 (737-4M0BDSF),29209 (3087),Update,Parked since 09/2021
+K5 Aviation,D-AKAY,Airbus A350 (350-941CJ),443,Update,Parked since 09/2021
+Kalitta Air,N743CK,Boeing 747 (747-446BCF),26350 (961),Update,Back in service 11/2021
+Kalitta Air,N782CK,Boeing 747 (747-4HQERF),37304 (1419),Update,Parked since 10/2021
+Karun Airlines,EP-NFA,Fokker 70/100 (F28-0100),11407,Update,Parked since 09/2021
+KlasJet,LY-VTA,Canadair RJ (CRJ-200ER),7617,Update,Parked since 09/2021
+KLM,PH-BGC,Boeing 737 NG / Max (737-8K2),30361 (2619),Update,Parked since 10/2021
+KLM,PH-BGW,Boeing 737 NG / Max (737-7K2),38128 (3797),Update,Parked since 09/2021
+KLM Cityhopper,PH-EZI,Embraer 190/195 (190STD),322,On order,Stored 10/2021
+KLM Cityhopper,PH-EZK,Embraer 190/195 (190STD),326,Update,Stored 10/2021
+KLM Cityhopper,PH-OFD,Fokker 70/100 (F28-0100),11259,Update,Scrapped in 2010
+Korean Air,HL8212,Airbus A330 (330-223),1155,Update,Back in service 11/2021
+Korean Air,HL8276,Airbus A330 (330-223),1393,Update,Back in service 11/2021
+Korean Air,HL7708,Boeing 737 NG / Max (737-9B5),29993 (1208),Update,Back in service 11/2021
+Korean Air,HL7784,Boeing 777 (777-3B5ER),37136 (823),Update,Back in service 10/2021
+Krishnapatnam port company,VT-CKP,Embraer 135/145 (135BJ),1094,Delete,To Private as VT-CMR 01/11/2021
+Kulula,ZS-ZWF,Boeing 737 NG / Max (737-8LD),40856 (5606),Update,Parked since 10/2021
+Kuwait Airways,9K-APC,Airbus A330 (330-243),1653,Update,Back in service 11/2021
+LAM Linhas Aereas De Mocambique,C9-BAR,Boeing 737 NG / Max (737-7Q8),30674 (1511),Update,Back in service 11/2021
+LAM Linhas Aereas De Mocambique,C9-BAQ,Boeing 737 NG / Max (737-752),33792 (1571),Update,Back in service 11/2021
+LATAM Argentina,LV-BRY,Airbus A320 (320-233),1351,Delete,To LATAM Chile as CC-COE 12/07/2021
+LATAM Argentina,LV-FUX,Airbus A320 (320-233),4543,Delete,To LATAM Chile as CC-BAI 07/11/2021
+LATAM Brasil,PR-MHA,Airbus A320 (320-214),2924,Update,Back in service 11/2021
+LATAM Brasil,PR-TQB,Airbus A320 (320-214),4827,Update,Back in service 10/2021
+LATAM Brasil,PR-TQC,Airbus A320 (320-214),4860,New,Delivery 24/10/2021  Ex Gulf Air A9C-AO
+LATAM Brasil,PT-MOF,Boeing 767 (767-316ER),41997 (1055),Update,Stored 10/2021
+LATAM Chile,CC-COE,Airbus A320 (320-233),1351,New,Delivery 12/07/2021  Ex LATAM Argentina LV-BRY
+LATAM Chile,CC-COG,Airbus A320 (320-233),1491,New,Delivery 14/09/2021
+LATAM Chile,CC-BAB,Airbus A320 (320-233),4400,Update,Back in service 11/2021
+LATAM Chile,CC-BAI,Airbus A320 (320-233),4543,New,Delivery 07/11/2021  Ex LATAM Argentina LV-FUX
+LATAM Chile,CC-BEQ,Airbus A321 (321-211),7119,Update,Back in service 11/2021
+LATAM Chile,CC-CXI,Boeing 767 (767-316ER),37800 (984),Update,Back in service 10/2021
+LATAM Chile,CC-BDB,Boeing 767 (767-316ER),40590 (1014),Update,Back in service 11/2021
+LATAM Peru,CC-CPI,Airbus A319 (319-132),2585,Update,Back in service 11/2021
+LATAM Peru,CC-CPM,Airbus A319 (319-132),2864,Update,Back in service 11/2021
+Libyan Arab Airlines,5A-LAT,Airbus A330 (330-202),1505,Update,Back in service 10/2021
+Lineage asset company,N527AH,Embraer 190/195 (190ECJ),691,Update,Parked since 10/2021
+Lineas Aereas Suramericanas,HK-5385,Boeing 737 (737-48ESF),27632 (2857),New,Delivery 05/11/2021
+Lion Air,PK-LEG,Airbus A330 (330-343E),1680,Update,Back in service 11/2021
+Lion Air,PK-LEI,Airbus A330 (330-941N),1926,Update,Back in service 11/2021
+Lion Air,PK-LET,Airbus A330 (330-941N),1939,Update,Back in service 11/2021
+Lion Air,PK-LER,Airbus A330 (330-941N),1978,Update,Stored 09/2021
+Lion Air,PK-LGU,Boeing 737 NG / Max (737-9GPER)35737 (3225),Update,Back in service 11/2021,
+Lion Air,PK-LHY,Boeing 737 NG / Max (737-9GPER)37285 (3765),Update,Back in service 11/2021,
+Lion Air,PK-LJI,Boeing 737 NG / Max (737-9GPER)38310 (3867),Update,Back in service 10/2021,
+Lion Air,PK-LQT,Boeing 737 NG / Max (737-9GPER)38311 (3900),Update,Back in service 11/2021,
+Lion Air,PK-LJV,Boeing 737 NG / Max (737-8GP),38721 (4077),Update,Back in service 11/2021
+Loganair,G-LMTA,ATR 42/72 (72-600),1257,New,Delivery 24/10/2021
+Loganair,G-LMRA,ATR 42/72 (42-500),490,Update,Parked since 10/2021
+Loganair,G-LMRE,ATR 42/72 (42-500),606,New,Delivery 06/11/2021
+Loganair,G-SAJC,Embraer 135/145 (145EP),280,Update,Back in service 10/2021
+Loganair,G-GNTF,Saab 340 (340AF),113,Update,Parked since 10/2021
+Loganair,G-LGNI,Saab 340 (340B),160,Update,Parked since 10/2021
+Loganair,G-LGND,Saab 340 (340B),169,Update,Back in service 11/2021
+Loganair,G-LGNJ,Saab 340 (340B),173,Update,Parked since 10/2021
+Loganair,G-LGNK,Saab 340 (340B),185,Update,Parked since 10/2021
+Loganair,G-LGNM,Saab 340 (340BF),187,Update,Parked since 10/2021
+Loganair,G-LGNC,Saab 340 (340B),318,Update,Parked since 10/2021
+Loganair,G-LGNG,Saab 340 (340B),327,Update,Parked since 10/2021
+Loganair,G-GNTB,Saab 340 (340AF),82,Update,Parked since 10/2021
+Loongair,B-325X,Airbus A321 (321-251NX),10418,New,Delivery 08/11/2021
+Lufthansa,D-AILE,Airbus A319 (319-114),627,Update,Parked since 10/2021
+Lufthansa,D-AISQ,Airbus A321 (321-231),3936,Update,Back in service 11/2021
+Lufthansa,D-AISR,Airbus A321 (321-231),3987,Update,Back in service 11/2021
+Lufthansa,D-AIST,Airbus A321 (321-231),4005,Update,Back in service 11/2021
+Lufthansa,D-ABVM,Boeing 747 (747-430),29101 (1143),Update,Back in service 11/2021
+Lufthansa,D-ABVZ,Boeing 747 (747-430),29870 (1264),Update,Back in service 11/2021
+Lufthansa,D-ABTK,Boeing 747 (747-430),29871 (1293),Update,Back in service 10/2021
+Lufthansa,D-ABYM,Boeing 747 (747-830),37837 (1494),Update,Parked since 10/2021
+Lufthansa Cityline,D-ACKK,Canadair RJ (CRJ-900),15094,Update,Parked since 10/2021
+Luke Air,9H-RTU,Airbus A330 (330-202),473,Update,Suspended operations on 27 oct 21
+Luke Air,9H-PTN,Airbus A330 (330-202),489,Update,Suspended operations on 27 oct 21
+Luxaviation,LX-OLA,Embraer 135/145 (135BJ),995,Update,Parked since 10/2021
+Mahan Air,EP-MMH,Airbus A340 (340-642),391,Update,Parked since 09/2021
+Malaysia Airlines,9M-MLH,Boeing 737 NG / Max (737-8FZ),31723 (3435),Update,Parked since 10/2021
+Malaysia Airlines,9M-MLK,Boeing 737 NG / Max (737-8FZ),39321 (3778),Update,Back in service 11/2021
+Malaysia Airlines,9M-MLL,Boeing 737 NG / Max (737-8FZ),39322 (3834),Update,Back in service 11/2021
+Malaysia Airlines,9M-MLR,Boeing 737 NG / Max (737-8FZ),39328 (4257),Update,Parked since 09/2021
+Malaysia Airlines,9M-MLT,Boeing 737 NG / Max (737-8H6),39334 (4656),Update,Back in service 11/2021
+Malaysia Airlines,9M-MLU,Boeing 737 NG / Max (737-8H6),39940 (4872),Update,Parked since 10/2021
+Malaysia Airlines,9M-MXN,Boeing 737 NG / Max (737-8H6),40141 (4287),Update,Back in service 10/2021
+Maleth Aero,9H-MAC,Boeing 737 (737-548),24968 (1975),Update,Stored 07/2021
+Malindo Air,9M-LMH,ATR 42/72 (72-600),1095,Update,Parked since 08/2021
+Malindo Air,9M-LMK,ATR 42/72 (72-600),1130,Update,Parked since 09/2021
+Malindo Air,9M-LGD,ATR 42/72 (72-600),1579,New,Delivery 25/03/2020  Ex Royal Brunei Airlines 9M-LGD
+Malta Air,9H-VUH,Boeing 737 NG / Max (737-8MAX 200),62303 (7719),New,Delivery 03/11/2021
+Malta Air,9H-VUO,Boeing 737 NG / Max (737-8MAX 200),65884 (8132),New,Delivery 26/10/2021
+Malta Air,9H-VUQ,Boeing 737 NG / Max (737-8MAX 200),65885 (8137),New,Delivery 10/11/2021
+Malta Air,9H-VUN,Boeing 737 NG / Max (737-8MAX 200),65886 (8130),New,Delivery 22/10/2021
+Marcplan Charter,VH-VLT,Embraer 135/145 (135BJ),1107,Update,Back in service 11/2021
+Max Air,5N-HMM,Boeing 747 (747-4B5),26409 (1170),Update,Back in service 10/2021
+Meregrass Inc,N811BB,Saab 2000 (2000),28,Update,Parked since 10/2021
+Meregrass Inc,N814BB,Saab 2000 (2000),34,Update,Parked since 10/2021
+Mesa Airlines,N508MJ,Canadair RJ (CRJ-700),10087,Delete,To GoJet Airlines as N508MJ 08/10/2021
+Mesa Airlines,N907FJ,Canadair RJ (CRJ-900),15007,Update,Parked since 09/2021
+Mesa Airlines,N930LR,Canadair RJ (CRJ-900),15030,Update,Back in service 10/2021
+Mesa Airlines,N932LR,Canadair RJ (CRJ-900),15032,Update,Parked since 10/2021
+Mesa Airlines,N956LR,Canadair RJ (CRJ-900),15056,Update,Back in service 11/2021
+Mesa Airlines,N951LR,Canadair RJ (CRJ-900ER),15123,Update,Parked since 09/2021
+MGM Mirage,N785MM,Embraer 190/195 (190ECJ),709,Update,Parked since 10/2021
+MJet,OE-LJG,Airbus A319 (319-115X(CJ)),4353,Update,Parked since 10/2021
+MNG Airlines,TC-MCD,Airbus A300 (300-605RF),521,Update,Back in service 10/2021
+MNG Airlines,TC-MCE,Airbus A300 (300-605RF),525,Update,Back in service 11/2021
+MNG Airlines,TC-MCM,Airbus A330 (330-343X),879,New,Delivery 17/11/2021
+Mocambique EXpresso,C9-AUZ,Dash 8 (DHC-8 402),4038,Update,Back in service 10/2021
+My Indo Airlines,PK-MYJ,Boeing 737 (737-436SF),25857 (2451),New,Delivery 22/10/2021
+Myanmar Airways International,XY-AGV,Airbus A319 (319-111),1247,Update,Back in service 10/2021
+Myanmar Airways International,XY-ALT,Airbus A320 (320-214),5933,New,Delivery 01/11/2021
+Myanmar Airways International,XY-AMT,ATR 42/72 (72-600),1474,Update,Stored 10/2021 as OE-LKU
+Myanmar Airways International,XY-ALU,Embraer 190/195 (190LR),543,New,Delivery 01/11/2021
+MyWay Airlines,4L-MWA,Boeing 737 NG / Max (737-8AL),35073 (2197),New,Delivery 04/11/2021  Ex Badr Airlines 4L-MWA
+NasAir,E3-NAM,Boeing 737 (737-2T5),22632 (847),Delete,To Canadian Airways Congo as TN-AIX 20/07/2021
+National Jet Systems,VH-NXE,Boeing 717 (717-23S),55063 (5034),Update,Back in service 11/2021
+Neos,I-NEOU,Boeing 737 NG / Max (737-86N),29887 (1263),Update,Back in service 10/2021
+NewGen Airways,HS-NGC,Boeing 737 (737-4Q3),26603 (2618),Delete,To iAero Airways as N263LM 14/10/2021
+Nok Air,HS-DBQ,Boeing 737 NG / Max (737-86J),37794 (4991),Update,Back in service 10/2021
+Nok Air,HS-DBY,Boeing 737 NG / Max (737-88L),61299 (6426),Update,Back in service 10/2021
+Nok Air,HS-DBZ,Boeing 737 NG / Max (737-88L),61300 (6585),Update,Back in service 11/2021
+Nok Air,HS-DQC,Dash 8 (DHC-8 402),4479,Update,Parked since 10/2021
+Nok Air,HS-DQE,Dash 8 (DHC-8 402),4504,Update,Parked since 09/2021
+Nok Air,HS-DQH,Dash 8 (DHC-8 402),4530,Update,Parked since 09/2021
+Nolinor Aviation,C-FHNM,Boeing 737 NG / Max (737-8Q8),30631 (1047),New,Delivery 08/10/2021
+Nordwind Airlines,VP-BUJ,Airbus A330 (330-302),1391,New,Delivery 29/10/2021  Ex Jet Airways VT-JWU
+Northern Air Cargo,N360WA,Boeing 737 (737-301SF),23553 (1406),Update,Parked since 10/2021
+Norwegian Air Norway,LN-NIB,Boeing 737 NG / Max (737-86J),36879 (3805),New,Delivery 17/09/2021
+Norwegian Air Shuttle,LN-NIE,Boeing 737 NG / Max (737-8JP),39435 (4330),Delete,To Norwegian Air Shuttle AOC as LN-NIE 31/10/2021
+Norwegian Air Shuttle AOCLN-DYM,LN-NIE,Boeing 737 NG / Max (737-8JP),39435 (4330),New,Delivery 31/10/2021  Ex Norwegian Air Shuttle LN-NIE
+Olympus Airways,SX-ACP,Airbus A321 (321-231),1015,New,Delivery 02/11/2021  Ex Alexandria Airlines SX-ACP
+Oman Air,A4O-DD,Airbus A330 (330-343X),1063,Update,Back in service 11/2021
+Oman Air,A4O-DF,Airbus A330 (330-243),1120,Update,Back in service 10/2021
+Oman Air,A4O-MB,Boeing 737 NG / Max (737-8MAX) 43295 (6825),Update,Back in service 10/2021,
+Pacific Airlines,VN-A568,Airbus A320 (320-232),7725,Update,Back in service 11/2021
+Pakistan International Airlines,AP-BOK,Airbus A320 (320-214),7784,New,Delivery 18/10/2021
+PAL Airlines,C-GXNL,Dash 8 (DHC-8 402),4014,New,Delivery 06/10/2021
+PAL Express,RP-C8609,Airbus A320 (320-214),3273,Update,Back in service 10/2021
+PAL Express,RP-C5909,Dash 8 (DHC-8 402NG),4582,Update,Back in service 11/2021
+Pan Europeenne Air Service,F-HBPE,Embraer 135/145 (145LR),106,Update,Back in service 11/2021
+Panaviatic,ES-FOX,Embraer 135/145 (145EJ),1206,Delete,To Union Aviation as YL-ONE 01/11/2021
+Panorama Foxed Wings,C-GZGA,Beech 1900D (),UE306,New,Delivery 21/09/2021  Ex Air Georgian C-GZGA
+Peach Aviation,JA806P,Airbus A320 (320-214),5384,Delete,To Allegiant Air as N203NV 13/11/2021
+Peach Aviation,JA810P,Airbus A320 (320-214),5724,Delete,To Allegiant Air as N205NV 11/11/2021
+Pegasus Airlines,TC-AVP,Boeing 737 NG / Max (737-82R),38175 (3877),On order,Stored 09/2021
+Penske Jet Inc,N500PR,Canadair RJ (CRJ-200ER),7846,Update,Parked since 10/2021
+Peoples Liberation Army Air Force,B-4091,Airbus A319 (319-115),5088,Update,Back in service 11/2021
+Peoples Liberation Army Air Force,B-4005,Canadair RJ (CRJ-200BLR),7138,Update,Parked since 10/2021
+Philippine Airlines,RP-C8766,Airbus A330 (330-343E),1566,Update,Back in service 11/2021
+Philippine Airlines,RP-C7779,Boeing 777 (777-3F6ER),61731 (1455),Update,Back in service 10/2021
+Philippines AirAsia,RP-C8965,Airbus A320 (320-216),3223,Update,Back in service 11/2021
+Piedmont,N625AE,Embraer 135/145 (145LR),115,Update,Back in service 10/2021
+Piedmont,N629AE,Embraer 135/145 (145LR),130,Update,Parked since 10/2021
+Piedmont,N634AE,Embraer 135/145 (145LR),150,Update,Back in service 10/2021
+Piedmont,N637AE,Embraer 135/145 (145LR),170,Update,Parked since 10/2021
+Piedmont,N645AE,Embraer 135/145 (145LR),212,Update,Parked since 10/2021
+Piedmont,N600BP,Embraer 135/145 (145LR),44,Update,Back in service 11/2021
+Piedmont,N660CL,Embraer 135/145 (145LR),764,Update,Back in service 11/2021
+Piedmont,N690AE,Embraer 135/145 (145LR),858,Update,Back in service 11/2021
+Piedmont,N907AE,Embraer 135/145 (145LR),895,Update,Back in service 11/2021
+Polish Government,0112,Boeing 737 NG / Max (737-8TV(BBJ2)),63990 (7297),New,Delivery 29/10/2021
+Porter Airlines,C-GLQB,Dash 8 (DHC-8 402),4130,Update,Back in service 10/2021
+Porter Airlines,C-GLQF,Dash 8 (DHC-8 402),4193,Update,Back in service 11/2021
+Private,P4-ACC,Boeing 737 NG / Max (737-74Q(BBJ)),29135 (206),Update,Parked since 09/2021
+Private,VT-CMR,Embraer 135/145 (135BJ),1094,New,Delivery 01/11/2021  Ex Krishnapatnam port company VT-CKP
+Private,N650RJ,Embraer 135/145 (145EJ),1175,Update,Back in service 11/2021
+PSA Airlines,N719PS,Canadair RJ (CRJ-700),10177,Update,Parked since 09/2021
+PSA Airlines,N720PS,Canadair RJ (CRJ-700),10178,Update,Parked since 10/2021
+Qantas,VH-EBM,Airbus A330 (330-202),1061,Update,Back in service 11/2021
+Qantas,VH-VYG,Boeing 737 NG / Max (737-838),33995 (1736),Update,Back in service 10/2021
+Qantas,VH-VZV,Boeing 737 NG / Max (737-838),34189 (3856),Update,Back in service 11/2021
+Qantas,VH-XZB,Boeing 737 NG / Max (737-838),39360 (4192),Update,Back in service 11/2021
+Qatar Airways,A7-LAG,Airbus A320 (320-214),6717,Update,Back in service 11/2021
+Qatar Airways,A7-LAH,Airbus A320 (320-214),6811,Update,Back in service 11/2021
+Qatar Airways,A7-ACG,Airbus A330 (330-202),743,Update,Back in service 11/2021
+Qatar Airways,A7-ACK,Airbus A330 (330-202),792,Update,Back in service 10/2021
+Qatar Airways,A7-AMF,Airbus A350 (350-941),172,Update,Parked since 09/2021
+Qatar Airways,A7-AMG,Airbus A350 (350-941),207,Update,Parked since 10/2021
+Qatar Airways,A7-ALA,Airbus A350 (350-941),6,Update,Back in service 11/2021
+Qatar Airways,A7-ALB,Airbus A350 (350-941),7,Update,Back in service 11/2021
+Qatar Amiri Flight,A7-AAH,Airbus A340 (340-313X),528,Update,Back in service 11/2021
+Qeshm Air,EP-FQU,BAe 146 / Avro RJ (Bae Avro RJ100),3374,Update,Parked since 08/2021
+QinetiQ,G-ETPL,BAe 146 / Avro RJ (Bae Avro RJ100),3368,Update,Parked since 10/2021
+Ravn Alaska,N883EA,Dash 8 (DHC-8 102A),260,Update,Parked since 10/2021
+Red Wings Airlines,VP-BWW,Airbus A320 (320-232),2372,Update,Back in service 10/2021
+Red Wings Airlines,VP-BRB,Airbus A321 (321-231),1045,Update,Returned to lessor 10/2021
+Republic Airways,N873RW,Embraer 170/175 (170SU),144,Update,Parked since 10/2021
+Republic Airways,N874RW,Embraer 170/175 (170SU),148,Update,Parked since 09/2021
+Republic Airways,N357FC,Embraer 170/175 (170LR),18,Update,Parked since 10/2021
+REX Regional Express,VH-RYU,Boeing 737 NG / Max (737-8FE),33794 (1373),Update,Back in service 10/2021
+REX Regional Express,VH-RQC,Boeing 737 NG / Max (737-8FE),33797 (1389),Update,Back in service 11/2021
+REX Regional Express,VH-RQG,Boeing 737 NG / Max (737-8FE),34168 (1697),Update,Back in service 11/2021
+REX Regional Express,VH-PAG,Boeing 737 NG / Max (737-8FE),37821 (3288),Update,Back in service 11/2021
+REX Regional Express,VH-ZRN,Saab 340 (340B),393,Update,Back in service 11/2021
+REX Regional Express,VH-ZRK,Saab 340 (340B),397,Update,Back in service 10/2021
+Rossiya,EI-XLJ,Boeing 747 (747-446),27646 (1280),Update,Parked since 10/2021
+Rossiya,RA-89014,Sukhoi SuperJet 100 (100-95B),95025,New,Delivery 01/08/2021  Ex Aeroflot RA-89014
+Rossiya,RA-89017,Sukhoi SuperJet 100 (100-95B),95035,New,Delivery 23/10/2021
+Rossiya,RA-89101,Sukhoi SuperJet 100 (100-95B),95139,New,Delivery 01/07/2021  Ex Aeroflot RA-89101
+Rossiya,RA-89103,Sukhoi SuperJet 100 (100-95B),95142,New,Delivery 11/09/2021  Ex Aeroflot RA-89103
+Rossiya,RA-89125,Sukhoi SuperJet 100 (100-95B),95188,New,Delivery 23/10/2021
+Royal Air Maroc,CN-ROJ,Boeing 737 NG / Max (737-85P),33979 (1963),Update,Back in service 10/2021
+Royal Air Philippines,RP-C9388,Airbus A319 (319-133),3463,Update,Back in service 11/2021
+Royal Brunei Airlines,9M-LGD,ATR 42/72 (72-600),1579,Delete,To Malindo Air as 9M-LGD 25/03/2020
+Royal Flight Oman,A4O-HMS,Boeing 747 (747-8H0(BBJ)),39749 (1466),Update,Back in service 10/2021
+Royal Jet,A6-RJV,Boeing 737 NG / Max (737-77W(BBJ)),62467 (5564),Update,Back in service 11/2021
+Royal Saudi Air Force,HZ-101,Boeing 737 NG / Max (737-7DP(BBJ)),32805 (940),Update,Back in service 11/2021
+RPLS 2020,N702SJ,Canadair RJ (CRJ-200),8079,Update,Parked since 10/2021
+RVR Aviation,N234BZ,Embraer 135/145 (135LR),388,Update,Parked since 10/2021
+Ryanair,EI-DAR,Boeing 737 NG / Max (737-8AS),33552 (1371),Update,Stored 11/2021
+Ryanair,EI-DPM,Boeing 737 NG / Max (737-8AS),33640 (2198),Delete,To Ryanair UK as G-RUKH 28/10/2021
+Ryanair,EI-DWI,Boeing 737 NG / Max (737-8AS),33643 (2410),Update,Damaged 21 Oct 2021 at STN  (tug dammage on plane)
+Ryanair,EI-DLJ,Boeing 737 NG / Max (737-8AS),34177 (1899),Delete,To Ryanair UK as G-RUKF 04/11/2021
+Ryanair,EI-DYM,Boeing 737 NG / Max (737-8AS),36575 (2626),Delete,To Ryanair UK as G-RUKG 12/11/2021
+Ryanair,EI-HAW,Boeing 737 NG / Max (737-8MAX 200),65078 (7559),New,Delivery 16/11/2021
+Ryanair,EI-HAX,Boeing 737 NG / Max (737-8MAX 200),65080 (7607),New,Delivery 13/11/2021
+Ryanair Sun,SP-RZD,Boeing 737 NG / Max (737-8MAX 200),62319 (7890),New,Delivery 10/11/2021
+Ryanair UK,G-RUKH,Boeing 737 NG / Max (737-8AS),33640 (2198),New,Delivery 28/10/2021  Ex Ryanair EI-DPM
+Ryanair UK,G-RUKF,Boeing 737 NG / Max (737-8AS),34177 (1899),New,Delivery 04/11/2021  Ex Ryanair EI-DLJ
+Ryanair UK,G-RUKG,Boeing 737 NG / Max (737-8AS),36575 (2626),New,Delivery 12/11/2021  Ex Ryanair EI-DYM
+S7 Airlines,VQ-BYJ,Airbus A321 (321-271NX),10499,New,Delivery 01/11/2021
+S7 Airlines,VP-BDF,Boeing 737 NG / Max (737-8Q8),30672 (1497),Update,Back in service 11/2021
+Samco Aviation,VP-CFA,Embraer 135/145 (135BJ),1120,Delete,To Union Aviation as YL-REX 03/11/2021
+SAS Ireland,EI-SIC,Airbus A320 (320-251N),7979,New,Delivery 28/10/2021  Ex SAS Scandinavian Airlines SE-DYM
+SAS Scandinavian AirlinesOY-KAW,OY-KAR,Airbus A320 (320-232),3159,Update,Back in service 11/2021
+SAS Scandinavian AirlinesSE-DYM,OY-KBB,Airbus A321 (321-232),1642,Update,Back in service 11/2021
+SAS Scandinavian AirlinesSE-DYM,LN-RKR,Airbus A330 (330-343E),1660,Update,Back in service 10/2021
+SAS Scandinavian AirlinesSE-DYM,LN-RRT,Boeing 737 NG / Max (737-883),28326 (1036),Update,Back in service 10/2021
+SAS Scandinavian AirlinesSE-DYM,SE-RES,Boeing 737 NG / Max (737-7BX),30737 (687),Update,Stored 11/2021
+SAS Scandinavian AirlinesSE-DYM,SE-RET,Boeing 737 NG / Max (737-76N),32734 (1090),Update,In service
+SAS Scandinavian AirlinesSE-DYM,EC-JZV,Canadair RJ (CRJ-900ER),15117,Update,Parked since 10/2021
+SATA Air Acores,CS-TRB,Dash 8 (DHC-8 202),476,Update,Parked since 09/2021
+SATENA,HK-4949,ATR 42/72 (42-500),621,Delete,To interCaribbean as VQ-THM 08/08/2021
+Saudi Arabian Airlines,HZ-ASE,Airbus A320 (320-214),4408,Update,Parked since 10/2021
+Saudi Arabian Airlines,HZ-AS39,Airbus A320 (320-214),4442,Update,Parked since 10/2021
+Saudi Arabian Airlines,HZ-AQA,Airbus A330 (330-343X),1108,Update,Parked since 09/2021
+Saudi Arabian Airlines,HZ-AQH,Airbus A330 (330-343X),1189,Update,Parked since 09/2021
+Saudi Arabian Airlines,HZ-AQI,Airbus A330 (330-343E),1454,Update,Parked since 10/2021
+Saudi Arabian Airlines,HZ-AQ15,Airbus A330 (330-343E),1734,Update,Parked since 10/2021
+Saudi Arabian Airlines,TF-AAK,Boeing 747 (747-428),32868 (1325),Delete,To Air Atlanta Icelandic as TF-AAK 22/10/2021
+Saudi Arabian Airlines,HZ-AK27,Boeing 777 (777-368ER),42265 (1311),Update,Parked since 10/2021
+Saudi Arabian Airlines,HZ-ARC,Boeing 787 (787-9),41546 (383),Update,Back in service 11/2021
+Saudi Arabian Airlines,HZ-ARF,Boeing 787 (787-9),41549 (547),Update,Parked since 10/2021
+Saudi Arabian Gvmt,HZ-MF6,Boeing 737 NG / Max (737-9FG(BBJ)),39318 (3399),Update,Parked since 10/2021
+Saudi Royal Flight,HZ-HM1,Boeing 747 (747-468),28343 (1265),Update,Parked since 09/2021
+SaudiGulf Airlines,VP-CGX,Airbus A320 (320-232),6474,Update,Stored 11/2021
+SCAT Airlines,UP-B3723,Boeing 737 (737-522),26684 (2388),Update,Parked since 03/2021
+SCM,P4-RLA,Airbus A319 (319-133X(CJ)),4319,Update,Parked since 08/2021
+Scoot,9V-TRX,Airbus A320 (320-232),5662,Update,Back in service 11/2021
+Scoot,9V-OJG,Boeing 787 (787-9),37128 (693),Update,Back in service 11/2021
+Sepehran Airlines,EP-FSK,Boeing 737 (737-53C),24826 (2041),Update,Stored 10/2021
+SF Airlines,B-220H,Boeing 767 (767-36NERBCF),30847 (902),Update,Parked since 09/2021
+Shenzhen Airlines,B-5102,Boeing 737 NG / Max (737-97L),33644 (1750),Update,Parked since 09/2021
+Shenzhen Airlines,B-5105,Boeing 737 NG / Max (737-97L),33646 (1764),Update,Parked since 10/2021
+Sichuan Airlines,B-6518,Airbus A330 (330-243),1082,Update,Parked since 10/2021
+Sierra American Corp,N465TW,Boeing 737 (737-205A),23465 (1226),Update,Back in service 11/2021
+Silver Airways,N967AZ,ATR 42/72 (72-212AF),714,Delete,To Amazon Prime Air as N967AZ 09/11/2021
+Silver Airways,N929AZ,ATR 42/72 (72-212A),727,New,Delivery 08/11/2021
+Silver Airways,N929AZ,ATR 42/72 (72-212A),727,Delete,To Amazon Prime Air as N929AZ 09/11/2021
+Silver Airways,N417XJ,Saab 340 (340B),417,Update,Parked since 09/2021
+Silver Airways,N328AG,Saab 340 (340B),428,Update,Parked since 10/2021
+Singapore Airlines,9V-SKS,Airbus A380 (380-841),85,Update,Back in service 11/2021
+Singapore Airlines,9V-MGO,Boeing 737 NG / Max (737-8SA),44231 (5877),Update,Stored 05/2021
+Singapore Airlines,9V-SVB,Boeing 777 (777-212ER),28525 (353),Delete,To Eastern Airlines as N827KW 05/11/2021
+Singapore Airlines,9V-SWB,Boeing 777 (777-312ER),33377 (592),Update,Back in service 09/2021
+Singapore Airlines,9V-SNA,Boeing 777 (777-312ER),42240 (1279),Update,Back in service 10/2021
+Sino Jet,B-3281,Embraer 135/145 (135BJ),1222,Update,Back in service 10/2021
+Sino Jet,B-3282,Embraer 135/145 (135BJ),1228,Update,Parked since 10/2021
+Sky Airline,CC-AZU,Airbus A320 (320-251N),10055,New,Delivery 19/11/2021
+Sky Airline,CC-AZV,Airbus A320 (320-251N),10111,New,Delivery 27/10/2021
+Sky Airline,CC-AZO,Airbus A320 (320-251N),9317,Update,Back in service 10/2021
+Sky Prime Aviation,HZ-SKY4,Airbus A319 (319-115ACJ),6727,Update,Parked since 08/2021
+SkyWest USA,N614SK,Canadair RJ (CRJ-700),10051,Update,Back in service 11/2021
+SkyWest USA,N706SK,Canadair RJ (CRJ-700),10149,Update,Back in service 10/2021
+SkyWest USA,N710SK,Canadair RJ (CRJ-701ER),10170,Update,Parked since 10/2021
+SkyWest USA,N716SK,Canadair RJ (CRJ-700),10180,Update,Parked since 09/2021
+SkyWest USA,N772SK,Canadair RJ (CRJ-702),10235,Update,Back in service 11/2021
+SkyWest USA,N773SK,Canadair RJ (CRJ-701ER),10236,Update,Parked since 10/2021
+SkyWest USA,N778SK,Canadair RJ (CRJ-702),10242,Update,Back in service 11/2021
+SkyWest USA,N796SK,Canadair RJ (CRJ-702ER),10300,Update,Parked since 10/2021
+SkyWest USA,N554CA,Canadair RJ (CRJ-900),15168,Update,Back in service 10/2021
+SkyWest USA,N825SK,Canadair RJ (CRJ-900LR),15212,Update,Back in service 11/2021
+SkyWest USA,N856AS,Canadair RJ (CRJ-200ER),7404,Update,Back in service 11/2021
+SkyWest USA,N877AS,Canadair RJ (CRJ-200ER),7579,Update,Parked since 09/2021
+SkyWest USA,N923SW,Canadair RJ (CRJ-200ER),7664,Update,Parked since 09/2021
+SkyWest USA,N479CA,Canadair RJ (CRJ-200ER),7675,Update,Parked since 10/2021
+SkyWest USA,N930SW,Canadair RJ (CRJ-200ER),7713,Update,Parked since 09/2021
+SkyWest USA,N207PS,Canadair RJ (CRJ-200ER),7873,Update,Parked since 09/2021
+SkyWest USA,N262PS,Canadair RJ (CRJ-200ER),7962,Update,Back in service 11/2021
+SkyWest USA,N936EV,Canadair RJ (CRJ-200),8038,Update,Parked since 09/2021
+SkyWest USA,N509SY,Embraer 170/175 (175LR),890,New,Delivery 23/10/2021
+SkyWest USA,N510SY,Embraer 170/175 (175LR),891,New,Delivery 22/10/2021
+SkyWest USA,N511SY,Embraer 170/175 (175STD),892,New,Delivery 13/11/2021
+Smart Jet,P4-SAM,Embraer 135/145 (135BJ),1161,Update,Parked since 08/2021
+SmartLynx,YL-LCT,Airbus A320 (320-214),2233,New,Delivery 31/10/2021  Ex TUI Airlines Nederland YL-LCT
+SmartLynx,YL-LDA,Airbus A321 (321-211),2903,Update,Stored 10/2021
+Smartlynx Airlines Malta,9H-SLK,Airbus A320 (320-214),1725,Update,Parked since 10/2021
+Smartlynx Airlines Malta,9H-SLC,Airbus A321 (321-211),4461,Update,Parked since 09/2021
+SmartLynx Estonia,ES-SAW,Airbus A320 (320-232),1663,New,Delivery 31/10/2021  Ex TUI Airlines Belgium ES-SAW
+SmartLynx Estonia,ES-SAM,Airbus A320 (320-232),1896,New,Delivery 31/10/2021  Ex TUI Airlines Nederland ES-SAM
+SmartWings,OK-TVP,Boeing 737 NG / Max (737-8K5),32907 (1117),Update,Stored 11/2021
+SmartWings,OK-TVM,Boeing 737 NG / Max (737-8FN),37077 (3163),Delete,To Israir as OK-TVM 04/11/2021
+SmartWings,OK-TSD,Boeing 737 NG / Max (737-8Q8),41795 (4895),Delete,To Israir as OK-TSD 10/11/2021
+Solitaire Air,JY-SOB,Boeing 767 (767-233),22526 (92),New,Delivery 19/11/2021
+South African Gvmt,ZS-RSA,Boeing 737 NG / Max (737-7EDBBJ)32627 (826),Update,Parked since 09/2021,
+Southern Air,N311GT,Boeing 737 (737-4K5SF),26316 (2711),Update,Parked since 10/2021
+Southwest Airlines,N774SW,Boeing 737 NG / Max (737-7H4),27882 (609),Update,Back in service 11/2021
+Southwest Airlines,N793SA,Boeing 737 NG / Max (737-7H4),27888 (744),Update,Back in service 11/2021
+Southwest Airlines,N783SW,Boeing 737 NG / Max (737-7H4),29809 (675),Update,Back in service 11/2021
+Southwest Airlines,N784SW,Boeing 737 NG / Max (737-7H4),29810 (677),Update,Back in service 11/2021
+Southwest Airlines,N414WN,Boeing 737 NG / Max (737-7H4),29820 (967),Update,Back in service 10/2021
+Southwest Airlines,N7833A,Boeing 737 NG / Max (737-79P),30036 (1336),Update,Parked since 10/2021
+Southwest Airlines,N7814B,Boeing 737 NG / Max (737-7K9),30042 (931),Update,Back in service 11/2021
+Southwest Airlines,N421LV,Boeing 737 NG / Max (737-7H4),32452 (1040),Update,Parked since 10/2021
+Southwest Airlines,N263WN,Boeing 737 NG / Max (737-7H4),32520 (2153),Update,Back in service 10/2021
+Southwest Airlines,N7831B,Boeing 737 NG / Max (737-7CT),32752 (1339),Update,Back in service 10/2021
+Southwest Airlines,N7837A,Boeing 737 NG / Max (737-752),33785 (1398),Update,Parked since 10/2021
+SpiceJet,VT-SYI,Boeing 737 NG / Max (737-8AS),33555 (1426),Update,Parked since 09/2021
+SpiceJet,VT-SYJ,Boeing 737 NG / Max (737-8AS),33556 (1428),Update,Back in service 11/2021
+SpiceJet,VT-SLF,Boeing 737 NG / Max (737-8AS),33593 (1914),Update,Parked since 09/2021
+SpiceJet,VT-SLL,Boeing 737 NG / Max (737-8EH),34274 (2468),Update,Returned to lessor 10/2021
+SpiceJet,VT-SXD,Boeing 737 NG / Max (737-85R),34801 (2125),Update,Back in service 11/2021
+SpiceJet,VT-SLE,Boeing 737 NG / Max (737-86N),35224 (2617),Update,Back in service 10/2021
+SpiceJet,VT-SGH,Boeing 737 NG / Max (737-8GJ),36369 (3363),Update,Returned to lessor 10/2021
+SpiceJet,VT-SGQ,Boeing 737 NG / Max (737-8GJ),37365 (3539),Update,Parked since 09/2021
+SpiceJet,VT-MXH,Boeing 737 NG / Max (737-8MAX) 60646 (7301),Update,Back in service 11/2021,
+Spring Airlines,B-326R,Airbus A320 (320-251N),10590,New,Delivery 02/11/2021
+Spring Airlines,B-6840,Airbus A320 (320-214),4760,Update,Parked since 09/2021
+Spring Airlines,B-8580,Airbus A320 (320-214),7582,Update,Parked since 09/2021
+Spring Airlines,B-326Q,Airbus A321 (321-253NX),10406,New,Delivery 27/10/2021
+SR Jet,B-3367,Canadair RJ (CRJ-200ER),7717,Update,Parked since 09/2021
+Srilankan Airlines,4R-ABL,Airbus A320 (320-232),2345,Update,Back in service 11/2021
+Star East Airlines,YR-SEA,Airbus A320 (320-231),357,Update,Parked since 09/2021
+Stewart Haas Racing,N141SH,Canadair RJ (CRJ-200LR),7206,Update,Parked since 10/2021
+Su Airlines,C5-SUA,Airbus A320 (320-211),210,New,Delivery 06/11/2021  Ex Air Canada C-GQCA
+Sun Express,TC-SBJ,Boeing 737 NG / Max (737-8AS),29916 (210),Delete,To iAero Airways as N916BR 09/10/2021
+Sunday Airlines,UP-B5703,Boeing 757 (757-21B),25259 (392),Update,Parked since 10/2021
+Sunday Airlines,UP-B5705,Boeing 757 (757-204),27237 (602),Update,Parked since 10/2021
+Sunkar Air,UP-B3717,Boeing 737 (737-322),24664 (1877),Update,Parked since 10/2021
+Sunstate Airlines,VH-QOT,Dash 8 (DHC-8 402),4269,Update,Back in service 11/2021
+Sunwest Aviation,C-GHCS,Beech 1900D (1900D),UE353,Update,Back in service 11/2021
+Sunwing Airlines,C-FJVE,Boeing 737 NG / Max (737-8DC),34596 (1875),Update,Back in service 10/2021
+Sunwing Airlines,C-FYJO,Boeing 737 NG / Max (737-8K5),37255 (4384),New,Delivery 14/11/2021  Ex TUI Airways G-TAWO
+Sunwing Airlines,C-FYDY,Boeing 737 NG / Max (737-8K5),37261 (3844),New,Delivery 10/11/2021  Ex TUI Airways G-FDZY
+Sunwing Airlines,C-FWGH,Boeing 737 NG / Max (737-86J),37752 (3835),Update,Back in service 10/2021
+Sunwing Airlines,C-FYUW,Boeing 737 NG / Max (737-8K5),41663 (5369),New,Delivery 01/11/2021  Ex TUI Airways G-TAWW
+Sunwing Airlines,C-FMXA,Boeing 737 NG / Max (737-8MAX) 43297 (6938),Update,Back in service 10/2021,
+Sunwing Airlines,C-FYXC,Boeing 737 NG / Max (737-8MAX) 44298 (7356),Update,Back in service 10/2021,
+Sunwing Airlines,C-FAXD,Boeing 737 NG / Max (737-8MAX) 44299 (7413),Update,Back in service 11/2021,
+Suparna Airlines,B-1340,Boeing 747 (747-4HAERF),35235 (1389),Update,Back in service 11/2021
+Super Air Jet,PK-SAA,Airbus A320 (320-232),2334,New,Delivery 02/11/2021  Ex Indigo VT-IDN
+Super Air Jet,PK-SAK,Airbus A320 (320-216),3679,New,Delivery 28/10/2021  Ex Thai AirAsia HS-ABH
+Super Air Jet,PK-SAK,Airbus A320 (320-232),4506,New,Delivery 30/09/2021  Ex Indigo VT-IGW
+Super Air Jet,PK-SAA,Airbus A320 (320-232),4614,New,Delivery 02/11/2021  Ex Indigo VT-IEC
+Super Air Jet,PK-SAW,Airbus A320 (320-232),5900,Update,Back in service 11/2021
+Surinam Airways,EC-NOZ,Airbus A320 (320-232),4113,New,Delivery 12/11/2021  Ex Aura Airlines EC-NOZ
+Swiftair,EC-IVP,ATR 42/72 (42-300),231,Update,Back in service 11/2021
+Swiftair,EC-IMX,Embraer 120 Brasilia (120ERF),158,Update,Parked since 09/2021
+Swoop,C-GYSD,Boeing 737 NG / Max (737-8CT),40837 (5785),New,Delivery 15/11/2021  Ex WestJet Airlines C-GYSD
+Syphax Airlines,TS-ISA,Canadair RJ (CRJ-900ER),15091,Delete,To Tunisair as TS-ISA 09/03/2021
+TAP Air Portugal,CS-TON,Airbus A330 (330-202),904,Update,Parked since 09/2021
+TAROM,YR-ATH,ATR 42/72 (72-212A),861,Update,Parked since 09/2021
+TAROM,YR-BGH,Boeing 737 NG / Max (737-78J),28438 (1394),Update,Back in service 11/2021
+Terra Avia,ER-00021,Airbus A320 (320-232),1773,Delete,To Aero Nomad as EX-32003 15/10/2021
+Texel Air,A9C-TXL,Boeing 737 (737-3Q8SF),28200 (2854),Update,Back in service 11/2021
+Thai AirAsia,HS-ABA,Airbus A320 (320-216),3277,Update,Back in service 11/2021
+Thai AirAsia,HS-ABH,Airbus A320 (320-216),3679,Delete,To Super Air Jet as PK-SAK 28/10/2021
+Thai AirAsia,HS-ABN,Airbus A320 (320-216),4302,Update,Back in service 10/2021
+Thai AirAsia,HS-ABQ,Airbus A320 (320-216),4386,Update,Back in service 11/2021
+Thai AirAsia,HS-ABS,Airbus A320 (320-216),4426,Update,Back in service 10/2021
+Thai AirAsia,HS-ABU,Airbus A320 (320-216),4807,Update,Back in service 10/2021
+Thai AirAsia,HS-ABX,Airbus A320 (320-214),4917,Update,Back in service 10/2021
+Thai AirAsia,HS-ABV,Airbus A320 (320-216),4979,Update,Parked since 10/2021
+Thai AirAsia,HS-BBA,Airbus A320 (320-214),5344,Update,Back in service 10/2021
+Thai AirAsia,HS-BBE,Airbus A320 (320-216),5703,Update,Parked since 09/2021
+Thai AirAsia,HS-BBJ,Airbus A320 (320-216),5866,Update,Back in service 11/2021
+Thai AirAsia,HS-BBV,Airbus A320 (320-216),7057,Update,Back in service 10/2021
+Thai AirAsia,HS-BBW,Airbus A320 (320-216),7164,Update,Back in service 10/2021
+Thai AirAsia,HS-EAB,Airbus A321 (321-251NX),9284,Update,Back in service 10/2021
+Thai AirAsia X,HS-XTC,Airbus A330 (330-343X),692,Update,Back in service 11/2021
+Thai Airways,HS-THG,Airbus A350 (350-941),130,Update,Back in service 11/2021
+Thai Airways,HS-THH,Airbus A350 (350-941),142,Update,Parked since 09/2021
+Thai Airways,HS-THB,Airbus A350 (350-941),44,Update,Parked since 09/2021
+Thai Airways,HS-THD,Airbus A350 (350-941),95,Update,Back in service 11/2021
+Thai Airways,HS-TJS,Boeing 777 (777-2D7ER),34587 (595),Update,Back in service 11/2021
+Thai Airways,HS-TKW,Boeing 777 (777-3D7ER),42112 (1228),Update,Back in service 10/2021
+Thai Airways,HS-TQA,Boeing 787 (787-8),35315 (190),Update,Back in service 10/2021
+Thai Airways,HS-TQD,Boeing 787 (787-8),35320 (244),Update,Parked since 10/2021
+Thai Smile,HS-TXF,Airbus A320 (320-232),5553,Update,Back in service 11/2021
+Thai Smile,HS-TXS,Airbus A320 (320-232),6417,Update,Back in service 11/2021
+Thai VietjetAir,HS-VKE,Airbus A320 (320-214),4512,Update,Back in service 11/2021
+Thai VietjetAir,HS-VKN,Airbus A320 (320-214),6242,Update,Back in service 11/2021
+THY Turkish Airlines,TC-LSB,Airbus A321 (321-271NX),8257,Update,Parked since 10/2021
+THY Turkish Airlines,TC-LSS,Airbus A321 (321-271NX),9157,Update,Parked since 10/2021
+THY Turkish Airlines,TC-JOH,Airbus A330 (330-303),1622,Update,Back in service 10/2021
+THY Turkish Airlines,TC-JHA,Boeing 737 NG / Max (737-8F2),35740 (2673),Delete,To AnadoluJet as TC-JHA 06/03/2021
+THY Turkish Airlines,TC-JZG,Boeing 737 NG / Max (737-8F2),60028 (6078),New,Delivery 01/11/2021  Ex Air Albania TC-JZG
+THY Turkish Airlines,TC-LCH,Boeing 737 NG / Max (737-8MAX) 60040 (7609),New,Delivery 27/10/2021,
+THY Turkish Airlines,TC-LYC,Boeing 737 NG / Max (737-9MAX) 60064 (7623),New,Delivery 03/11/2021,
+Tianjin Airlines,B-1031,Airbus A320 (320-214),5341,Update,Parked since 10/2021
+Tianjin Airlines,B-8066,Airbus A320 (320-232),6851,Update,Parked since 10/2021
+Tianjin Airlines,B-3160,Embraer 190/195 (190LR),323,Update,Parked since 10/2021
+Tianjin Airlines,B-3192,Embraer 190/195 (190AR),536,Update,Parked since 09/2021
+Tianjin Airlines,B-3235,Embraer 190/195 (195LR),720,Update,Back in service 11/2021
+Tigerair Taiwan,B-50007,Airbus A320 (320-232),4874,Update,Back in service 10/2021
+Tigerair Taiwan,B-50006,Airbus A320 (320-232),6604,Update,Back in service 11/2021
+Trans Island Airways,C6-FUZ,Dash 8 (DHC-8 311),238,New,Delivery 29/10/2021  Ex Wideroe LN-WFH
+Trans States Airlines,N846HK,Embraer 135/145 (145LR),855,Delete,To Expressjet as N846HK 04/10/2021
+Transaero Airlines,EI-UNW,Boeing 777 (777-222ER),30214 (254),Update,Scrapped 06/2019
+Transavia France,F-HUYC,Boeing 737 NG / Max (737-8JP),42086 (6365),Update,Parked since 10/2021
+Transavia France,F-HUYE,Boeing 737 NG / Max (737-8JP),42278 (6347),New,Delivery 19/11/2021
+Transcarga International Airways,YV560T,Airbus A300 (300B4-203),261,Update,Back in service 10/2021
+TruJet,VT-TMN,ATR 42/72 (72-212A),843,Update,Parked since 09/2021
+TUI Airlines Belgium,ES-SAW,Airbus A320 (320-232),1663,Delete,To SmartLynx Estonia as ES-SAW 31/10/2021
+TUI Airlines Nederland,ES-SAM,Airbus A320 (320-232),1896,Delete,To SmartLynx Estonia as ES-SAM 31/10/2021
+TUI Airlines Nederland,YL-LCT,Airbus A320 (320-214),2233,Delete,To SmartLynx as YL-LCT 31/10/2021
+TUI Airways,G-FDZB,Boeing 737 NG / Max (737-8K5),35131 (2242),Update,Stored 11/2021
+TUI Airways,G-TAWO,Boeing 737 NG / Max (737-8K5),37255 (4384),Delete,To Sunwing Airlines as C-FYJO 14/11/2021
+TUI Airways,G-FDZY,Boeing 737 NG / Max (737-8K5),37261 (3844),Delete,To Sunwing Airlines as C-FYDY 10/11/2021
+TUI Airways,G-TAWJ,Boeing 737 NG / Max (737-8K5),38108 (4024),New,Delivery 08/11/2021  Ex TUIfly Nordic SE-RFM
+TUI Airways,G-TAWW,Boeing 737 NG / Max (737-8K5),41663 (5369),Delete,To Sunwing Airlines as C-FYUW 01/11/2021
+TUIfly,D-AMAA,Boeing 737 NG / Max (737-8MAX) 44612 (7994),New,Delivery 01/11/2021,
+TUIfly Nordic,SE-RFM,Boeing 737 NG / Max (737-8K5),38108 (4024),Delete,To TUI Airways as G-TAWJ 08/11/2021
+Tunisair,TS-ISA,Canadair RJ (CRJ-900ER),15091,New,Delivery 09/03/2021  Ex Syphax Airlines TS-ISA
+Turkey Government,TC-CAN,Airbus A340 (340-542 HGW),902,Update,Back in service 11/2021
+Turkmenistan Airlines,EZ-A017,Boeing 737 NG / Max (737-82K),43863 (4731),Update,Back in service 10/2021
+Twin Jet,F-GLNE,Beech 1900D (1900D),UE197,Update,Parked since 10/2021
+Twin Jet,F-GUME,Beech 1900D (1900D),UE371,Update,Parked since 10/2021
+Ukraine International Airlines,UR-PSO,Boeing 737 NG / Max (737-8Q8),30628 (808),Update,Parked since 10/2021
+Ukraine International Airlines,UR-GEA,Boeing 767 (767-322ER),25280 (391),Update,Parked since 09/2021
+Ukrainian Wings,UR-BAA,Boeing 737 (737-5Q8),28052 (2965),Update,Parked since 08/2021
+Union Aviation,YL-REX,Embraer 135/145 (135BJ),1120,New,Delivery 03/11/2021  Ex Samco Aviation VP-CFA
+Union Aviation,YL-ONE,Embraer 135/145 (145EJ),1206,New,Delivery 01/11/2021  Ex Panaviatic ES-FOX
+United Airlines,N801UA,Airbus A319 (319-131),686,Update,Parked since 10/2021
+United Airlines,N484UA,Airbus A320 (320-232),1609,Update,Parked since 10/2021
+United Airlines,N495UA,Airbus A320 (320-232),1842,Update,Back in service 10/2021
+United Airlines,N436UA,Airbus A320 (320-232),638,Update,Back in service 10/2021
+United Airlines,N441UA,Airbus A320 (320-232),751,Update,Back in service 10/2021
+United Airlines,N30401,Boeing 737 NG / Max (737-924),30118 (820),Update,Back in service 11/2021
+United Airlines,N73406,Boeing 737 NG / Max (737-924),30123 (943),Update,Back in service 11/2021
+United Airlines,N75410,Boeing 737 NG / Max (737-924),30127 (1021),Update,Parked since 10/2021
+United Airlines,N37281,Boeing 737 NG / Max (737-824),31599 (1425),Update,Parked since 10/2021
+United Airlines,N33262,Boeing 737 NG / Max (737-824),32402 (901),Update,Back in service 10/2021
+United Airlines,N37293,Boeing 737 NG / Max (737-824),33453 (1743),Update,Parked since 10/2021
+United Airlines,N17264,Boeing 737 NG / Max (737-8MAX) 66596 (8129),New,Delivery 26/10/2021,
+United Airlines,N12125,Boeing 757 (757-224),28967 (788),Update,Parked since 09/2021
+United Airlines,N19130,Boeing 757 (757-224),28970 (799),Update,Parked since 10/2021
+United Airlines,N17133,Boeing 757 (757-224),29282 (840),Update,Parked since 10/2021
+United Airlines,N34137,Boeing 757 (757-224),30229 (899),Update,Back in service 11/2021
+United Airlines,N19141,Boeing 757 (757-224),30354 (933),Update,Back in service 10/2021
+United Airlines,N661UA,Boeing 767 (767-322ER),27158 (507),Update,Parked since 10/2021
+United Airlines,N663UA,Boeing 767 (767-322ER),27160 (514),Update,Back in service 11/2021
+United Airlines,N76065,Boeing 767 (767-424ER),29460 (876),Update,Back in service 10/2021
+United Airlines,N773UA,Boeing 777 (777-222),26929 (4),Update,Back in service 11/2021
+United Airlines,N771UA,Boeing 777 (777-222),26932 (3),Update,Parked since 10/2021
+United Airlines,N776UA,Boeing 777 (777-222),26937 (27),Update,Parked since 10/2021
+United Airlines,N786UA,Boeing 777 (777-222ER),26938 (52),Update,Parked since 10/2021
+United Airlines,N779UA,Boeing 777 (777-222),26941 (35),Update,Back in service 11/2021
+United Airlines,N788UA,Boeing 777 (777-222ER),26942 (82),Update,Back in service 10/2021
+United Airlines,N780UA,Boeing 777 (777-222),26944 (36),Update,Parked since 10/2021
+United Airlines,N793UA,Boeing 777 (777-222ER),26946 (97),Update,Back in service 11/2021
+United Airlines,N794UA,Boeing 777 (777-222ER),26953 (105),Update,Parked since 10/2021
+United Airlines,N218UA,Boeing 777 (777-222ER),30222 (317),Update,Parked since 10/2021
+United Airlines,N223UA,Boeing 777 (777-222ER),30224 (357),Update,Back in service 11/2021
+United Airlines,N224UA,Boeing 777 (777-222ER),30225 (375),Update,Parked since 10/2021
+United Airlines,N226UA,Boeing 777 (777-222ER),30226 (380),Update,Parked since 10/2021
+United Airlines,N225UA,Boeing 777 (777-222ER),30554 (377),Update,Parked since 10/2021
+United Airlines,N228UA,Boeing 777 (777-222ER),30556 (384),Update,Back in service 11/2021
+United Airlines,N229UA,Boeing 777 (777-222ER),30557 (388),Update,Back in service 11/2021
+United Airlines,N36962,Boeing 787 (787-9),35880 (365),Update,Back in service 10/2021
+United Airlines,N19951,Boeing 787 (787-9),36402 (223),Update,Back in service 10/2021
+United Airlines,N17963,Boeing 787 (787-9),37812 (390),Update,Parked since 10/2021
+Unknown,N660MW,Beech 1900D (1900D),UE215,Update,Parked since 10/2021
+Unknown,N650RJ,Embraer 135/145 (135EJ),1174,Update,Back in service 11/2021
+UPS,N146UP,Airbus A300 (300F4-622R),829,Update,Back in service 10/2021
+UPS,N630UP,Boeing 747 (747-8F),65777 (1567),New,Delivery 26/10/2021
+UPS,N259UP,Douglas MD-11 (MD-11 F),48417 (467),Update,Back in service 10/2021
+US Air Force,87-0117,Douglas DC-10 (DC10-KCA),48303 (427),Update,Back in service 11/2021
+US Department of State,N568AW,Dash 8 (DHC-8 315),568,Update,Parked since 09/2021
+UTair,VP-BYL,Boeing 737 (737-524),28920 (3048),Update,Back in service 10/2021
+Uzbekistan Airways,UK-75703,Boeing 757 (757-231),28487 (878),Update,Parked since 09/2021
+Uzbekistan Airways,UK75705,Boeing 757 (757-231),28488 (884),Update,Parked since 08/2021
+Uzbekistan Airways,UK75704,Boeing 757 (757-231),30339 (896),Update,Stored 10/2021
+Varesh Airlines,EP-VAR,Boeing 737 (737-524),28927 (3074),Update,Parked since 09/2021
+VietJetAir,VN-A689,Airbus A320 (320-214),4190,Update,Back in service 10/2021
+VietJetAir,VN-A691,Airbus A320 (320-214),4504,Update,Back in service 10/2021
+VietJetAir,VN-A671,Airbus A320 (320-214),6958,Update,Back in service 10/2021
+VietJetAir,VN-A675,Airbus A320 (320-214),7167,Update,Back in service 11/2021
+VietJetAir,VN-A667,Airbus A321 (321-211),6936,Update,Back in service 10/2021
+VietJetAir,VN-A544,Airbus A321 (321-211),7055,Update,Back in service 10/2021
+VietJetAir,VN-A684,Airbus A321 (321-211),7342,Update,Back in service 11/2021
+VietJetAir,VN-A685,Airbus A321 (321-211),7427,Update,Back in service 11/2021
+VietJetAir,VN-A642,Airbus A321 (321-211),7689,Update,Back in service 11/2021
+VietJetAir,VN-A635,Airbus A321 (321-211),7919,Update,Back in service 11/2021
+VietJetAir,VN-A644,Airbus A321 (321-211),7953,Update,Back in service 10/2021
+VietJetAir,VN-A647,Airbus A321 (321-211),8061,Update,Back in service 10/2021
+VietJetAir,VN-A653,Airbus A321 (321-271N),8199,Update,Back in service 10/2021
+VietJetAir,VN-A607,Airbus A321 (321-271N),8790,Update,Back in service 10/2021
+VietJetAir,VN-A531,Airbus A321 (321-271N),9059,Update,Back in service 11/2021
+VietJetAir,VN-A524,Airbus A321 (321-271NX),9401,Update,Back in service 11/2021
+VietJetAir,VN-A533,Airbus A321 (321-271NX),9515,Update,Back in service 11/2021
+Vietnam Airlines,VN-A367,Airbus A321 (321-231),4315,Update,Back in service 10/2021
+Vietnam Airlines,VN-A323,Airbus A321 (321-231),4669,Update,Back in service 10/2021
+Vietnam Airlines,VN-A325,Airbus A321 (321-231),4737,Update,Back in service 10/2021
+Vietnam Airlines,VN-A334,Airbus A321 (321-231),5164,Update,Back in service 10/2021
+Vietnam Airlines,VN-A335,Airbus A321 (321-231),5241,Update,Back in service 10/2021
+Vietnam Airlines,VN-A395,Airbus A321 (321-231),5385,Update,Back in service 10/2021
+Vietnam Airlines,VN-A616,Airbus A321 (321-272N),8501,Update,Back in service 11/2021
+Vietnam Airlines,VN-A620,Airbus A321 (321-272N),8649,Update,Back in service 10/2021
+Vietnam Airlines,VN-A624,Airbus A321 (321-272N),8747,Update,Back in service 11/2021
+Vietnam Airlines,VN-A508,Airbus A321 (321-272N),9108,Update,Back in service 10/2021
+Vietnam Airlines,VN-A890,Airbus A350 (350-941),56,Update,Back in service 11/2021
+Vietnam Airlines,VN-B237,ATR 42/72 (72-212A),925,Update,Back in service 10/2021
+Vietnam Airlines,VN-A874,Boeing 787 (787-10),60290 (972),Update,Back in service 11/2021
+Virgin Atlantic,G-VLUV,Airbus A330 (330-343X),1206,Update,Back in service 11/2021
+Virgin Australia,VH-VUX,Boeing 737 NG / Max (737-8FE),37823 (3415),Update,In service
+Virgin Australia,VH-YQH,Boeing 737 NG / Max (737-8FE),41000 (3963),New,Delivery 07/11/2021
+Virgin Australia Regional Airlines,VH-FVL,ATR 42/72 (72-212A),974,Delete,To Hevilift Australia as VH-FVL 04/10/2021
+Vista Jet,9H-ILY,Canadair RJ (CRJ-100SE),8076,Update,Parked since 10/2021
+Vistara,VT-TYC,Airbus A320 (320-251N),10573,New,Delivery 03/11/2021
+VivaAeroBus,XA-VBR,Airbus A321 (321-271NXLR),10484,New,Delivery 05/11/2021
+VivaAeroBus,XA-VBV,Airbus A321 (321-231),6219,Delete,Delivery 01/12/2021 To enter in service Ex Avianca N725AV
+Volaris,XA-VSF,Airbus A320 (320-271N),10098,New,Delivery 10/11/2021
+Volaris,N521VL,Airbus A320 (320-233),5651,Update,Parked since 10/2021
+Volaris,XA-VSI,Airbus A320 (320-271N),9410,New,Delivery 09/11/2021  Ex JetSMART CC-AWM
+Volaris,XA-VSD,Airbus A320 (320-271N),9563,New,Delivery 28/10/2021
+Voyageur Airways,C-FWWU,Canadair RJ (CRJ-200LR),7299,Update,Back in service 11/2021
+Vueling Airlines,EC-LZZ,Airbus A320 (320-214),2620,Update,Back in service 10/2021
+Vueling Airlines,EC-MGE,Airbus A320 (320-232),6607,Update,Back in service 10/2021
+Vueling Airlines,EI-DUZ,Airbus A330 (330-302),847,New,Delivery 08/11/2021  Ex Aer Lingus EI-DUZ
+Wamos Air,EC-NOF,Airbus A330 (330-343X),741,New,Delivery 20/10/2021
+Wamos Air,EC-NOG,Airbus A330 (330-343E),786,New,Delivery 05/11/2021
+Wamos Air,EC-NHM,Airbus A330 (330-343X),935,Update,Parked since 10/2021
+West Air China,B-9969,Airbus A320 (320-232),6023,Update,Back in service 10/2021
+West Air China,B-321S,Airbus A321 (321-211),7348,Update,Back in service 10/2021
+West Atlantic (UK),G-JMCP,Boeing 737 (737-3T0SF),23578 (1358),Update,Parked since 10/2021
+West Atlantic (UK),G-JMCT,Boeing 737 (737-3Y0F),24546 (1811),Update,Back in service 11/2021
+Westair Aviation,V5-WIN,Embraer 135/145 (145LR),285,Delete,To FlyNamibia as V5-WIN 01/11/2021
+Westair Aviation,V5-WEJ,Embraer 135/145 (145MP),342,Delete,To FlyNamibia as V5-WEJ 01/11/2021
+Western Global Airlines,N452SN,Boeing 747 (747-48EBDSF),25452 (892),Update,Parked since 10/2021
+Western Global Airlines,N356KD,Boeing 747 (747-446BCF),26356 (1026),Update,Parked since 10/2021
+Western Global Airlines,N411SN,Douglas MD-11 (MD-11 F),48411 (453),Update,Parked since 10/2021
+Western Global Airlines,N543JN,Douglas MD-11 (MD-11 F),48543 (572),Update,Parked since 09/2021
+Western Global Airlines,N545JN,Douglas MD-11 (MD-11 F),48545 (587),Update,Back in service 11/2021
+Western Global Airlines,N783SN,Douglas MD-11 (MD-11 F),48783 (627),New,Delivery 07/11/2021
+WestJet Airlines,C-GLWS,Boeing 737 NG / Max (737-76N),32581 (1009),Update,Back in service 11/2021
+WestJet Airlines,C-GWCM,Boeing 737 NG / Max (737-7CT),32756 (1413),Update,Back in service 11/2021
+WestJet Airlines,C-GWJF,Boeing 737 NG / Max (737-7CT),32766 (1599),Update,Back in service 11/2021
+WestJet Airlines,C-GRWS,Boeing 737 NG / Max (737-76N),32881 (1155),Update,Back in service 11/2021
+WestJet Airlines,C-GYSD,Boeing 737 NG / Max (737-8CT),40837 (5785),Delete,To Swoop as C-GYSD 15/11/2021
+Weststar avn svcs,N977JG,Boeing 737 NG / Max (737-73Q(BBJ)),30789 (602),Update,Parked since 10/2021
+Wideroe,LN-WFH,Dash 8 (DHC-8 311),238,Delete,To Trans Island Airways as C6-FUZ 29/10/2021
+Wideroe,LN-WIF,Dash 8 (DHC-8 103),372,Update,Back in service 10/2021
+Wideroe,LN-WII,Dash 8 (DHC-8 103),384,Update,Back in service 10/2021
+Wideroe,LN-WDF,Dash 8 (DHC-8 402),4244,Update,Back in service 11/2021
+Windrose Aviation,UR-DNT,Embraer 135/145 (145LR),709,Update,Parked since 09/2021
+Wingo,HP-1713CMP,Boeing 737 NG / Max (737-8V3),40890 (3455),New,Delivery 27/10/2021  Ex COPA Airlines HP-1713CMP
+Wings Air,PK-WJK,ATR 42/72 (72-600),1336,Update,Back in service 11/2021
+Wings Air,PK-WFQ,ATR 42/72 (72-212A),943,Update,Back in service 10/2021
+Wizz Air,HA-LPZ,Airbus A320 (320-232),4174,Delete,To Avion Express Malta as 9H-AMU 18/11/2021
+Wizz Air,HA-LZC,Airbus A321 (321-271NX),10393,New,Delivery 17/11/2021
+Wizz Air,HA-LZE,Airbus A321 (321-271NX),10480,New,Delivery 29/10/2021
+Wizz Air,HA-LHU,Airbus A330 (330-243F),1578,Update,Back in service 11/2021
+Wizz Air Abu Dhabi,A6-WZD,Airbus A321 (321-271NX),10391,Update,Back in service 11/2021
+World Cargo Airline,9M-WCM,Boeing 737 (737-33RF),28869 (2887),New,Delivery 03/11/2021
+World2fly,CS-WFP,Airbus A330 (330-343E),1097,New,Delivery 21/10/2021  Ex World2fly EC-LXR
+World2fly,EC-LXR,Airbus A330 (330-343E),1097,Delete,To World2fly as CS-WFP 21/10/2021
+Wumac Inc,N711WS,Canadair RJ (CRJ-200),7140,Update,Parked since 10/2021
+Xfly,ES-ACP,Canadair RJ (CRJ-900ER),15242,Update,Back in service 11/2021
+Xiamen Airlines,B-5602,Boeing 737 NG / Max (737-86N),36824 (3703),Update,Parked since 09/2021
+Xiamen Airlines,B-1969,Boeing 737 NG / Max (737-85C),39902 (5005),Update,Parked since 10/2021
+Xiamen Airlines,B-7197,Boeing 737 NG / Max (737-85C),42925 (5805),Update,Parked since 09/2021
+Xiamen Airlines,B-2760,Boeing 787 (787-8),41540 (270),Update,Back in service 10/2021
+Xiamen Airlines,B-2761,Boeing 787 (787-8),41541 (282),Update,Back in service 11/2021
+Zagros Airlines,EP-ZAP,Airbus A320 (320-211),311,Update,Back in service 11/2021
+Zimex Aviation,OE-HZB,ATR 42/72 (42-320),333,New,Delivery 13/10/2021  Ex Chalair Aviation F-HBCS
+Zimex Aviation,HB-ALM,ATR 42/72 (72-202F),396,Update,Back in service 11/2021
+ZYB Lily Jet,B-7695,Canadair RJ (CRJ-200ER),7268,Update,Back in service 11/2021
