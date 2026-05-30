@@ -166,6 +166,7 @@ function upsertDigitalProperty(PDO $db, string $icao, string $name, string $cate
 
 $updated = 0;
 $matched = 0;
+$inserted = 0;
 $fleetInserted = 0;
 $digitalInserted = 0;
 $skipped = 0;
@@ -234,8 +235,38 @@ foreach ($rows as $r) {
             $fleetInserted++;
         }
     } else {
-        echo "  ⚠ No match found for '{$companyName}'\n";
-        $skipped++;
+        // Generate ICAO code from AOC number (guaranteed unique per CAA register)
+        $aocNum = $r['aoc'];
+        if (!$aocNum) {
+            echo "  ⚠ No match and no AOC number for '{$companyName}'\n";
+            $skipped++;
+            continue;
+        }
+        $genIcao = 'GB' . $aocNum;
+
+        // Check for collision with any existing ICAO
+        $collision = $db->prepare("SELECT name FROM airlines WHERE icao_code=?");
+        $collision->execute([$genIcao]);
+        if ($collision->fetch()) {
+            echo "  ⚠ Generated ICAO $genIcao collides for '{$companyName}' — skipping\n";
+            $skipped++;
+            continue;
+        }
+
+        $db->prepare("INSERT INTO airlines (icao_code, name, country, country_code, active, created_at, updated_at)
+            VALUES (?, ?, 'United Kingdom', 'GB', 'Y', NOW(), NOW())")
+            ->execute([$genIcao, $companyName]);
+        echo "  + Inserted {$genIcao}: '{$companyName}'\n";
+        $inserted++;
+
+        if ($website) {
+            upsertDigitalProperty($db, $genIcao, $companyName, 'Contact', 'Website', 'https://' . $website);
+            $digitalInserted++;
+        }
+        foreach ($fleet as $ac) {
+            upsertFleet($db, $genIcao, $ac);
+            $fleetInserted++;
+        }
     }
 }
 
@@ -259,6 +290,7 @@ echo "\n--- Summary ---\n";
 echo "Total AOC holders: " . count($rows) . "\n";
 echo "Airlines updated (active=Y): $updated\n";
 echo "Airlines matched (total): $matched\n";
+echo "New airlines inserted: $inserted\n";
 echo "Fleet entries inserted: $fleetInserted\n";
 echo "Digital properties inserted: $digitalInserted\n";
 echo "No match found: $skipped\n";
