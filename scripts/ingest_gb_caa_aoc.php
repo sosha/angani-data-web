@@ -135,15 +135,11 @@ function namesMatch(string $caaName, string $dbName): bool {
     $b = cleanName($dbName);
     if (!$a || !$b) return false;
     if ($a === $b) return true;
-    // Check if one is substring of the other at word boundaries
-    if (str_contains($a, $b) || str_contains($b, $a)) return true;
-    $wa = preg_split('/\s+/', $a);
-    $wb = preg_split('/\s+/', $b);
-    $common = array_intersect($wa, $wb);
-    $shortest = min(count($wa), count($wb));
-    if ($shortest <= 2) return count($common) >= $shortest;
-    if ($shortest <= 4) return count($common) >= $shortest - 1;
-    return count($common) >= $shortest - 1 && $common;
+    // Remove common aviation stopwords and retry
+    $stopwords = ['air', 'airways', 'aviation', 'airlines', 'services', 'helicopter', 'helicopters', 'flight', 'fly', 'aero', 'limited', 'ltd', 'plc', 'international', 'group', 'company'];
+    $wa = array_diff(explode(' ', $a), $stopwords);
+    $wb = array_diff(explode(' ', $b), $stopwords);
+    return implode(' ', $wa) === implode(' ', $wb);
 }
 
 function upsertFleet(PDO $db, string $icao, string $aircraftType): void {
@@ -174,7 +170,6 @@ echo "Processing " . count($rows) . " UK AOC holders...\n\n";
 foreach ($rows as $r) {
     $companyName = $r['company'];
     $website = $r['website'];
-    $aocNum = $r['aoc'];
     $fleet = $r['fleet'] ?? [];
     $see = $r['see'] ?? null;
 
@@ -192,6 +187,7 @@ foreach ($rows as $r) {
 
     // Try name matching against all GB airlines
     $matchedAirline = null;
+    $matchLabel = '';
     foreach ($gbAirlines() as $a) {
         if (namesMatch($companyName, $a['name'])) {
             $matchedAirline = $a;
@@ -213,7 +209,7 @@ foreach ($rows as $r) {
 
     if ($matchedAirline) {
         $icao = $matchedAirline['icao_code'];
-        $label = $matchLabel ?? '';
+        $label = $matchLabel;
         if ($matchedAirline['active'] !== 'Y') {
             $db->prepare("UPDATE airlines SET active='Y', updated_at=NOW() WHERE icao_code=?")
                 ->execute([$icao]);
