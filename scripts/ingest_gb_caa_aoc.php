@@ -120,9 +120,11 @@ function cleanName(string $name): string {
     $name = preg_replace('/\s*LTD\s*$/i', '', $name);
     $name = preg_replace('/\s*PLC\s*$/i', '', $name);
     $name = preg_replace('/\s*\(UK\)\s*$/i', '', $name);
+    $name = preg_replace('/\s+UK\s*$/i', '', $name);
     $name = preg_replace('/\s*\(CORPORATE AIR TRAVEL\)\s*$/i', '', $name);
     $name = preg_replace('/\s*\(CHARTERS\)\s*/i', '', $name);
     $name = preg_replace('/\s*\(HELICOPTERS\)\s*/i', '', $name);
+    $name = preg_replace('/\s*\(NI\)\s*$/i', '', $name);
     $name = preg_replace('/\bS\.?r\.?l\.?\b/i', '', $name);
     $name = preg_replace('/\bS\.?p\.?A\.?\b/i', '', $name);
     $name = preg_replace('/[",.]/', '', $name);
@@ -136,7 +138,7 @@ function namesMatch(string $caaName, string $dbName): bool {
     if (!$a || !$b) return false;
     if ($a === $b) return true;
     // Remove common aviation stopwords and retry
-    $stopwords = ['air', 'airways', 'aviation', 'airlines', 'services', 'helicopter', 'helicopters', 'flight', 'fly', 'aero', 'limited', 'ltd', 'plc', 'international', 'group', 'company'];
+    $stopwords = ['air', 'airways', 'aviation', 'airlines', 'services', 'helicopter', 'helicopters', 'flight', 'fly', 'aero', 'limited', 'ltd', 'plc', 'international', 'group', 'company', 'uk', 'ni', 'gb'];
     $wa = array_diff(explode(' ', $a), $stopwords);
     $wb = array_diff(explode(' ', $b), $stopwords);
     return implode(' ', $wa) === implode(' ', $wb);
