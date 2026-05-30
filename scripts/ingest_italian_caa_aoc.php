@@ -102,20 +102,19 @@ function cleanName(string $name): string {
     return trim(strtolower($name));
 }
 
-// Helper: names match if one contains the other or share significant overlap
+// Helper: names match if they share significant word-level overlap
 function namesMatch(string $caaName, string $dbName): bool {
     $a = cleanName($caaName);
     $b = cleanName($dbName);
     if (!$a || !$b) return false;
     if ($a === $b) return true;
-    if (str_contains($a, $b) || str_contains($b, $a)) return true;
-    // Check word overlap
-    $wa = explode(' ', $a);
-    $wb = explode(' ', $b);
+    $wa = preg_split('/\s+/', $a);
+    $wb = preg_split('/\s+/', $b);
     $common = array_intersect($wa, $wb);
     $shortest = min(count($wa), count($wb));
     if ($shortest <= 2) return count($common) >= $shortest;
-    return count($common) >= $shortest - 1;
+    if ($shortest <= 4) return count($common) >= $shortest - 1;
+    return count($common) >= $shortest - 1 && $common;
 }
 
 $updated = 0;
