@@ -58,8 +58,8 @@ if($key==='countries'){
     if($cIso2) $cCodeBoxes.='<span class="iata-box">'.$cIso2.'</span>';
     if($cIso3) $cCodeBoxes.='<span class="iata-box icao">'.$cIso3.'</span>';
     if($cCodeBoxes) echo '<div style="display:flex;gap:8px;margin:10px 0 4px">'.$cCodeBoxes.'</div>';
-    $cCont=e($r['continent']??''); $cRegion=e($r['un_region']??'');
-    if($cCont || $cRegion) echo '<p style="margin-top:8px">'.$cCont.($cCont&&$cRegion?' — ':'').$cRegion.'</p>';
+    $cCont=e($r['continent']??(iso2_continent($r['iso_alpha_2']??''))); $cRegion=e($r['un_region']??'');
+    if($cCont || $cRegion) echo '<p style="margin-top:8px">'.ucwords($cCont).($cCont&&$cRegion?' — ':'').$cRegion.'</p>';
     if($r['description']??'') echo '<p style="margin-top:4px;max-width:700px;line-height:1.6;color:var(--muted)">'.e($r['description']).'</p>';
     $cStats='';
     try{$cr=row('SELECT * FROM country_air_transport_stats WHERE iso_alpha_2=?',[$id]);}catch(Throwable $e){$cr=null;}
@@ -135,7 +135,7 @@ echo '</nav><div class="detail-content">';
 // Country overview: section-based layout
 if($key==='countries' && $tabParam==='overview'){
     $cIso2=$r['iso_alpha_2']??''; $cIso3=$r['iso_alpha_3']??'';
-    $cCont=e($r['continent']??''); $cRegion=e($r['un_region']??'');
+    $cCont=e($r['continent']??(iso2_continent($cIso2)?:'')); $cRegion=e($r['un_region']??'');
     $cName=e($r['name_common']??''); $cOfficial=e($r['name_official']??'');
     $cr=null; $ct=null;
     try{$cr=row('SELECT * FROM country_air_transport_stats WHERE iso_alpha_2=?',[$id]);}catch(Throwable $e){}
@@ -144,7 +144,7 @@ if($key==='countries' && $tabParam==='overview'){
     echo '<div class="xcard-sec"><div class="xcard-sec-title">GEOGRAPHY</div>';
     echo '<div class="xcard-row"><span class="xcard-row-k">Name</span><span class="xcard-row-v">'.$cName.'</span></div>';
     if($cOfficial) echo '<div class="xcard-row"><span class="xcard-row-k">Official</span><span class="xcard-row-v">'.$cOfficial.'</span></div>';
-    if($cCont) echo '<div class="xcard-row"><span class="xcard-row-k">Continent</span><span class="xcard-row-v">'.$cCont.'</span></div>';
+    if($cCont) echo '<div class="xcard-row"><span class="xcard-row-k">Continent</span><span class="xcard-row-v">'.ucwords($cCont).'</span></div>';
     if($cRegion) echo '<div class="xcard-row"><span class="xcard-row-k">Region</span><span class="xcard-row-v">'.$cRegion.'</span></div>';
     if($ct && ($ct['area_sq_km']??null)) echo '<div class="xcard-row"><span class="xcard-row-k">Area</span><span class="xcard-row-v">'.nfmt($ct['area_sq_km']).' km²</span></div>';
     if($ct && ($ct['capital']??'')) echo '<div class="xcard-row"><span class="xcard-row-k">Capital</span><span class="xcard-row-v">'.e($ct['capital']).'</span></div>';
