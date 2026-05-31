@@ -45,10 +45,14 @@ else{
 echo '<section class="view"><a class="linkish" href="'.e(module_url($key)).'">← Back to '.e($cfg['label']).'</a><section class="record-hero"><div><div class="eyebrow">'.e($cfg['label']).($key==='countries' && ($r['un_region']??'') ? ' — '.e($r['un_region']) : '').'</div>';
 if($key==='countries'){
     $cc=strtolower($r['iso_alpha_2']??'');
-    $flagHtml='';
-    if($r['flag']??'') $flagHtml='<img class="flag-svg" src="'.e($r['flag']).'" alt="'.e($r['name_common'] ?? '').' flag" style="height:32px;vertical-align:middle;margin-right:10px">';
-    elseif($cc) $flagHtml='<span class="flag" style="font-size:28px;vertical-align:middle;margin-right:10px">'.flag_emoji($cc).'</span>';
-    echo '<h1>'.$flagHtml.e($r[$cfg['title']] ?? 'Record').' <sub style="font-size:0.5em;font-weight:400;color:var(--ink-muted)">'.e($r['iso_alpha_2'] ?? '').'</sub></h1>';
+    $flagImgHtml='';
+    if($r['flag']??'') {
+        $flagImgHtml='<img class="flag-svg" src="'.e($r['flag']).'" alt="'.e($r['name_common'] ?? '').' flag" style="height:32px;vertical-align:middle;margin-right:10px">';
+    } elseif($cc && file_exists(__DIR__.'/assets/country_flag_icons/'.$cc.'.svg')) {
+        $flagImgHtml='<img class="flag-svg" src="assets/country_flag_icons/'.e($cc).'.svg" alt="'.e($r['name_common'] ?? '').' flag" style="height:32px;vertical-align:middle;margin-right:10px">';
+    }
+    $flagEmojiHtml=$cc?' <span class="flag" style="font-size:28px;vertical-align:middle;margin-left:8px">'.flag_emoji($cc).'</span>':'';
+    echo '<h1>'.$flagImgHtml.e($r[$cfg['title']] ?? 'Record').$flagEmojiHtml.' <sub style="font-size:0.5em;font-weight:400;color:var(--ink-muted)">'.e($r['iso_alpha_2'] ?? '').'</sub></h1>';
     if($r['description']??'') echo '<p style="margin-top:8px;max-width:700px;line-height:1.6">'.e($r['description']).'</p>';
 } elseif($key==='airlines'){
     $logoHtml='';
