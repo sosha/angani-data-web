@@ -241,23 +241,64 @@ function render_record_card(string $key,array $cfg,array $r): string {
         return '<article class="record-card" onclick="location.href=\''.e($url).'\'"><div class="record-top"><span class="chip gold">'.e($r['type'] ?? 'Type').'</span></div><h3>'.e($title ?: ($r['model'] ?? 'Aircraft Type')).'</h3><p>'.e(($r['manufacturer'] ?? '').' · '.($r['model'] ?? '')).'</p><div class="mini-metrics"><span>IATA '.e($r['iata_code'] ?? '—').'</span><span>ICAO '.e($r['icao_code'] ?? '—').'</span></div><a class="btn small primary" href="'.e($url).'">View Type</a></article>';
     }
     if($card==='country'){
-        $cc=strtolower($r['iso_alpha_2'] ?? ''); $flag=$cc?((file_exists(__DIR__.'/../assets/country_flag_icons/'.$cc.'.svg')?'<img class="flag-svg" src="assets/country_flag_icons/'.$cc.'.svg" alt="">':'<div class="flag">'.flag_emoji($cc).'</div>')):'';
-        $chip = $r['un_region'] ?? $r['continent'] ?? $cfg['label'];
-        $subLine = e($sub);
-        $aps=''; $al=''; $defunctNote='';
-        try{ $s=row('SELECT international_airports,domestic_airports,airlines,airlines_active,airlines_defunct FROM country_air_transport_stats WHERE iso_alpha_2=?',[$r['iso_alpha_2']??'']); if($s){
-            $totalAirports = ($s['international_airports']??0)+($s['domestic_airports']??0);
-            if($totalAirports) $aps='<i class="fas fa-map-location"></i> '.nfmt($totalAirports).' Airports';
-            $act = (int)($s['airlines_active']??0);
-            $def = (int)($s['airlines_defunct']??0);
-            $totalAl = (int)($s['airlines']??0);
-            if($totalAl){
-                $al = '<i class="fas fa-plane-departure"></i> '.nfmt($act).' Airlines';
-                if($def) $defunctNote = '<sup class="muted" style="font-size:10px">*Defunct/inactive airlines: '.nfmt($def).'</sup>';
-            }
-        } }catch(Throwable $e){}
-        if($aps||$al) $subLine = trim($aps.' '.$al);
-        return '<article class="record-card" onclick="location.href=\''.e($url).'\'"><div class="record-top">'.$flag.'<span class="chip">'.e($chip).'</span></div><h3>'.e($title ?: $cfg['label']).'</h3><p>'.$subLine.'</p>'.($defunctNote ? '<p style="margin:0">'.$defunctNote.'</p>' : '').'<a class="btn small primary" href="'.e($url).'">View Country</a></article>';
+        static $statsCache=[], $tsCache=[];
+        if(!$statsCache){
+            try{ $sr=rows('SELECT * FROM country_air_transport_stats'); foreach($sr as $s) $statsCache[$s['iso_alpha_2']]=$s; }catch(Throwable $e){}
+            try{ $tr=rows('SELECT cts.* FROM country_time_series cts INNER JOIN (SELECT iso_alpha_2,MAX(year) my FROM country_time_series GROUP BY iso_alpha_2) lat ON lat.iso_alpha_2=cts.iso_alpha_2 AND lat.my=cts.year'); foreach($tr as $t) $tsCache[$t['iso_alpha_2']]=$t; }catch(Throwable $e){}
+        }
+        $cc=strtolower($r['iso_alpha_2']??''); $flagHtml=$cc?((file_exists(__DIR__.'/../assets/country_flag_icons/'.$cc.'.svg')?'<img class="flag-svg cty-svg" src="assets/country_flag_icons/'.$cc.'.svg" alt="">':'<span class="flag" style="font-size:28px">'.flag_emoji($cc).'</span>')):'';
+        $s=$statsCache[$r['iso_alpha_2']??'']??[]; $t=$tsCache[$r['iso_alpha_2']??'']??[];
+        $totalAirps=(int)($s['international_airports']??0)+(int)($s['domestic_airports']??0);
+        $actAl=(int)($s['airlines_active']??0); $defAl=(int)($s['airlines_defunct']??0); $totalAl=(int)($s['airlines']??0);
+        $region=e($r['un_region']??$r['continent']??'');
+        $capital=e($t['capital']??'');
+        $lang=e($t['official_languages']??'');
+        $currency=e(($t['currency_code']??'').($t['currency_name']?' ('.e($t['currency_name']).')':''));
+        $gdp=$t['gdp_usd']??null; $gdpF=$gdp?'$'.nfmt($gdp):'';
+        $pop=$t['population']??null; $popF=$pop?nfmt($pop):'';
+        $area=$t['area_sq_km']??null; $areaF=$area?nfmt($area).' km²':'';
+        $desc=e($r['description']??'');
+        $iso2=e($r['iso_alpha_2']??''); $iso3=e($r['iso_alpha_3']??'');
+        $name=e($title?:$cfg['label']);
+        $emi=$cc?'<span class="flag" style="font-size:22px;vertical-align:middle;margin-left:6px">'.flag_emoji($cc).'</span>':'';
+        return '<article class="record-card cty-card" data-iso="'.$iso2.'" data-cont="'.e($r['continent']??'').'" data-region="'.e($r['un_region']??'').'" data-name="'.strtolower($name).'">
+            <div class="record-top cty-top">'.$flagHtml.'<span class="chip gold cty-chip">'.$region.'</span></div>
+            <h3 class="cty-name">'.$name.$emi.'</h3>
+            <div class="cty-summary">
+                <div class="cty-stat"><span class="cty-stat-l">ISO</span><strong class="cty-stat-v">'.$iso2.' / '.$iso3.'</strong></div>
+                '.($popF?'<div class="cty-stat"><span class="cty-stat-l">POPULATION</span><strong class="cty-stat-v">'.$popF.'</strong></div>':'').'
+                '.($gdpF?'<div class="cty-stat"><span class="cty-stat-l">GDP</span><strong class="cty-stat-v">'.$gdpF.'</strong></div>':'').'
+                '.($totalAirps?'<div class="cty-stat"><span class="cty-stat-l">AIRPORTS</span><strong class="cty-stat-v">'.nfmt($totalAirps).'</strong></div>':'').'
+                '.($totalAl?'<div class="cty-stat"><span class="cty-stat-l">AIRLINES</span><strong class="cty-stat-v">'.nfmt($actAl).($defAl?' <span class="cty-def-note">(+'.nfmt($defAl).' defunct)</span>':'').'</strong></div>':'').'
+            </div>
+            <div class="cty-expand-panel" style="display:none">
+                <div class="cty-sections">
+                    '.($region||$areaF||$capital?'<div class="cty-sec"><div class="cty-sec-title">GEOGRAPHY</div>
+                        '.($region?'<div class="cty-row"><span class="cty-row-k">Region</span><span class="cty-row-v">'.$region.'</span></div>':'').'
+                        '.($capital?'<div class="cty-row"><span class="cty-row-k">Capital</span><span class="cty-row-v">'.$capital.'</span></div>':'').'
+                        '.($areaF?'<div class="cty-row"><span class="cty-row-k">Area</span><span class="cty-row-v">'.$areaF.'</span></div>':'').'
+                    </div>':'').'
+                    '.($popF||$lang?'<div class="cty-sec"><div class="cty-sec-title">DEMOGRAPHICS</div>
+                        '.($popF?'<div class="cty-row"><span class="cty-row-k">Population</span><span class="cty-row-v">'.$popF.'</span></div>':'').'
+                        '.($lang?'<div class="cty-row"><span class="cty-row-k">Languages</span><span class="cty-row-v">'.$lang.'</span></div>':'').'
+                    </div>':'').'
+                    '.($gdpF||$currency?'<div class="cty-sec"><div class="cty-sec-title">ECONOMY</div>
+                        '.($gdpF?'<div class="cty-row"><span class="cty-row-k">GDP</span><span class="cty-row-v">'.$gdpF.'</span></div>':'').'
+                        '.($currency?'<div class="cty-row"><span class="cty-row-k">Currency</span><span class="cty-row-v">'.$currency.'</span></div>':'').'
+                    </div>':'').'
+                    '.($totalAirps||$totalAl?'<div class="cty-sec"><div class="cty-sec-title">AIR TRANSPORT</div>
+                        '.($totalAirps?'<div class="cty-row"><span class="cty-row-k">Airports</span><span class="cty-row-v">International: '.nfmt((int)($s['international_airports']??0)).' · Domestic: '.nfmt((int)($s['domestic_airports']??0)).'</span></div>':'').'
+                        '.($totalAl?'<div class="cty-row"><span class="cty-row-k">Airlines</span><span class="cty-row-v">Active: '.nfmt($actAl).($defAl?' · Defunct: '.nfmt($defAl):'').'</span></div>':'').'
+                    </div>':'').'
+                    '.($desc?'<div class="cty-sec"><div class="cty-sec-title">ABOUT</div><div class="cty-row"><span class="cty-row-v cty-desc">'.$desc.'</span></div></div>':'').'
+                </div>
+                <a class="btn small primary cty-detail-btn" href="'.e($url).'">Open Full Profile →</a>
+            </div>
+            <div class="cty-footer">
+                <span class="cty-hint">Click to expand</span>
+                <button class="cty-expand-btn">+ Expand</button>
+            </div>
+        </article>';
     }
     return '<article class="record-card" onclick="location.href=\''.e($url).'\'"><div class="record-top"><span class="chip">'.e($cfg['label']).'</span></div><h3>'.e($title ?: $cfg['label']).'</h3><p>'.e($sub).'</p><a class="btn small primary" href="'.e($url).'">View Record</a></article>';
 }

@@ -35,7 +35,62 @@ try { $stats=get_stats(); } catch(Throwable $e) { $dbError=$e->getMessage(); }
 <?php elseif($page==='catalogue'): ?>
 <section class="view"><section class="section-head"><div><div class="eyebrow">Database catalogue</div><h1>Angani Data modules</h1></div><p>Free users see public/reference data. Pro users unlock full drill-downs and exports. Enterprise is for bulk/API access.</p></section><div class="module-grid"><?php foreach(module_groups() as $group=>$keys): ?><article class="module-group"><h3><?=e($group)?></h3><div><?php foreach($keys as $k): $c=module_config($k); if(!$c) continue; ?><a class="module-chip" href="<?=e(module_url($k))?>"><b><?=module_icon_html($k)?></b><span><?=e($c['label'])?></span><em><?=nfmt(module_count($k))?></em></a><?php endforeach; ?></div></article><?php endforeach; ?></div></section>
 <?php elseif($page==='module'): $key=getv('module','airlines'); $cfg=module_config($key); ?>
-<section class="view"><?php if(!$cfg): ?><div class="empty-state"><h2>Unknown database</h2></div><?php elseif(!module_allowed($cfg)): ?><?=access_gate($cfg['label'].' is a Pro dataset','Create or upgrade your account to access this database.','View pricing')?><?php else: [$records,$total]=query_module_records($cfg,24,(page_num()-1)*24); ?><section class="section-head"><div><div class="eyebrow"><?=e($cfg['tier']==='free'?'Open database':'Pro database')?></div><h1><?=e($cfg['label'])?></h1></div><p><?=nfmt($total)?> records. Admin can add/edit/import; logged-in Pro users can export filtered data.</p></section><?=render_search_bar($key,$cfg)?><?php if(in_array($cfg['card']??'', ['airline','airport','aircraft_type','lessor','country','aircraft'], true)): ?><?=render_module_cards($key,$records)?><?php else: ?><?=render_table($records,$cfg['list'],$key)?><?php endif; ?><?=paginate($total,24)?><?php endif; ?></section>
+<section class="view"><?php if(!$cfg): ?><div class="empty-state"><h2>Unknown database</h2></div><?php elseif(!module_allowed($cfg)): ?><?=access_gate($cfg['label'].' is a Pro dataset','Create or upgrade your account to access this database.','View pricing')?><?php else: if($key==='countries'){ [$records,$total]=query_module_records($cfg,500,0); echo '<style>
+.cty-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px;margin-top:20px}
+.cty-grid .record-grid{display:contents}
+.cty-card{background:rgba(255,253,248,.88);border:1px solid var(--line);border-radius:18px;overflow:hidden;transition:border-color .2s,box-shadow .2s;cursor:pointer;display:flex;flex-direction:column}
+.cty-card:hover{border-color:var(--angani-gold);box-shadow:0 8px 28px rgba(7,21,34,.12)}
+.cty-card.expanded{border-color:var(--angani-gold);box-shadow:0 0 0 2px rgba(199,155,69,.25),0 16px 40px rgba(7,21,34,.16);cursor:default}
+.cty-top{display:flex;align-items:center;gap:10px;padding:14px 16px 10px;border-bottom:1px solid var(--line)}
+.cty-card.expanded .cty-top{border-bottom-color:rgba(199,155,69,.25)}
+.cty-svg{width:40px;height:40px;border-radius:10px;object-fit:contain;background:rgba(255,255,255,.7);padding:3px;border:1px solid rgba(7,21,33,.08)}
+.cty-chip{font-size:.7rem;letter-spacing:.05em}
+.cty-name{font-family:\'IBM Plex Sans Condensed\',sans-serif;font-size:1.2rem;margin:10px 16px 4px;letter-spacing:-.02em;line-height:1.15;color:var(--ink)}
+.cty-summary{display:grid;grid-template-columns:1fr 1fr;gap:6px 14px;padding:8px 16px 10px}
+.cty-stat{display:flex;flex-direction:column;gap:1px}
+.cty-stat-l{font-family:\'IBM Plex Mono\',monospace;font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.cty-stat-v{font-size:.85rem;font-weight:600;color:var(--ink)}
+.cty-def-note{font-size:.68rem;font-weight:400;color:var(--angani-muted)}
+.cty-expand-panel{border-top:1px solid var(--line);padding:14px 16px;background:rgba(246,241,231,.5)}
+.cty-card.expanded .cty-expand-panel{display:block!important;border-top-color:rgba(199,155,69,.2)}
+.cty-sections{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.cty-sec{display:flex;flex-direction:column;gap:4px}
+.cty-sec-title{font-family:\'IBM Plex Mono\',monospace;font-size:.63rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-2);padding-bottom:4px;border-bottom:1px solid rgba(199,155,69,.2);margin-bottom:4px}
+.cty-row{display:flex;gap:6px;font-size:.8rem;line-height:1.4}
+.cty-row-k{color:var(--muted);min-width:4.2rem;flex-shrink:0;font-size:.72rem;padding-top:1px}
+.cty-row-v{color:var(--ink);word-break:break-word}
+.cty-desc{line-height:1.55;color:rgba(7,21,33,.72);font-size:.8rem}
+.cty-detail-btn{margin-top:12px}
+.cty-footer{display:flex;align-items:center;justify-content:space-between;padding:8px 16px 10px;border-top:1px solid var(--line);margin-top:auto}
+.cty-card.expanded .cty-footer{border-top-color:rgba(199,155,69,.2)}
+.cty-hint{font-family:\'IBM Plex Mono\',monospace;font-size:.65rem;color:var(--muted)}
+.cty-expand-btn{background:none;border:1px solid var(--line);border-radius:6px;padding:4px 10px;font-family:\'IBM Plex Mono\',monospace;font-size:.7rem;color:var(--muted);cursor:pointer;transition:.15s}
+.cty-expand-btn:hover{border-color:var(--angani-gold);color:var(--angani-gold)}
+.cty-card.expanded .cty-expand-btn{color:var(--muted)}
+#cty-empty{display:none;text-align:center;padding:4rem 2rem;color:var(--muted);font-family:\'IBM Plex Mono\',monospace;font-size:.82rem}
+@media(max-width:640px){.cty-grid{grid-template-columns:1fr}.cty-sections{grid-template-columns:1fr}}
+</style>';
+echo '<div class="cty-controls" style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;padding:14px 0;position:sticky;top:98px;z-index:50;background:rgba(246,241,231,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);margin-top:-6px;margin-bottom:6px">
+<div style="position:relative;flex:1;min-width:180px;max-width:340px"><svg style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+<input type="text" id="ctySearch" placeholder="Search countries..." style="width:100%;background:var(--white);border:1px solid var(--line);border-radius:10px;padding:9px 12px 9px 34px;color:var(--ink);font-family:inherit;font-size:.85rem;outline:none" autocomplete="off"></div>
+<div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center">
+<button class="cty-filter active" data-f="all" style="font-family:\'IBM Plex Mono\',monospace;font-size:.7rem;letter-spacing:.06em;padding:6px 12px;border-radius:8px;border:1px solid var(--line);background:var(--white);color:var(--muted);cursor:pointer;transition:.15s;white-space:nowrap">ALL</button>
+<button class="cty-filter" data-f="africa" style="font-family:\'IBM Plex Mono\',monospace;font-size:.7rem;letter-spacing:.06em;padding:6px 12px;border-radius:8px;border:1px solid var(--line);background:var(--white);color:var(--muted);cursor:pointer;transition:.15s;white-space:nowrap">Africa</button>
+<button class="cty-filter" data-f="asia" style="font-family:\'IBM Plex Mono\',monospace;font-size:.7rem;letter-spacing:.06em;padding:6px 12px;border-radius:8px;border:1px solid var(--line);background:var(--white);color:var(--muted);cursor:pointer;transition:.15s;white-space:nowrap">Asia</button>
+<button class="cty-filter" data-f="europe" style="font-family:\'IBM Plex Mono\',monospace;font-size:.7rem;letter-spacing:.06em;padding:6px 12px;border-radius:8px;border:1px solid var(--line);background:var(--white);color:var(--muted);cursor:pointer;transition:.15s;white-space:nowrap">Europe</button>
+<button class="cty-filter" data-f="north america" style="font-family:\'IBM Plex Mono\',monospace;font-size:.7rem;letter-spacing:.06em;padding:6px 12px;border-radius:8px;border:1px solid var(--line);background:var(--white);color:var(--muted);cursor:pointer;transition:.15s;white-space:nowrap">N America</button>
+<button class="cty-filter" data-f="south america" style="font-family:\'IBM Plex Mono\',monospace;font-size:.7rem;letter-spacing:.06em;padding:6px 12px;border-radius:8px;border:1px solid var(--line);background:var(--white);color:var(--muted);cursor:pointer;transition:.15s;white-space:nowrap">S America</button>
+<button class="cty-filter" data-f="oceania" style="font-family:\'IBM Plex Mono\',monospace;font-size:.7rem;letter-spacing:.06em;padding:6px 12px;border-radius:8px;border:1px solid var(--line);background:var(--white);color:var(--muted);cursor:pointer;transition:.15s;white-space:nowrap">Oceania</button>
+</div>
+<span id="ctyCount" style="font-family:\'IBM Plex Mono\',monospace;font-size:.72rem;color:var(--muted);margin-left:auto;white-space:nowrap">'.nfmt($total).' countries</span>
+</div>';
+echo '<div class="cty-grid" id="ctyGrid">'.render_module_cards($key,$records).'</div><div id="cty-empty">No countries match your search.</div>';
+echo '<script>
+document.querySelectorAll(".cty-card").forEach(function(c){c.addEventListener("click",function(e){if(e.target.closest(".cty-detail-btn")||e.target.closest("a"))return;var w=this.classList.contains("expanded");document.querySelectorAll(".cty-card.expanded").forEach(function(x){x.classList.remove("expanded");var b=x.querySelector(".cty-expand-btn");if(b)b.textContent="+ Expand";var h=x.querySelector(".cty-hint");if(h)h.textContent="Click to expand"});if(!w){this.classList.add("expanded");var b=this.querySelector(".cty-expand-btn");if(b)b.textContent="- Collapse";var h=this.querySelector(".cty-hint");if(h)h.textContent="";this.scrollIntoView({behavior:"smooth",block:"nearest"})}})});
+document.querySelectorAll(".cty-filter").forEach(function(b){b.addEventListener("click",function(){document.querySelectorAll(".cty-filter").forEach(function(x){x.classList.remove("active");x.style.borderColor="var(--line)";x.style.background="var(--white)";x.style.color="var(--muted)"});this.classList.add("active");this.style.borderColor="var(--angani-gold)";this.style.background="rgba(199,155,69,.1)";this.style.color="var(--angani-gold)";var f=this.dataset.f;document.querySelectorAll(".cty-card.expanded").forEach(function(x){x.classList.remove("expanded")});document.querySelectorAll(".cty-card").forEach(function(c){c.style.display=(f==="all"||c.dataset.cont===f||c.dataset.region.toLowerCase().includes(f))?"":"none"});updateCtyCount()})});
+function updateCtyCount(){var v=document.querySelectorAll(".cty-card:not([style*=\"display: none\"])").length;document.getElementById("ctyCount").textContent=v+" country"+(v!==1?"s":"")+"";document.getElementById("cty-empty").style.display=v===0?"block":"none"}
+var ctySearchTimer;document.getElementById("ctySearch").addEventListener("input",function(){clearTimeout(ctySearchTimer);ctySearchTimer=setTimeout(function(){var q=this.value.trim().toLowerCase();document.querySelectorAll(".cty-card.expanded").forEach(function(x){x.classList.remove("expanded");var b=x.querySelector(".cty-expand-btn");if(b)b.textContent="+ Expand";var h=x.querySelector(".cty-hint");if(h)h.textContent="Click to expand"});document.querySelectorAll(".cty-card").forEach(function(c){var m=c.dataset.name+" "+c.dataset.iso;c.style.display=m.includes(q)?"":"none"});updateCtyCount()}.bind(this),150)});
+</script>'; } else { [$records,$total]=query_module_records($cfg,24,(page_num()-1)*24); ?><section class="section-head"><div><div class="eyebrow"><?=e($cfg['tier']==='free'?'Open database':'Pro database')?></div><h1><?=e($cfg['label'])?></h1></div><p><?=nfmt($total)?> records. Admin can add/edit/import; logged-in Pro users can export filtered data.</p></section><?=render_search_bar($key,$cfg)?><?php if(in_array($cfg['card']??'', ['airline','airport','aircraft_type','lessor','country','aircraft'], true)): ?><?=render_module_cards($key,$records)?><?php else: ?><?=render_table($records,$cfg['list'],$key)?><?php endif; ?><?=paginate($total,24)?><?php } endif; ?></section>
 <?php elseif($page==='detail'): $key=getv('module'); $cfg=module_config($key); $id=getv('id'); $tabParam=getv('dtab','overview');
 if(!$cfg || !$id){ echo '<section class="view"><div class="empty-state"><h2>Record not found</h2></div></section>'; }
 elseif(!module_allowed($cfg)){ echo '<section class="view">'.access_gate('Pro detail locked','Upgrade to open full records in this database.','View pricing').'</section>'; }
