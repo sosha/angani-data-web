@@ -48,7 +48,7 @@ if($key==='countries'){
     $flagHtml='';
     if($r['flag']??'') $flagHtml='<img class="flag-svg" src="'.e($r['flag']).'" alt="'.e($r['name_common'] ?? '').' flag" style="height:32px;vertical-align:middle;margin-right:10px">';
     elseif($cc) $flagHtml='<span class="flag" style="font-size:28px;vertical-align:middle;margin-right:10px">'.flag_emoji($cc).'</span>';
-    echo '<h1>'.$flagHtml.e($r[$cfg['title']] ?? 'Record').' <sub style="font-size:0.5em;font-weight:400;color:var(--ink-muted)">'.e($r[$cfg['subtitle']] ?? '').'</sub></h1>';
+    echo '<h1>'.$flagHtml.e($r[$cfg['title']] ?? 'Record').' <sub style="font-size:0.5em;font-weight:400;color:var(--ink-muted)">'.e($r['iso_alpha_2'] ?? '').'</sub></h1>';
     if($r['description']??'') echo '<p style="margin-top:8px;max-width:700px;line-height:1.6">'.e($r['description']).'</p>';
 } elseif($key==='airlines'){
     $logoHtml='';
@@ -86,7 +86,7 @@ if($key==='countries'){
     $dtabs['navaids']='Navaids';
     $dtabs['timeseries']='Statistics';
 }
-if($key==='aircraft_types'){$dtabs['cabin']='Cabin';$dtabs['engine']='Engine';$dtabs['specs']='Specs';$dtabs['economics']='Economics';}
+if($key==='aircraft_types'){$dtabs['registry']='Registry';$dtabs['cabin']='Cabin';$dtabs['engine']='Engine';$dtabs['specs']='Specs';$dtabs['economics']='Economics';}
 echo '<nav class="detail-tabs">';
 foreach($dtabs as $tk=>$tl){ $active=$tabParam===$tk?' active':''; echo '<a class="tab'.$active.'" href="?page=detail&module='.e($key).'&id='.e($id).'&dtab='.e($tk).'">'.e($tl).'</a>'; }
 echo '</nav><div class="detail-content">';
@@ -190,6 +190,29 @@ if($key==='countries'){
         } else {
             echo '<p class="muted">No statistics data available for this country yet.</p>';
         }
+    }
+}
+// Aircraft type registry tab
+if($key==='aircraft_types' && $tabParam==='registry'){
+    $icao=$r['icao_code']??''; $iata=$r['iata_code']??'';
+    $regRows=[];
+    if($icao || $iata){
+        try{
+            $regSql='SELECT * FROM aircraft_registrations WHERE ';
+            $regParts=[]; $regParams=[];
+            if($icao){ $regParts[]='icao_code=?'; $regParams[]=$icao; }
+            if($iata){ $regParts[]='type_code=?'; $regParams[]=$iata; }
+            $regRows=rows($regSql.implode(' OR ',$regParts).' LIMIT 100',$regParams);
+        }catch(Throwable $e){}
+    }
+    if($regRows){
+        echo '<section class="panel"><h3>Aircraft in Registry ('.count($regRows).')</h3><div class="table-wrap"><table><thead><tr><th>Registration</th><th>Operator</th><th>Country</th><th>Age</th><th>Status</th></tr></thead><tbody>';
+        foreach($regRows as $ar){
+            echo '<tr><td>'.e($ar['registration']??'').'</td><td>'.e($ar['operator_name']??'').'</td><td>'.e($ar['country_code']??'').'</td><td>'.e($ar['age']??'—').'</td><td>'.e($ar['record_status']??'').'</td></tr>';
+        }
+        echo '</tbody></table></div></section>';
+    } else {
+        echo '<p class="muted">No aircraft found in registry for this type.</p>';
     }
 }
 echo '</div></section>';
