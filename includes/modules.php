@@ -123,6 +123,7 @@ function module_pk(string $key): string {
         'airports' => 'ident',
         'airlines' => 'icao_code',
         'aircraft_types' => 'icao_code',
+        'aircraft' => 'icao_code',
     ];
     return $map[$key] ?? 'id';
 }
