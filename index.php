@@ -53,7 +53,28 @@ if($key==='countries'){
     }
     $flagEmojiHtml=$cc?' <span class="flag" style="font-size:28px;vertical-align:middle;margin-left:8px">'.flag_emoji($cc).'</span>':'';
     echo '<h1>'.$flagImgHtml.e($r[$cfg['title']] ?? 'Record').$flagEmojiHtml.'</h1>';
-    if($r['description']??'') echo '<p style="margin-top:8px;max-width:700px;line-height:1.6">'.e($r['description']).'</p>';
+    $cIso2=e(strtoupper($r['iso_alpha_2']??'')); $cIso3=e(strtoupper($r['iso_alpha_3']??''));
+    $cCodeBoxes='';
+    if($cIso2) $cCodeBoxes.='<span class="iata-box">'.$cIso2.'</span>';
+    if($cIso3) $cCodeBoxes.='<span class="iata-box icao">'.$cIso3.'</span>';
+    if($cCodeBoxes) echo '<div style="display:flex;gap:8px;margin:10px 0 4px">'.$cCodeBoxes.'</div>';
+    $cCont=e($r['continent']??''); $cRegion=e($r['un_region']??'');
+    if($cCont || $cRegion) echo '<p style="margin-top:8px">'.$cCont.($cCont&&$cRegion?' — ':'').$cRegion.'</p>';
+    if($r['description']??'') echo '<p style="margin-top:4px;max-width:700px;line-height:1.6;color:var(--muted)">'.e($r['description']).'</p>';
+    $cStats='';
+    try{$cr=row('SELECT * FROM country_air_transport_stats WHERE iso_alpha_2=?',[$id]);}catch(Throwable $e){$cr=null;}
+    try{$ct=row('SELECT * FROM country_time_series WHERE iso_alpha_2=? ORDER BY year DESC LIMIT 1',[$id]);}catch(Throwable $e){$ct=null;}
+    if($ct){
+        if($ct['population']??null) $cStats.='<div class="hero-stat"><span class="hero-stat-l">Population</span><span class="hero-stat-v">'.nfmt($ct['population']).'</span></div>';
+        if($ct['gdp_usd']??null) $cStats.='<div class="hero-stat"><span class="hero-stat-l">GDP</span><span class="hero-stat-v">US$'.nfmt(round($ct['gdp_usd'])).'</span></div>';
+        if($ct['area_sq_km']??null) $cStats.='<div class="hero-stat"><span class="hero-stat-l">Area</span><span class="hero-stat-v">'.nfmt($ct['area_sq_km']).' km²</span></div>';
+    }
+    if($cr){
+        $totalAirpsC=(int)($cr['international_airports']??0)+(int)($cr['domestic_airports']??0);
+        if($totalAirpsC) $cStats.='<div class="hero-stat"><span class="hero-stat-l">Airports</span><span class="hero-stat-v">'.nfmt($totalAirpsC).'</span></div>';
+        if(($cr['airlines']??0)) $cStats.='<div class="hero-stat"><span class="hero-stat-l">Airlines</span><span class="hero-stat-v">'.nfmt($cr['airlines']).'</span></div>';
+    }
+    if($cStats) echo '<div class="hero-stats">'.$cStats.'</div>';
 } elseif($key==='airlines'){
     $logoHtml='';
     if($r['logo_url']??''){
@@ -111,29 +132,49 @@ if($key==='aircraft_types'){$dtabs['registry']='Registry';$dtabs['cabin']='Cabin
 echo '<nav class="detail-tabs">';
 foreach($dtabs as $tk=>$tl){ $active=$tabParam===$tk?' active':''; echo '<a class="tab'.$active.'" href="?page=detail&module='.e($key).'&id='.e($id).'&dtab='.e($tk).'">'.e($tl).'</a>'; }
 echo '</nav><div class="detail-content">';
-// Country overview: hide flag/desc/iso fields, show inline stats
+// Country overview: section-based layout
 if($key==='countries' && $tabParam==='overview'){
-    $hideFields = ['iso_alpha_2','iso_alpha_3','description','flag'];
+    $cIso2=$r['iso_alpha_2']??''; $cIso3=$r['iso_alpha_3']??'';
+    $cCont=e($r['continent']??''); $cRegion=e($r['un_region']??'');
+    $cName=e($r['name_common']??''); $cOfficial=e($r['name_official']??'');
+    $cr=null; $ct=null;
+    try{$cr=row('SELECT * FROM country_air_transport_stats WHERE iso_alpha_2=?',[$id]);}catch(Throwable $e){}
+    try{$ct=row('SELECT * FROM country_time_series WHERE iso_alpha_2=? ORDER BY year DESC LIMIT 1',[$id]);}catch(Throwable $e){}
+    echo '<div class="detail-sections">';
+    echo '<div class="xcard-sec"><div class="xcard-sec-title">GEOGRAPHY</div>';
+    echo '<div class="xcard-row"><span class="xcard-row-k">Name</span><span class="xcard-row-v">'.$cName.'</span></div>';
+    if($cOfficial) echo '<div class="xcard-row"><span class="xcard-row-k">Official</span><span class="xcard-row-v">'.$cOfficial.'</span></div>';
+    if($cCont) echo '<div class="xcard-row"><span class="xcard-row-k">Continent</span><span class="xcard-row-v">'.$cCont.'</span></div>';
+    if($cRegion) echo '<div class="xcard-row"><span class="xcard-row-k">Region</span><span class="xcard-row-v">'.$cRegion.'</span></div>';
+    if($ct && ($ct['area_sq_km']??null)) echo '<div class="xcard-row"><span class="xcard-row-k">Area</span><span class="xcard-row-v">'.nfmt($ct['area_sq_km']).' km²</span></div>';
+    if($ct && ($ct['capital']??'')) echo '<div class="xcard-row"><span class="xcard-row-k">Capital</span><span class="xcard-row-v">'.e($ct['capital']).'</span></div>';
+    echo '</div>';
+    echo '<div class="xcard-sec"><div class="xcard-sec-title">IDENTITY</div>';
+    echo '<div class="xcard-row"><span class="xcard-row-k">ISO 3166-2</span><span class="xcard-row-v">'.e(strtoupper($cIso2)).'</span></div>';
+    if($cIso3) echo '<div class="xcard-row"><span class="xcard-row-k">ISO 3166-3</span><span class="xcard-row-v">'.e(strtoupper($cIso3)).'</span></div>';
+    if($ct && ($ct['official_languages']??'')) echo '<div class="xcard-row"><span class="xcard-row-k">Languages</span><span class="xcard-row-v">'.e($ct['official_languages']).'</span></div>';
+    if($ct && ($ct['currency_name']??'')) echo '<div class="xcard-row"><span class="xcard-row-k">Currency</span><span class="xcard-row-v">'.e($ct['currency_code']??'').($ct['currency_name']?' ('.e($ct['currency_name']).')':'').'</span></div>';
+    echo '</div>';
+    echo '<div class="xcard-sec"><div class="xcard-sec-title">DEMOGRAPHICS</div>';
+    if($ct && ($ct['population']??null)) echo '<div class="xcard-row"><span class="xcard-row-k">Population</span><span class="xcard-row-v">'.nfmt($ct['population']).'</span></div>';
+    if($ct && ($ct['gdp_usd']??null)) echo '<div class="xcard-row"><span class="xcard-row-k">GDP</span><span class="xcard-row-v">US$'.nfmt(round($ct['gdp_usd'])).'</span></div>';
+    echo '</div>';
+    echo '<div class="xcard-sec"><div class="xcard-sec-title">AVIATION</div>';
+    if($cr){
+        $totalAirpsC=(int)($cr['international_airports']??0)+(int)($cr['domestic_airports']??0);
+        if($totalAirpsC) echo '<div class="xcard-row"><span class="xcard-row-k">Airports</span><span class="xcard-row-v">'.nfmt($totalAirpsC).' ('.nfmt($cr['international_airports']??0).' intl / '.nfmt($cr['domestic_airports']??0).' domestic)</span></div>';
+        if($cr['airlines']??null) echo '<div class="xcard-row"><span class="xcard-row-k">Airlines</span><span class="xcard-row-v">'.nfmt($cr['airlines']).' total ('.nfmt($cr['airlines_active']??0).' active)</span></div>';
+        if($cr['airlines_with_international']??null) echo '<div class="xcard-row"><span class="xcard-row-k">Intl Airlines</span><span class="xcard-row-v">'.nfmt($cr['airlines_with_international']).'</span></div>';
+        if($cr['updated_at']??null) echo '<div class="xcard-row"><span class="xcard-row-k">Updated</span><span class="xcard-row-v">'.e($cr['updated_at']).'</span></div>';
+    } else {
+        echo '<div class="xcard-row"><span class="xcard-row-k">Data</span><span class="xcard-row-v">Not yet computed — run Reports in Admin</span></div>';
+    }
+    echo '</div>';
+    echo '</div>';
+    $hideFields = ['iso_alpha_2','iso_alpha_3','name_common','name_official','continent','un_region','flag','description'];
     $detailFields = $cfg['detail'] ?? [];
     $filteredDetail = array_values(array_filter($detailFields, fn($f) => !in_array($f, $hideFields)));
-    echo render_detail_fields(array_merge($cfg, ['detail' => $filteredDetail]), $r, false);
-    // Inline Air Transport Stats
-    try {
-        $sr = row('SELECT * FROM country_air_transport_stats WHERE iso_alpha_2=?', [$id]);
-        if($sr){
-            echo '<section class="panel"><h3>Air Transport Statistics</h3><div class="stats-grid">';
-            if($sr['international_airports'] !== null) echo '<div class="stat-card"><strong>'.nfmt($sr['international_airports']).'</strong><span>International Airports</span></div>';
-            if($sr['domestic_airports'] !== null) echo '<div class="stat-card"><strong>'.nfmt($sr['domestic_airports']).'</strong><span>Domestic Airports</span></div>';
-            if($sr['airlines'] !== null) echo '<div class="stat-card"><strong>'.nfmt($sr['airlines']).'</strong><span>National Airlines</span></div>';
-            if(($sr['airlines_active']??null) !== null || ($sr['airlines_defunct']??null) !== null){
-                $act = (int)($sr['airlines_active']??0);
-                $def = (int)($sr['airlines_defunct']??0);
-                echo '<div class="stat-card"><strong>'.nfmt($act).'</strong><span>Active Airlines'.($def ? ' <sup class="muted" style="cursor:help" title="'.nfmt($def).' defunct/inactive">(*'.nfmt($def).')</sup>' : '').'</span></div>';
-            }
-            echo '<div class="stat-card"><strong>'.nfmt($sr['airlines_with_international']??0).'</strong><span>With International Services</span></div>';
-            echo '</div><p class="muted">Last updated: '.e($sr['updated_at'] ?? '—').'</p></section>';
-        }
-    } catch(Throwable $e){}
+    if($filteredDetail) echo '<div style="margin-top:12px">'.render_detail_fields(array_merge($cfg, ['detail' => $filteredDetail]), $r, false).'</div>';
 }
 // Default overview/fields for non-countries, with airline-specific filtering
 if($tabParam==='overview' && $key==='airlines'){
