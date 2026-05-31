@@ -321,7 +321,17 @@ function render_related_sections(string $key,array $r): string {
     }
     if($key==='countries'){
         $cc=$r['iso_alpha_2'] ?? '';
-        $html.=related_table('Airlines in country', 'SELECT name,iata_code,icao_code,active FROM airlines WHERE country_code=? LIMIT 20', [$cc]);
+        try{$airlines=rows('SELECT name,iata_code,icao_code,active FROM airlines WHERE country_code=? LIMIT 20',[$cc]);}catch(Throwable $e){$airlines=[];}
+        if($airlines){
+            $html.='<section class="related"><h3>Airlines in country</h3><div class="table-wrap"><table><thead><tr><th>Name</th><th>IATA</th><th>ICAO</th><th>Status</th></tr></thead><tbody>';
+            foreach($airlines as $a){
+                $icao=$a['icao_code']??'';
+                $nameLink=$icao?'<a href="?page=detail&module=airlines&id='.e($icao).'">'.e($a['name']??'').'</a>':e($a['name']??'');
+                $status=$a['active']==='Y'?'<span class="chip ok">Active</span>':($a['active']==='N'?'<span class="chip danger">Defunct</span>':e($a['active']??'—'));
+                $html.='<tr><td>'.$nameLink.'</td><td>'.e($a['iata_code']??'—').'</td><td>'.e($icao).'</td><td>'.$status.'</td></tr>';
+            }
+            $html.='</tbody></table></div></section>';
+        }
         $html.=related_table('Airports in country', 'SELECT name,iata_code,gps_code,type,elevation_ft FROM airports WHERE iso_country=? LIMIT 20', [$cc]);
         $html.=related_table('Regulatory authorities', 'SELECT name,abbreviation,website,icao_caa_link,wikipedia_url,official_register_link FROM regulatory_authorities WHERE country_code=? LIMIT 20', [$cc]);
         $html.=related_table('Aircraft registry', "SELECT registration,aircraft_type,type_code,operator_name,age FROM aircraft_registrations WHERE country_code=? LIMIT 20", [$cc]);
