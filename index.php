@@ -78,6 +78,7 @@ echo '</section>';
 $dtabs=['overview'=>'Overview','fields'=>'Details'];
 if($key==='airlines'){$dtabs['digital']='Digital';$dtabs['fleet']='Fleet';$dtabs['hubs']='Hubs';$dtabs['operations']='Operations';$dtabs['commercial']='Commercial';$dtabs['regulatory']='Regulatory';}
 if($key==='airports'){$dtabs['frequencies']='Frequencies';$dtabs['runways']='Runways';$dtabs['terminals']='Terminals';$dtabs['hubs']='Hubs';}
+if($key==='aircraft'){$dtabs['same_type']='Same Type';}
 if($key==='countries'){
     $dtabs['airlines']='Airlines';
     $dtabs['airports']='Airports';
@@ -213,6 +214,30 @@ if($key==='aircraft_types' && $tabParam==='registry'){
         echo '</tbody></table></div></section>';
     } else {
         echo '<p class="muted">No aircraft found in registry for this type.</p>';
+    }
+}
+// Aircraft same type tab
+if($key==='aircraft' && $tabParam==='same_type'){
+    $aircraftType=$r['aircraft_type']??''; $typeCode=$r['type_code']??''; $icao=$r['icao_code']??'';
+    $sameRows=[];
+    if($aircraftType || $typeCode || $icao){
+        try{
+            $sameSql='SELECT * FROM aircraft_registrations WHERE ';
+            $sameParts=[]; $sameParams=[];
+            if($aircraftType){ $sameParts[]='aircraft_type=?'; $sameParams[]=$aircraftType; }
+            if($typeCode){ $sameParts[]='type_code=?'; $sameParams[]=$typeCode; }
+            if($icao){ $sameParts[]='icao_code=?'; $sameParams[]=$icao; }
+            $sameRows=rows($sameSql.implode(' OR ',$sameParts).' ORDER BY registration LIMIT 100',$sameParams);
+        }catch(Throwable $e){}
+    }
+    if($sameRows){
+        echo '<section class="panel"><h3>Aircraft in Our Registry — '.e($aircraftType ?: $typeCode).' ('.count($sameRows).')</h3><div class="table-wrap"><table><thead><tr><th>Registration</th><th>Operator</th><th>Country</th><th>Age</th><th>Status</th></tr></thead><tbody>';
+        foreach($sameRows as $ar){
+            echo '<tr><td>'.e($ar['registration']??'').'</td><td>'.e($ar['operator_name']??'').'</td><td>'.e($ar['country_code']??'').'</td><td>'.e($ar['age']??'—').'</td><td>'.e($ar['record_status']??'').'</td></tr>';
+        }
+        echo '</tbody></table></div></section>';
+    } else {
+        echo '<p class="muted">No other aircraft of this type found in registry.</p>';
     }
 }
 echo '</div></section>';
