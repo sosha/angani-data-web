@@ -4,6 +4,7 @@ includes/config.php
 *.pem
 *.key
 private*
+data/mirror_key
 chatgpt_github_token*
 
 # Runtime/generated files
@@ -15,6 +16,7 @@ qa/*.runtime.txt
 *.sql.gz
 *.zip
 !data/countries/countries.zip
+!angani_backup_*.zip
 
 # Downloaded airline logo images (regenerate via scripts/download_airline_logos.php)
 assets/airline_logos/*.png

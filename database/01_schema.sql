@@ -508,6 +508,54 @@ CREATE TABLE entity_change_log (
 
 SET FOREIGN_KEY_CHECKS = 1;
 
+-- -----------------------------------------------------------------------------
+-- Data Reports (user-submitted feedback on data accuracy)
+-- -----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS data_reports (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  entity_type VARCHAR(80) DEFAULT NULL,
+  entity_id VARCHAR(80) DEFAULT NULL,
+  page_url TEXT DEFAULT NULL,
+  report_type ENUM('wrong','old','other') NOT NULL DEFAULT 'other',
+  description TEXT NOT NULL,
+  contact_info VARCHAR(255) DEFAULT NULL,
+  reporter_ip VARCHAR(45) DEFAULT NULL,
+  status ENUM('open','in_progress','resolved','dismissed') NOT NULL DEFAULT 'open',
+  admin_notes TEXT DEFAULT NULL,
+  resolved_by INT UNSIGNED DEFAULT NULL,
+  resolved_at DATETIME DEFAULT NULL,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  INDEX idx_reports_status (status),
+  INDEX idx_reports_entity (entity_type, entity_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS email_providers (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(80) NOT NULL,
+  provider_type VARCHAR(40) NOT NULL,
+  api_key TEXT DEFAULT NULL,
+  api_secret TEXT DEFAULT NULL,
+  config_json TEXT DEFAULT NULL,
+  is_active TINYINT(1) NOT NULL DEFAULT 0,
+  is_default TINYINT(1) NOT NULL DEFAULT 0,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS email_queue (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  recipient_email VARCHAR(255) NOT NULL,
+  subject VARCHAR(255) NOT NULL,
+  body TEXT NOT NULL,
+  status ENUM('pending','sent','failed') NOT NULL DEFAULT 'pending',
+  provider_used VARCHAR(40) DEFAULT NULL,
+  error_message TEXT DEFAULT NULL,
+  sent_at DATETIME DEFAULT NULL,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  INDEX idx_email_status (status)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 
 -- -----------------------------------------------------------------------------
 -- Angani Data 100% readiness extension: admin CRUD, imports, reference, commercial,

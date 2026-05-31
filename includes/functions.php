@@ -115,7 +115,7 @@ function get_stats(): array {
 function country_name(?string $code): string { if(!$code) return 'Unknown'; try{$r=row('SELECT name_common FROM countries WHERE iso_alpha_2=?', [$code]); return $r['name_common'] ?? $code;}catch(Throwable $e){return $code;} }
 function flag_emoji(?string $code): string { $code=strtoupper((string)$code); if(strlen($code)!==2) return ''; $out=''; for($i=0;$i<2;$i++) $out .= html_entity_decode('&#'.(127462 + ord($code[$i]) - ord('A')).';', ENT_NOQUOTES, 'UTF-8'); return $out; }
 function status_chip(?string $status): string { $s=strtolower((string)($status ?: 'unknown')); $class = str_contains($s,'active') ? 'ok glow-green' : (str_contains($s,'defunct') || str_contains($s,'closed') ? 'danger' : 'gold'); return '<span class="chip '.$class.'">'.e(ucfirst($status ?: 'Unknown')).'</span>'; }
-function module_icon_html(string $key): string { static $map=['countries'=>'<i class="fas fa-globe"></i>','airlines'=>'<i class="fas fa-plane"></i>','airports'=>'<i class="fas fa-plane-departure"></i>','aircraft'=>'<i class="fas fa-plane"></i>','aircraft_types'=>'<i class="fas fa-tag"></i>','lessors'=>'<i class="fas fa-building"></i>','routes'=>'<i class="fas fa-route"></i>','airline_digital'=>'<i class="fas fa-laptop"></i>','frequent_flyer'=>'<i class="fas fa-star"></i>','airline_fleet_list'=>'<i class="fas fa-list"></i>','airline_fleet_summary'=>'<i class="fas fa-chart-bar"></i>','airline_hubs'=>'<i class="fas fa-code-branch"></i>','airline_it'=>'<i class="fas fa-server"></i>','airline_people'=>'<i class="fas fa-users"></i>','airline_stats'=>'<i class="fas fa-chart-line"></i>','airport_frequencies'=>'<i class="fas fa-broadcast-tower"></i>','airport_runways'=>'<i class="fas fa-road"></i>','airport_terminals'=>'<i class="fas fa-door-open"></i>','airport_services'=>'<i class="fas fa-concierge-bell"></i>','airport_hubs'=>'<i class="fas fa-code-branch"></i>','airport_financial'=>'<i class="fas fa-chart-pie"></i>','airport_ground_handling'=>'<i class="fas fa-truck"></i>','airport_ground_transport'=>'<i class="fas fa-bus"></i>','airport_it'=>'<i class="fas fa-server"></i>','airport_people'=>'<i class="fas fa-users"></i>','navaids'=>'<i class="fas fa-map-marker-alt"></i>','navaid_technical'=>'<i class="fas fa-wrench"></i>','navaid_operational'=>'<i class="fas fa-cogs"></i>','navaid_connectivity'=>'<i class="fas fa-network-wired"></i>','navaid_references'=>'<i class="fas fa-book"></i>','notam_sources'=>'<i class="fas fa-database"></i>','notams'=>'<i class="fas fa-exclamation-triangle"></i>','notam_classification'=>'<i class="fas fa-filter"></i>','notam_content'=>'<i class="fas fa-file-alt"></i>','notam_schedule'=>'<i class="fas fa-calendar-alt"></i>','notam_connectivity'=>'<i class="fas fa-network-wired"></i>','notam_references'=>'<i class="fas fa-book"></i>','regulatory'=>'<i class="fas fa-gavel"></i>','regulatory_authorities'=>'<i class="fas fa-university"></i>','regulatory_economic'=>'<i class="fas fa-file-invoice-dollar"></i>','regulatory_operational'=>'<i class="fas fa-certificate"></i>','regulatory_licensing'=>'<i class="fas fa-id-card"></i>','iata_membership'=>'<i class="fas fa-handshake"></i>','iosa_registration'=>'<i class="fas fa-clipboard-list"></i>','airline_iata'=>'<i class="fas fa-handshake"></i>','airline_iosa'=>'<i class="fas fa-clipboard-list"></i>','commercial_fares'=>'<i class="fas fa-dollar-sign"></i>','commercial_inventory'=>'<i class="fas fa-warehouse"></i>','commercial_rules'=>'<i class="fas fa-ruler"></i>','commercial_taxes'=>'<i class="fas fa-receipt"></i>','commercial_yield'=>'<i class="fas fa-chart-line"></i>','country_fare_policies'=>'<i class="fas fa-file-contract"></i>','gds'=>'<i class="fas fa-globe-americas"></i>','aircraft_profile'=>'<i class="fas fa-info-circle"></i>','aircraft_assets'=>'<i class="fas fa-images"></i>','aircraft_cabin_payload'=>'<i class="fas fa-weight-hanging"></i>','aircraft_engine_data'=>'<i class="fas fa-cog"></i>','aircraft_economic_data'=>'<i class="fas fa-chart-bar"></i>','aircraft_environmental'=>'<i class="fas fa-leaf"></i>','aircraft_manufacturer_support'=>'<i class="fas fa-tools"></i>','aircraft_performance'=>'<i class="fas fa-tachometer-alt"></i>','aircraft_runways'=>'<i class="fas fa-road"></i>','aircraft_technical_specs'=>'<i class="fas fa-microchip"></i>','aircraft_models'=>'<i class="fas fa-book"></i>','aircraft_model_history'=>'<i class="fas fa-history"></i>','aircraft_model_capacity'=>'<i class="fas fa-chair"></i>','aircraft_model_specs'=>'<i class="fas fa-cogs"></i>','aircraft_model_production'=>'<i class="fas fa-industry"></i>','aircraft_model_sources'=>'<i class="fas fa-link"></i>','ref_country_codes'=>'<i class="fas fa-globe"></i>','ref_service_types'=>'<i class="fas fa-tags"></i>','ref_meal_codes'=>'<i class="fas fa-utensils"></i>','ref_booking_classes'=>'<i class="fas fa-chair"></i>','ref_terminal_codes'=>'<i class="fas fa-door-closed"></i>','ref_reject_reasons'=>'<i class="fas fa-times-circle"></i>','ref_phonetic'=>'<i class="fas fa-font"></i>','dataset_files'=>'<i class="fas fa-file-csv"></i>','source_records'=>'<i class="fas fa-link"></i>','change_log'=>'<i class="fas fa-history"></i>','import_batches'=>'<i class="fas fa-upload"></i>','staging_records'=>'<i class="fas fa-database"></i>','export_logs'=>'<i class="fas fa-download"></i>','regulatory_environmental'=>'<i class="fas fa-leaf"></i>','regulatory_references'=>'<i class="fas fa-book"></i>','regulatory_safety'=>'<i class="fas fa-shield-alt"></i>']; return $map[$key] ?? '<i class="fas fa-database"></i>'; }
+function module_icon_html(string $key): string { static $map=['countries'=>'<i class="fas fa-globe"></i>','airlines'=>'<i class="fas fa-plane-departure"></i>','airports'=>'<i class="fas fa-map-location"></i>','aircraft'=>'<i class="fas fa-plane"></i>','aircraft_types'=>'<i class="fas fa-tag"></i>','lessors'=>'<i class="fas fa-building"></i>','routes'=>'<i class="fas fa-route"></i>','airline_digital'=>'<i class="fas fa-laptop"></i>','frequent_flyer'=>'<i class="fas fa-star"></i>','airline_fleet_list'=>'<i class="fas fa-list"></i>','airline_fleet_summary'=>'<i class="fas fa-chart-bar"></i>','airline_hubs'=>'<i class="fas fa-code-branch"></i>','airline_it'=>'<i class="fas fa-server"></i>','airline_people'=>'<i class="fas fa-users"></i>','airline_stats'=>'<i class="fas fa-chart-line"></i>','airport_frequencies'=>'<i class="fas fa-broadcast-tower"></i>','airport_runways'=>'<i class="fas fa-road"></i>','airport_terminals'=>'<i class="fas fa-door-open"></i>','airport_services'=>'<i class="fas fa-concierge-bell"></i>','airport_hubs'=>'<i class="fas fa-code-branch"></i>','airport_financial'=>'<i class="fas fa-chart-pie"></i>','airport_ground_handling'=>'<i class="fas fa-truck"></i>','airport_ground_transport'=>'<i class="fas fa-bus"></i>','airport_it'=>'<i class="fas fa-server"></i>','airport_people'=>'<i class="fas fa-users"></i>','navaids'=>'<i class="fas fa-map-marker-alt"></i>','navaid_technical'=>'<i class="fas fa-wrench"></i>','navaid_operational'=>'<i class="fas fa-cogs"></i>','navaid_connectivity'=>'<i class="fas fa-network-wired"></i>','navaid_references'=>'<i class="fas fa-book"></i>','notam_sources'=>'<i class="fas fa-database"></i>','notams'=>'<i class="fas fa-exclamation-triangle"></i>','notam_classification'=>'<i class="fas fa-filter"></i>','notam_content'=>'<i class="fas fa-file-alt"></i>','notam_schedule'=>'<i class="fas fa-calendar-alt"></i>','notam_connectivity'=>'<i class="fas fa-network-wired"></i>','notam_references'=>'<i class="fas fa-book"></i>','regulatory'=>'<i class="fas fa-gavel"></i>','regulatory_authorities'=>'<i class="fas fa-university"></i>','regulatory_economic'=>'<i class="fas fa-file-invoice-dollar"></i>','regulatory_operational'=>'<i class="fas fa-certificate"></i>','regulatory_licensing'=>'<i class="fas fa-id-card"></i>','iata_membership'=>'<i class="fas fa-handshake"></i>','iosa_registration'=>'<i class="fas fa-clipboard-list"></i>','airline_iata'=>'<i class="fas fa-handshake"></i>','airline_iosa'=>'<i class="fas fa-clipboard-list"></i>','commercial_fares'=>'<i class="fas fa-dollar-sign"></i>','commercial_inventory'=>'<i class="fas fa-warehouse"></i>','commercial_rules'=>'<i class="fas fa-ruler"></i>','commercial_taxes'=>'<i class="fas fa-receipt"></i>','commercial_yield'=>'<i class="fas fa-chart-line"></i>','country_fare_policies'=>'<i class="fas fa-file-contract"></i>','gds'=>'<i class="fas fa-globe-americas"></i>','aircraft_profile'=>'<i class="fas fa-info-circle"></i>','aircraft_assets'=>'<i class="fas fa-images"></i>','aircraft_cabin_payload'=>'<i class="fas fa-weight-hanging"></i>','aircraft_engine_data'=>'<i class="fas fa-cog"></i>','aircraft_economic_data'=>'<i class="fas fa-chart-bar"></i>','aircraft_environmental'=>'<i class="fas fa-leaf"></i>','aircraft_manufacturer_support'=>'<i class="fas fa-tools"></i>','aircraft_performance'=>'<i class="fas fa-tachometer-alt"></i>','aircraft_runways'=>'<i class="fas fa-road"></i>','aircraft_technical_specs'=>'<i class="fas fa-microchip"></i>','aircraft_models'=>'<i class="fas fa-book"></i>','aircraft_model_history'=>'<i class="fas fa-history"></i>','aircraft_model_capacity'=>'<i class="fas fa-chair"></i>','aircraft_model_specs'=>'<i class="fas fa-cogs"></i>','aircraft_model_production'=>'<i class="fas fa-industry"></i>','aircraft_model_sources'=>'<i class="fas fa-link"></i>','ref_country_codes'=>'<i class="fas fa-globe"></i>','ref_service_types'=>'<i class="fas fa-tags"></i>','ref_meal_codes'=>'<i class="fas fa-utensils"></i>','ref_booking_classes'=>'<i class="fas fa-chair"></i>','ref_terminal_codes'=>'<i class="fas fa-door-closed"></i>','ref_reject_reasons'=>'<i class="fas fa-times-circle"></i>','ref_phonetic'=>'<i class="fas fa-font"></i>','dataset_files'=>'<i class="fas fa-file-csv"></i>','source_records'=>'<i class="fas fa-link"></i>','change_log'=>'<i class="fas fa-history"></i>','import_batches'=>'<i class="fas fa-upload"></i>','staging_records'=>'<i class="fas fa-database"></i>','export_logs'=>'<i class="fas fa-download"></i>','regulatory_environmental'=>'<i class="fas fa-leaf"></i>','regulatory_references'=>'<i class="fas fa-book"></i>','regulatory_safety'=>'<i class="fas fa-shield-alt"></i>']; return $map[$key] ?? '<i class="fas fa-database"></i>'; }
 
 function module_count(string $key): int { $cfg=module_config($key); if(!$cfg || !table_exists($cfg['table'])) return 0; try{return (int)scalar('SELECT COUNT(*) FROM '.$cfg['table']);}catch(Throwable $e){return 0;} }
 
@@ -250,8 +250,8 @@ function render_record_card(string $key,array $cfg,array $r): string {
             $def = (int)($s['airlines_defunct']??0);
             $totalAl = (int)($s['airlines']??0);
             if($totalAl){
-                $al = '<i class="fas fa-plane"></i> '.nfmt($act).($def ? ' ('.nfmt($def).')*' : '').' Airlines';
-                if($def) $defunctNote = '<sup class="muted" style="font-size:10px">*Defunct/inactive airlines</sup>';
+                $al = '<i class="fas fa-plane"></i> '.nfmt($act).' Airlines';
+                if($def) $defunctNote = '<sup class="muted" style="font-size:10px">*Defunct/inactive airlines: '.nfmt($def).'</sup>';
             }
         } }catch(Throwable $e){}
         if($aps||$al) $subLine = trim($aps.' '.$al);
@@ -368,6 +368,7 @@ function handle_post_actions(): void {
     if($action==='login'){ $attempts=(int)($_SESSION['login_attempts'] ?? 0); if($attempts>5) { usleep(3000000); flash('error','Too many attempts. Try again later.'); redirect_to('?page=login'); } if($attempts>0) usleep($attempts*200000); if(login_user(postv('email'),postv('password'))){$_SESSION['login_attempts']=0;flash('success','Logged in.'); redirect_to('?page=dashboard');} $_SESSION['login_attempts']=$attempts+1; flash('error','Invalid email or password.'); redirect_to('?page=login'); }
     if($action==='register'){ [$ok,$msg]=register_user(postv('name'),postv('email'),postv('password')); flash($ok?'success':'error',$msg); redirect_to($ok?'?page=dashboard':'?page=register'); }
     if($action==='update_account' && is_logged_in()){ exec_sql('UPDATE users SET name=?, updated_at=NOW() WHERE id=?',[postv('name'),(int)current_user()['id']]); flash('success','Account updated.'); redirect_to('?page=account'); }
+    if($action==='submit_report'){ handle_submit_report(); return; }
     if(!is_admin()) return;
     if($action==='admin_save_record') { admin_save_record(); }
     if($action==='admin_delete_record') { admin_delete_record(); }
@@ -386,6 +387,60 @@ function handle_post_actions(): void {
     if($action==='pipeline_reject_run') { pipeline_reject_run(); }
     if($action==='pipeline_approve_staging') { pipeline_approve_staging(); }
     if($action==='pipeline_reject_staging') { pipeline_reject_staging(); }
+    if($action==='run_backup') {
+        $pass = getenv('ANGANI_DB_PASS') ?: 'rootpassword';
+        $root = realpath(__DIR__ . '/..');
+        $output = shell_exec('ANGANI_DB_PASS=' . escapeshellarg($pass) . ' php ' . escapeshellarg($root . '/scripts/backup_engine.php') . ' 2>&1');
+        flash('success', 'Backup completed.');
+        redirect_to('?page=admin&tab=backup');
+    }
+    if($action==='delete_backups') {
+        $root = realpath(__DIR__ . '/..');
+        foreach (glob($root . '/angani_backup_*.zip') as $z) unlink($z);
+        flash('success', 'Backup files deleted.');
+        redirect_to('?page=admin&tab=backup');
+    }
+    if($action==='run_mirror_sync') {
+        $pass = getenv('ANGANI_DB_PASS') ?: 'rootpassword';
+        $root = realpath(__DIR__ . '/..');
+        $output = shell_exec('ANGANI_DB_PASS=' . escapeshellarg($pass) . ' php ' . escapeshellarg($root . '/scripts/mirror_sync.php') . ' 2>&1');
+        flash('success', 'Mirror sync triggered.');
+        redirect_to('?page=admin&tab=mirror');
+    }
+    if($action==='admin_update_report') {
+        $id=(int)postv('report_id'); $status=postv('status'); $notes=postv('admin_notes'); $notify=(int)postv('notify_reporter');
+        if(!in_array($status,['open','in_progress','resolved','dismissed'],true)) $status='open';
+        exec_sql('UPDATE data_reports SET status=?, admin_notes=?, resolved_by=?, resolved_at=?, updated_at=NOW() WHERE id=?',[$status,$notes?:null,(int)current_user()['id'],$status==='resolved'||$status==='dismissed'?date('Y-m-d H:i:s'):null,$id]);
+        if($notify){
+            $r=row('SELECT * FROM data_reports WHERE id=?',[$id]);
+            if($r && $r['contact_info']){
+                $entityLabel=e($r['entity_type'] ?: 'data record');
+                $subject='Angani Data — Your report about '.$entityLabel;
+                $body="Hi,\n\nYour report about ".$entityLabel." has been marked as: ".strtoupper($status).".\n\n";
+                if($notes) $body.="Admin notes: ".$notes."\n\n";
+                $body.="Thank you for helping improve Angani Data.\n\n— Angani Team";
+                send_email($r['contact_info'],$subject,$body);
+            }
+        }
+        flash('success','Report updated.'); redirect_to('?page=admin&tab=data_reports');
+    }
+    if($action==='admin_save_email_provider') {
+        $id=(int)postv('provider_id'); $name=postv('name'); $type=postv('provider_type'); $key=postv('api_key'); $secret=postv('api_secret'); $cfg=postv('config_json');
+        $isActive=postv('is_active')==='1'?1:0; $isDefault=postv('is_default')==='1'?1:0;
+        if($id>0) exec_sql('UPDATE email_providers SET name=?, provider_type=?, api_key=?, api_secret=?, config_json=?, is_active=?, is_default=?, updated_at=NOW() WHERE id=?',[$name,$type,$key?:null,$secret?:null,$cfg?:null,$isActive,$isDefault,$id]);
+        else exec_sql('INSERT INTO email_providers (name,provider_type,api_key,api_secret,config_json,is_active,is_default) VALUES (?,?,?,?,?,?,?)',[$name,$type,$key?:null,$secret?:null,$cfg?:null,$isActive,$isDefault]);
+        flash('success','Email provider saved.'); redirect_to('?page=admin&tab=email');
+    }
+    if($action==='admin_delete_email_provider') {
+        exec_sql('DELETE FROM email_providers WHERE id=?',[(int)postv('provider_id')]);
+        flash('success','Email provider deleted.'); redirect_to('?page=admin&tab=email');
+    }
+    if($action==='admin_test_email') {
+        $to=postv('test_email'); if(!filter_var($to,FILTER_VALIDATE_EMAIL)){ flash('error','Enter a valid email address.'); redirect_to('?page=admin&tab=email'); }
+        $ok=send_email($to,'Angani Data Test Email','This is a test message from Angani Data. If you received this, the email provider is working correctly.');
+        flash($ok?'success':'error',$ok?'Test email sent. Check your inbox.':'Test email failed. Check provider configuration.');
+        redirect_to('?page=admin&tab=email');
+    }
 }
 function admin_save_record(): void {
     $key=postv('module'); $cfg=module_config($key); if(!$cfg) throw new RuntimeException('Unknown module.'); $table=$cfg['table']; $cols=table_columns($table); $pk=module_pk($key); $id=postv('id'); $fields=array_values(array_filter($cfg['fields'], fn($f)=>in_array($f,$cols,true) && $f!==$pk));
@@ -675,4 +730,126 @@ function pipeline_reject_staging(): void {
         flash('error',$e->getMessage());
     }
     redirect_to('?page=admin&tab=pipeline&section=pending');
+}
+
+// -----------------------------------------------------------------------------
+// Data report / feedback system
+// -----------------------------------------------------------------------------
+function handle_submit_report(): void {
+    $type=postv('report_type','other'); if(!in_array($type,['wrong','old','other'],true)) $type='other';
+    $desc=postv('description'); if($desc===''){ flash('error','Please describe the problem.'); return; }
+    $entityType=postv('entity_type','');
+    $entityId=postv('entity_id','');
+    $pageUrl=postv('page_url','');
+    $contact=postv('contact_info','');
+    $ip=$_SERVER['REMOTE_ADDR'] ?? '';
+    exec_sql('INSERT INTO data_reports (entity_type,entity_id,page_url,report_type,description,contact_info,reporter_ip,status) VALUES (?,?,?,?,?,?,?,"open")',
+        [$entityType?:null,$entityId?:null,$pageUrl?:null,$type,$desc,$contact?:null,$ip]);
+    flash('success','Report submitted. Thank you for helping improve the data.');
+    redirect_to($_SERVER['REQUEST_URI']);
+}
+
+function render_report_modal(string $entityType, string $entityId): string {
+    $url='https://'.($_SERVER['HTTP_HOST'] ?? 'angani.co.uk').($_SERVER['REQUEST_URI'] ?? '');
+    return '<a class="btn ghost small" href="#" onclick="event.preventDefault();document.getElementById(\'reportModal\').classList.add(\'open\')"><i class="fas fa-flag"></i> Report data problem</a>
+    <div class="modal-overlay" id="reportModal" onclick="if(event.target===this)this.classList.remove(\'open\')"><div class="modal-panel"><button type="button" class="modal-close" onclick="this.closest(\'.modal-overlay\').classList.remove(\'open\')">&times;</button>
+    <h3>Report a data problem</h3><p class="muted">Help us improve — tell us what is wrong with this record.</p>
+    <form method="post" class="stack-form">'.csrf_field().'<input type="hidden" name="action" value="submit_report">
+    <input type="hidden" name="entity_type" value="'.e($entityType).'"><input type="hidden" name="entity_id" value="'.e($entityId).'"><input type="hidden" name="page_url" value="'.e($url).'">
+    <label><span>What is the issue?</span><select name="report_type"><option value="wrong">The data is wrong</option><option value="old">The data is outdated</option><option value="other">Something else</option></select></label>
+    <label><span>Describe the problem</span><textarea name="description" rows="4" required></textarea></label>
+    <label><span>Your email (optional)</span><input name="contact_info" type="email" placeholder="So we can follow up"></label>
+    <button class="btn ink" type="submit">Submit report</button></form></div></div>';
+}
+
+// -----------------------------------------------------------------------------
+// Email sending abstraction
+// -----------------------------------------------------------------------------
+function send_email(string $to, string $subject, string $body): bool {
+    try {
+        $provider=row('SELECT * FROM email_providers WHERE is_active=1 AND is_default=1 LIMIT 1');
+        if(!$provider) $provider=row('SELECT * FROM email_providers WHERE is_active=1 LIMIT 1');
+        if(!$provider) return send_email_fallback($to,$subject,$body);
+        switch($provider['provider_type']){
+            case 'sendpulse': return send_email_sendpulse($provider,$to,$subject,$body);
+            case 'postmark': return send_email_postmark($provider,$to,$subject,$body);
+            case 'brevo': return send_email_brevo($provider,$to,$subject,$body);
+            case 'mailgun': return send_email_mailgun($provider,$to,$subject,$body);
+            case 'ses': return send_email_ses($provider,$to,$subject,$body);
+            case 'zapier': return send_email_zapier($provider,$to,$subject,$body);
+            default: return send_email_fallback($to,$subject,$body);
+        }
+    } catch(Throwable $e){
+        exec_sql('INSERT INTO email_queue (recipient_email,subject,body,status,error_message) VALUES (?,?,?,"failed",?)',[$to,$subject,$body,$e->getMessage()]);
+        return false;
+    }
+}
+
+function send_email_fallback(string $to, string $subject, string $body): bool {
+    $headers='From: Angani Data <noreply@angani.co.uk>'."\r\n".'Content-Type: text/plain; charset=utf-8'."\r\n".'Reply-To: noreply@angani.co.uk';
+    $ok=mail($to,'=?UTF-8?B?'.base64_encode($subject).'?=',wordwrap($body,70),$headers);
+    exec_sql('INSERT INTO email_queue (recipient_email,subject,body,status,provider_used,sent_at) VALUES (?,?,?,?,?,NOW())',[$to,$subject,$body,$ok?'sent':'failed','mail']);
+    return $ok;
+}
+
+function send_email_sendpulse(array $p, string $to, string $subject, string $body): bool {
+    $cfg=json_decode($p['config_json']?:'{}',true);
+    $from=$cfg['from_email'] ?? 'noreply@angani.co.uk'; $fromName=$cfg['from_name'] ?? 'Angani Data';
+    $ch=curl_init('https://api.sendpulse.com/smtp/emails');
+    curl_setopt_array($ch,[CURLOPT_POST=>1,CURLOPT_RETURNTRANSFER=>1,CURLOPT_HTTPHEADER=>['Authorization: Bearer '.$p['api_key'],'Content-Type: application/json'],CURLOPT_POSTFIELDS=>json_encode(['email'=>['from_email'=>$from,'from_name'=>$fromName,'to'=>[['email'=>$to]],'subject'=>$subject,'text'=>$body]])]);
+    $res=curl_exec($ch); $http=curl_getinfo($ch,CURLINFO_HTTP_CODE); curl_close($ch);
+    $ok=$http>=200&&$http<300;
+    exec_sql('INSERT INTO email_queue (recipient_email,subject,body,status,provider_used,sent_at) VALUES (?,?,?,?,?,NOW())',[$to,$subject,$body,$ok?'sent':'failed','sendpulse']);
+    return $ok;
+}
+
+function send_email_postmark(array $p, string $to, string $subject, string $body): bool {
+    $cfg=json_decode($p['config_json']?:'{}',true);
+    $from=$cfg['from_email'] ?? 'noreply@angani.co.uk';
+    $ch=curl_init('https://api.postmarkapp.com/email');
+    curl_setopt_array($ch,[CURLOPT_POST=>1,CURLOPT_RETURNTRANSFER=>1,CURLOPT_HTTPHEADER=>['X-Postmark-Server-Token: '.$p['api_key'],'Content-Type: application/json','Accept: application/json'],CURLOPT_POSTFIELDS=>json_encode(['From'=>$from,'To'=>$to,'Subject'=>$subject,'TextBody'=>$body])]);
+    $res=curl_exec($ch); $http=curl_getinfo($ch,CURLINFO_HTTP_CODE); curl_close($ch);
+    $ok=$http>=200&&$http<300;
+    exec_sql('INSERT INTO email_queue (recipient_email,subject,body,status,provider_used,sent_at) VALUES (?,?,?,?,?,NOW())',[$to,$subject,$body,$ok?'sent':'failed','postmark']);
+    return $ok;
+}
+
+function send_email_brevo(array $p, string $to, string $subject, string $body): bool {
+    $cfg=json_decode($p['config_json']?:'{}',true);
+    $from=$cfg['from_email'] ?? 'noreply@angani.co.uk'; $fromName=$cfg['from_name'] ?? 'Angani Data';
+    $ch=curl_init('https://api.brevo.com/v3/smtp/email');
+    curl_setopt_array($ch,[CURLOPT_POST=>1,CURLOPT_RETURNTRANSFER=>1,CURLOPT_HTTPHEADER=>['api-key: '.$p['api_key'],'Content-Type: application/json'],CURLOPT_POSTFIELDS=>json_encode(['sender'=>['email'=>$from,'name'=>$fromName],'to'=>[['email'=>$to]],'subject'=>$subject,'textContent'=>$body])]);
+    $res=curl_exec($ch); $http=curl_getinfo($ch,CURLINFO_HTTP_CODE); curl_close($ch);
+    $ok=$http>=200&&$http<300;
+    exec_sql('INSERT INTO email_queue (recipient_email,subject,body,status,provider_used,sent_at) VALUES (?,?,?,?,?,NOW())',[$to,$subject,$body,$ok?'sent':'failed','brevo']);
+    return $ok;
+}
+
+function send_email_mailgun(array $p, string $to, string $subject, string $body): bool {
+    $cfg=json_decode($p['config_json']?:'{}',true);
+    $domain=$cfg['domain'] ?? '';
+    $from=$cfg['from_email'] ?? 'noreply@angani.co.uk';
+    if(!$domain) return send_email_fallback($to,$subject,$body);
+    $ch=curl_init("https://api.mailgun.net/v3/$domain/messages");
+    curl_setopt_array($ch,[CURLOPT_POST=>1,CURLOPT_RETURNTRANSFER=>1,CURLOPT_USERPWD=>'api:'.$p['api_key'],CURLOPT_POSTFIELDS=>['from'=>$from,'to'=>$to,'subject'=>$subject,'text'=>$body]]);
+    $res=curl_exec($ch); $http=curl_getinfo($ch,CURLINFO_HTTP_CODE); curl_close($ch);
+    $ok=$http>=200&&$http<300;
+    exec_sql('INSERT INTO email_queue (recipient_email,subject,body,status,provider_used,sent_at) VALUES (?,?,?,?,?,NOW())',[$to,$subject,$body,$ok?'sent':'failed','mailgun']);
+    return $ok;
+}
+
+function send_email_ses(array $p, string $to, string $subject, string $body): bool {
+    return send_email_fallback($to,$subject,$body);
+}
+
+function send_email_zapier(array $p, string $to, string $subject, string $body): bool {
+    $cfg=json_decode($p['config_json']?:'{}',true);
+    $webhookUrl=$cfg['webhook_url'] ?? $p['api_key'];
+    if(!$webhookUrl) return send_email_fallback($to,$subject,$body);
+    $ch=curl_init($webhookUrl);
+    curl_setopt_array($ch,[CURLOPT_POST=>1,CURLOPT_RETURNTRANSFER=>1,CURLOPT_TIMEOUT=>10,CURLOPT_HTTPHEADER=>['Content-Type: application/json'],CURLOPT_POSTFIELDS=>json_encode(['to'=>$to,'subject'=>$subject,'body'=>$body])]);
+    $res=curl_exec($ch); $http=curl_getinfo($ch,CURLINFO_HTTP_CODE); curl_close($ch);
+    $ok=$http>=200&&$http<300;
+    exec_sql('INSERT INTO email_queue (recipient_email,subject,body,status,provider_used,sent_at) VALUES (?,?,?,?,?,NOW())',[$to,$subject,$body,$ok?'sent':'failed','zapier']);
+    return $ok;
 }

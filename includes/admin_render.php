@@ -27,11 +27,15 @@ function render_admin_page(): void {
         'quality'=>'Data Quality',
         'audit'=>'Data Audit',
         'reports'=>'Reports',
+        'data_reports'=>'Data Reports',
+        'email'=>'Email',
         'users'=>'Users',
         'plans'=>'Plans & Access',
         'questions'=>'Preset Questions',
         'insights'=>'Homepage Insights',
-        'tasks'=>'100% Tasks'
+        'tasks'=>'100% Tasks',
+        'backup'=>'Backup & Restore',
+        'mirror'=>'Mirror'
     ];
     echo '<section class="admin-layout"><aside class="admin-side"><div class="admin-logo"><span>AD</span><div><h2>Admin Console</h2><p>Operational backend</p></div></div><nav class="admin-side-nav">';
     foreach($nav as $key=>$label){ echo '<a class="'.($tab===$key?'active':'').'" href="?page=admin&tab='.e($key).($key==='records'?'&module=airlines':'').'">'.e($label).'</a>'; }
@@ -47,6 +51,10 @@ function render_admin_page(): void {
     elseif($tab==='pipeline') render_admin_pipeline();
     elseif($tab==='audit') render_admin_data_audit();
     elseif($tab==='reports') render_admin_reports();
+    elseif($tab==='data_reports') render_admin_data_reports();
+    elseif($tab==='email') render_admin_email_providers();
+    elseif($tab==='backup') render_admin_backup();
+    elseif($tab==='mirror') render_admin_mirror();
     elseif($tab==='edit') render_admin_edit($module,getv('id'));
     else render_admin_records($module,$cfg);
     echo '</section></section>';
@@ -389,4 +397,171 @@ function render_admin_data_audit(): void {
         echo '</tbody></table></div>';
     }
     echo '</section>';
+}
+
+function render_admin_backup(): void {
+    $projectRoot = realpath(__DIR__ . '/..');
+    $prefix = 'angani_backup_';
+    $existingZips = glob($projectRoot . '/' . $prefix . '*.zip');
+    $totalBackupSize = 0;
+    foreach ($existingZips as $z) $totalBackupSize += filesize($z);
+
+    // Handle POST actions
+    if (postv('action') === 'run_backup') {
+        $pass = getenv('ANGANI_DB_PASS') ?: 'rootpassword';
+        $output = shell_exec('ANGANI_DB_PASS=' . escapeshellarg($pass) . ' php ' . escapeshellarg($projectRoot . '/scripts/backup_engine.php') . ' 2>&1');
+        flash('success', 'Backup completed.');
+        redirect_to('?page=admin&tab=backup');
+    }
+
+    if (postv('action') === 'delete_backups') {
+        foreach ($existingZips as $z) unlink($z);
+        flash('success', 'Backup files deleted.');
+        redirect_to('?page=admin&tab=backup');
+    }
+
+    echo '<div class="admin-head"><div><div class="eyebrow">System Protection</div><h1>Backup & Restore</h1><p>Create or restore full system backups. Backups include all project files and the MySQL database, split into 100 MB volumes.</p></div></div>';
+
+    // Stats
+    echo '<div class="admin-kpi-grid">';
+    echo admin_metric('Backup Volumes', count($existingZips), $totalBackupSize ? round($totalBackupSize/1024/1024,1).' MB total' : 'No backups');
+    echo admin_metric('Restore Script', 'install.php', 'Available at root');
+    echo admin_metric('Max Volume Size', '100 MB', 'Per zip file');
+    echo '</div>';
+
+    // Actions
+    echo '<div class="admin-action-grid">';
+    echo '<article class="admin-action-card"><h3>Create Backup</h3><p>Scan all project files and the MySQL database, then produce numbered zip volumes.</p><form method="post">' . csrf_field() . '<input type="hidden" name="action" value="run_backup"><button class="btn ink">Run Backup Now</button></form></article>';
+    echo '<article class="admin-action-card"><h3>Download Backup Files</h3><p>Backup files are stored in the project root and included in git pushes. Download them individually below.</p></article>';
+    if ($existingZips) {
+        echo '<article class="admin-action-card"><h3>Delete Backups</h3><p>Remove all existing backup zip files from the project root.</p><form method="post" onsubmit="return confirm(\'Delete all backup files?\')">' . csrf_field() . '<input type="hidden" name="action" value="delete_backups"><button class="btn danger">Delete All Backups</button></form></article>';
+    }
+    echo '</div>';
+
+    // Backup files list
+    if ($existingZips) {
+        echo '<section class="panel"><div class="topline"><h3>Backup Files</h3></div><div class="file-list" style="font-family:monospace;font-size:13px">';
+        foreach ($existingZips as $z) {
+            $basename = basename($z);
+            $size = filesize($z);
+            $href = '../' . $basename;
+            echo '<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.05)"><a href="' . e($href) . '" download style="color:#64ffda">' . e($basename) . '</a><span>' . number_format($size) . ' bytes</span></div>';
+        }
+        echo '</div></section>';
+    }
+
+    // Restore instructions
+    echo '<section class="panel"><div class="topline"><h3>Restore Instructions</h3></div>';
+    echo '<div style="font-size:14px;line-height:1.8;color:#8892b0">';
+    echo '<p><strong>To restore on a new server:</strong></p>';
+    echo '<ol style="padding-left:20px;margin:12px 0">';
+    echo '<li>Upload all <code>angani_backup_*.zip</code> files and <code>install.php</code> to the new server\'s document root.</li>';
+    echo '<li>Open <code>http://YOUR_SERVER/install.php</code> in a browser.</li>';
+    echo '<li>Follow the guided 3-step restore process (extract files, configure database, complete).</li>';
+    echo '<li>The system will be fully restored and ready to use.</li>';
+    echo '</ol>';
+    echo '<p><strong>Via git:</strong> Since backup files are stored in the repo, a <code>git pull</code> on the new server will fetch them automatically.</p>';
+    echo '</div></section>';
+}
+
+function render_admin_mirror(): void {
+    echo '<div class="admin-head"><div><div class="eyebrow">Replication</div><h1>Mirror Status</h1><p>Real-time mirror to the secondary server is kept in sync automatically.</p></div></div>';
+
+    $mirrorStateFile = __DIR__ . '/../backups/mirror_state.json';
+    $state = ['last_sync' => 'Never', 'status' => 'unknown', 'files_synced' => 0, 'last_error' => ''];
+    if (file_exists($mirrorStateFile)) {
+        $state = array_merge($state, json_decode(file_get_contents($mirrorStateFile), true) ?: []);
+    }
+
+    $lastSync = $state['last_sync'] ?? 'Never';
+    $status = $state['status'] ?? 'unknown';
+    $filesSynced = (int)($state['files_synced'] ?? 0);
+    $lastError = $state['last_error'] ?? '';
+
+    $statusColor = 'gold';
+    $statusLabel = 'Unknown';
+    if ($status === 'ok') { $statusColor = 'ok glow-green'; $statusLabel = 'In Sync'; }
+    elseif ($status === 'syncing') { $statusColor = 'gold'; $statusLabel = 'Syncing…'; }
+    elseif ($status === 'error') { $statusColor = 'danger'; $statusLabel = 'Error'; }
+
+    echo '<div class="admin-kpi-grid">';
+    echo '<article class="admin-kpi ' . $statusColor . '" style="border-left:4px solid var(--c-'.($statusColor === 'ok glow-green' ? 'success':($statusColor === 'danger' ? 'danger':'warning')).',#c79b45)"><span>Mirror Status</span><strong>' . $statusLabel . '</strong><small>Last sync: ' . e($lastSync) . '</small></article>';
+    echo admin_metric('Files Synced', $filesSynced, 'Total files transferred');
+    echo '</div>';
+
+    if ($lastError) {
+        echo '<div class="panel" style="border-left:3px solid #b04747"><h3>Last Error</h3><p style="color:#ff6b6b;font-size:13px;font-family:monospace">' . e($lastError) . '</p></div>';
+    }
+
+    // Mirror configuration info
+    echo '<section class="panel"><div class="topline"><h3>Mirror Configuration</h3></div>';
+    echo '<div style="font-size:14px;line-height:1.8;color:#8892b0">';
+    echo '<p><strong>Secondary server:</strong> <code>root@134.209.114.217</code></p>';
+    echo '<p><strong>Sync mechanism:</strong> SSH + rsync (files) + MySQL dump piped via SSH (database)</p>';
+    echo '<p><strong>Schedule:</strong> Every 5 minutes via cron</p>';
+    echo '<p><strong>SSH Key:</strong> <code>data/mirror_key</code> (stored in repo for deployment)</p>';
+    echo '</div></section>';
+
+    // Manual sync button
+    echo '<section class="panel"><div class="topline"><h3>Manual Sync</h3></div>';
+    echo '<p class="muted">Trigger an immediate sync to the mirror server.</p>';
+    echo '<form method="post">' . csrf_field() . '<input type="hidden" name="action" value="run_mirror_sync"><button class="btn ink">Run Mirror Sync Now</button></form>';
+    echo '</section>';
+}
+
+function render_admin_data_reports(): void {
+    $statusFilter=getv('rstatus','');
+    $where=''; $params=[];
+    if($statusFilter){ $where='WHERE dr.status=?'; $params=[$statusFilter]; }
+    $reports=rows('SELECT dr.*, u.name resolved_by_name FROM data_reports dr LEFT JOIN users u ON u.id=dr.resolved_by '.$where.' ORDER BY dr.created_at DESC LIMIT 200',$params);
+    echo '<div class="admin-head"><div><div class="eyebrow">Data Reports</div><h1>User Data Problem Reports</h1><p>Users submit reports from detail pages when they spot wrong, outdated, or missing data.</p></div></div>';
+    echo '<form method="get" class="toolbar admin-toolbar"><input type="hidden" name="page" value="admin"><input type="hidden" name="tab" value="data_reports"><label class="searchbox tiny"><span>Status</span><select name="rstatus" onchange="this.form.submit()"><option value="">All statuses</option>';
+    foreach(['open','in_progress','resolved','dismissed'] as $s) echo '<option value="'.e($s).'"'.($statusFilter===$s?' selected':'').'>'.e(ucfirst($s)).'</option>';
+    echo '</select></label><a class="btn ghost" href="?page=admin&tab=data_reports">Reset</a></form>';
+    if(!$reports){ echo '<section class="panel"><p class="muted">No reports yet.</p></section>'; return; }
+    echo '<div class="table-wrap"><table><thead><tr><th>Date</th><th>Entity</th><th>Type</th><th>Description</th><th>Contact</th><th>Status</th><th>Admin notes</th><th>Update</th></tr></thead><tbody>';
+    foreach($reports as $r){
+        $entityLink=$r['entity_type'] && $r['entity_id'] ? ' (<a href="'.e(detail_url($r['entity_type'],$r['entity_id'])).'" class="linkish">view</a>)' : '';
+        echo '<tr><td><small>'.e($r['created_at']).'</small></td><td>'.e($r['entity_type'] ?: '—').' '.$entityLink.'</td><td><span class="chip">'.e($r['report_type']).'</span></td><td style="max-width:300px"><small>'.e(mb_substr($r['description'],0,200)).'</small></td><td>'.e($r['contact_info'] ?: '—').'</td>';
+        $sc=$r['status']==='resolved'?'ok glow-green':($r['status']==='dismissed'?'gold':($r['status']==='in_progress'?'':'danger'));
+        echo '<td><span class="chip '.$sc.'">'.e(ucfirst($r['status'])).'</span></td>';
+        echo '<td><form method="post" class="inline-form" style="display:flex;flex-direction:column;gap:4px">'.csrf_field().'<input type="hidden" name="action" value="admin_update_report"><input type="hidden" name="report_id" value="'.(int)$r['id'].'">';
+        echo '<select name="status" style="margin-bottom:2px">';
+        foreach(['open','in_progress','resolved','dismissed'] as $s) echo '<option value="'.e($s).'"'.($r['status']===$s?' selected':'').'>'.e(ucfirst($s)).'</option>';
+        echo '</select>';
+        echo '<input name="admin_notes" placeholder="Notes" value="'.e($r['admin_notes'] ?? '').'" style="font-size:12px">';
+        echo '<label style="font-size:12px;display:flex;align-items:center;gap:4px"><input type="checkbox" name="notify_reporter" value="1"> Notify reporter</label>';
+        echo '<button class="btn mini">Update</button></form></td></tr>';
+    }
+    echo '</tbody></table></div>';
+}
+
+function render_admin_email_providers(): void {
+    $providers=rows('SELECT * FROM email_providers ORDER BY is_default DESC, is_active DESC, name ASC');
+    echo '<div class="admin-head"><div><div class="eyebrow">Email</div><h1>Email Providers</h1><p>Configure email sending providers for report notifications, password resets, and all system outbound mail.</p></div></div>';
+    echo '<section class="panel"><h3>Add / Edit Provider</h3>';
+    $editId=(int)getv('edit_provider',0);
+    $edit=null;
+    if($editId) $edit=row('SELECT * FROM email_providers WHERE id=?',[$editId]);
+    echo '<form method="post" class="admin-form compact-form">'.csrf_field().'<input type="hidden" name="action" value="admin_save_email_provider"><input type="hidden" name="provider_id" value="'.e($edit['id'] ?? '').'">';
+    echo '<label><span>Name</span><input name="name" value="'.e($edit['name'] ?? '').'" placeholder="e.g. Main Sendpulse" required></label>';
+    echo '<label><span>Provider type</span><select name="provider_type">';
+    $types=['sendpulse'=>'Sendpulse','postmark'=>'Postmark','brevo'=>'Brevo (Sendinblue)','mailgun'=>'Mailgun','ses'=>'Amazon SES','zapier'=>'Zapier Webhook','mail'=>'PHP mail()'];
+    foreach($types as $k=>$l) echo '<option value="'.e($k).'"'.(($edit['provider_type']??'')===$k?' selected':'').'>'.e($l).'</option>';
+    echo '</select></label>';
+    echo '<label><span>API Key / Token / Webhook URL</span><input name="api_key" value="'.e($edit['api_key'] ?? '').'" placeholder="API key or webhook URL"></label>';
+    echo '<label><span>API Secret (if applicable)</span><input name="api_secret" value="'.e($edit['api_secret'] ?? '').'" placeholder="Secret key"></label>';
+    echo '<label><span>Extra config (JSON)</span><textarea name="config_json" rows="3" placeholder=\'{"from_email":"noreply@angani.co.uk","from_name":"Angani Data","domain":"mg.angani.co.uk"}\'>'.e($edit['config_json'] ?? '').'</textarea></label>';
+    echo '<label><span>Active</span><select name="is_active"><option value="1"'.(($edit['is_active']??'')=='1'?' selected':'').'>Yes</option><option value="0"'.((($edit['is_active']??'')=='1'||!$edit)?'':' selected').'>No</option></select></label>';
+    echo '<label><span>Default (used first)</span><select name="is_default"><option value="1"'.(($edit['is_default']??'')=='1'?' selected':'').'>Yes</option><option value="0"'.((($edit['is_default']??'')=='1'||!$edit)?'':' selected').'>No</option></select></label>';
+    echo '<button class="btn ink">Save provider</button></form></section>';
+    echo '<section class="panel"><h3>Test Email</h3><form method="post" class="inline-form">'.csrf_field().'<input type="hidden" name="action" value="admin_test_email"><input name="test_email" type="email" placeholder="your@email.com" required style="min-width:250px"><button class="btn ink">Send test email</button></form></section>';
+    echo '<section class="panel"><h3>Configured Providers</h3><div class="table-wrap"><table><thead><tr><th>Name</th><th>Type</th><th>Active</th><th>Default</th><th>Actions</th></tr></thead><tbody>';
+    foreach($providers as $p){
+        echo '<tr><td><strong>'.e($p['name']).'</strong></td><td><span class="chip">'.e($p['provider_type']).'</span></td><td>'.($p['is_active']?'<span class="chip ok glow-green">Active</span>':'<span class="chip">Inactive</span>').'</td><td>'.($p['is_default']?'<span class="chip ok">Yes</span>':'—').'</td><td>';
+        echo '<a class="btn mini" href="?page=admin&tab=email&edit_provider='.(int)$p['id'].'">Edit</a> ';
+        echo '<form method="post" style="display:inline" onsubmit="return confirm(\'Delete this provider?\')">'.csrf_field().'<input type="hidden" name="action" value="admin_delete_email_provider"><input type="hidden" name="provider_id" value="'.(int)$p['id'].'"><button class="btn mini ghost">Delete</button></form>';
+        echo '</td></tr>';
+    }
+    echo '</tbody></table></div></section>';
 }
