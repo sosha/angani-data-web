@@ -63,13 +63,13 @@ body{font-family:'IBM Plex Sans',system-ui,sans-serif;background:radial-gradient
 .xcard-img{width:40px;height:40px;border-radius:10px;object-fit:contain;background:rgba(255,255,255,.7);padding:3px;border:1px solid rgba(7,21,33,.08)}
 .xcard-img.round{border-radius:50%}
 .xcard-name{font-family:'IBM Plex Sans Condensed',sans-serif;font-size:1.15rem;margin:10px 16px 4px;letter-spacing:-.02em;line-height:1.15;color:var(--ink)}
-.xcard-summary{display:grid;grid-template-columns:1fr 1fr;gap:5px 14px;padding:8px 16px 10px}
+.xcard-summary{display:flex;flex-wrap:wrap;gap:6px 18px;padding:8px 16px 10px}
 .xcard-stat{display:flex;flex-direction:column;gap:1px}
 .xcard-stat-l{font-family:'IBM Plex Mono',monospace;font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
 .xcard-stat-v{font-size:.82rem;font-weight:600;color:var(--ink)}
 .xcard-def-note{font-size:.68rem;font-weight:400;color:var(--angani-muted)}
 .xcard-expand{border-top:1px solid var(--line);padding:14px 16px;background:rgba(246,241,231,.5)}
-.xcard.expanded .xcard-expand{display:block!important;border-top-color:rgba(199,155,69,.2)}
+.xcard.expanded .xcard-expand{display:none!important;border-top-color:rgba(199,155,69,.2)}
 .xcard-sections{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .xcard.expanded .xcard-sections{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
 .xcard-sec{display:flex;flex-direction:column;gap:4px}
