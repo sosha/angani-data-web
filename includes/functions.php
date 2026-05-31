@@ -169,7 +169,7 @@ function query_module_records(array $cfg, int $limit=24, int $offset=0, bool $fo
         if($parts) $where[]='('.implode(' OR ',$parts).')';
     }
     $country=getv('country'); if($country!=='' && in_array('country_code',$cols,true)) { $where[]='country_code=?'; $params[]=$country; }
-    $status=getv('status'); if($status!==''){ $scol=in_array('status_bucket',$cols,true)?'status_bucket':(in_array('status',$cols,true)?'status':null); if($scol){ $where[]="`$scol`=?"; $params[]=$status; } elseif(in_array('active',$cols,true)){ if($status==='active'){ $where[]='`active`=?'; $params[]='Y'; } elseif($status==='defunct'){ $where[]='`active`=?'; $params[]='N'; } }
+    $status=getv('status'); if($status!==''){ $scol=in_array('status_bucket',$cols,true)?'status_bucket':(in_array('status',$cols,true)?'status':null); if($scol){ $where[]="`$scol`=?"; $params[]=$status; } elseif(in_array('active',$cols,true)){ if($status==='active'){ $where[]='`active`=?'; $params[]='Y'; } elseif($status==='defunct'){ $where[]='`active`=?'; $params[]='N'; } } }
     $sql=' FROM `'.$table.'`'.($where?' WHERE '.implode(' AND ',$where):'');
     $total=(int)scalar('SELECT COUNT(*)'.$sql,$params);
     $sort=getv('sort','default'); $dir=str_starts_with($sort,'-')?'DESC':'ASC'; $sort=ltrim($sort,'-');
