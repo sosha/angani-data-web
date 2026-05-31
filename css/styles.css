@@ -94,3 +94,13 @@ body{font-family:'IBM Plex Sans',system-ui,sans-serif;background:radial-gradient
 .xcard-filter.active{border-color:var(--angani-gold);background:rgba(199,155,69,.1);color:var(--angani-gold)}
 .xcard-count{font-family:'IBM Plex Mono',monospace;font-size:.72rem;color:var(--muted);margin-left:auto;white-space:nowrap}
 @media(max-width:640px){.xgrid{grid-template-columns:1fr}.xcard-sections{grid-template-columns:1fr}}
+
+/* Detail page expanded card design */
+.iata-box{display:inline-flex;align-items:center;justify-content:center;min-width:48px;padding:6px 12px;border-radius:10px;background:var(--ink);color:var(--white);font-family:'IBM Plex Mono',monospace;font-size:.82rem;font-weight:700;letter-spacing:.06em;line-height:1;border:1px solid rgba(7,21,33,.15)}
+.iata-box.icao{background:var(--gold-2);color:var(--white)}
+.hero-stats{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0 10px}
+.hero-stat{background:rgba(255,253,248,.92);border:1px solid var(--line);border-radius:12px;padding:10px 14px;min-width:90px;display:flex;flex-direction:column;gap:2px}
+.hero-stat-l{font-family:'IBM Plex Mono',monospace;font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.hero-stat-v{font-size:.95rem;font-weight:700;color:var(--ink)}
+.detail-sections{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:12px}
+@media(max-width:640px){.detail-sections{grid-template-columns:1fr}}

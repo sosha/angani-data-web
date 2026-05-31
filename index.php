@@ -63,7 +63,12 @@ if($key==='countries'){
     $statusChip='';
     if($r['active']==='Y') $statusChip='<span class="chip ok glow-green" style="vertical-align:middle;margin-left:8px">Active</span>';
     elseif($r['active']==='N') $statusChip='<span class="chip danger" style="vertical-align:middle;margin-left:8px">Defunct</span>';
+    $alIcao=e($r['icao_code']??''); $alIata=e($r['iata_code']??'');
+    $codeBoxes='';
+    if($alIata) $codeBoxes.='<span class="iata-box">'.$alIata.'</span>';
+    if($alIcao) $codeBoxes.='<span class="iata-box icao">'.$alIcao.'</span>';
     echo '<h1>'.$logoHtml.e($r[$cfg['title']] ?? 'Record').' <sub style="font-size:0.5em;font-weight:400;color:var(--ink-muted)">'.e($r[$cfg['subtitle']] ?? '').'</sub>'.$statusChip.'</h1>';
+    if($codeBoxes) echo '<div style="display:flex;gap:8px;margin:10px 0 4px">'.$codeBoxes.'</div>';
     $alCc=strtolower($r['country_code']??'');
     if($alCc){
         $alFlag=$alCc?((file_exists(__DIR__.'/assets/country_flag_icons/'.$alCc.'.svg')
@@ -72,6 +77,17 @@ if($key==='countries'){
         echo '<p style="margin-top:8px">'.$alFlag.e($r['country'] ?? $r['country_code'] ?? '').'</p>';
     }
     if($r['alias']??'') echo '<p style="margin-top:4px;max-width:700px;line-height:1.6;color:var(--ink-muted)">'.e($r['alias']).'</p>';
+    $stIcao=$r['icao_code']??'';
+    $stFleet=0; $stHubs=0;
+    if($stIcao){
+        try{$stFleet=(int)scalar('SELECT COALESCE(SUM(aircraft_count),0) FROM airline_fleet_summary WHERE icao_code=?',[$stIcao]);}catch(Throwable $e){}
+        try{$stHubs=(int)scalar('SELECT COUNT(*) FROM airline_hubs WHERE icao_code=?',[$stIcao]);}catch(Throwable $e){}
+    }
+    $statsHtml='';
+    if($stFleet) $statsHtml.='<div class="hero-stat"><span class="hero-stat-l">Fleet</span><span class="hero-stat-v">'.nfmt($stFleet).'</span></div>';
+    if($stHubs) $statsHtml.='<div class="hero-stat"><span class="hero-stat-l">Hubs</span><span class="hero-stat-v">'.nfmt($stHubs).'</span></div>';
+    if($r['callsign']??'') $statsHtml.='<div class="hero-stat"><span class="hero-stat-l">Callsign</span><span class="hero-stat-v">'.e($r['callsign']).'</span></div>';
+    if($statsHtml) echo '<div class="hero-stats">'.$statsHtml.'</div>';
 } else {
     echo '<h1>'.e($r[$cfg['title']] ?? 'Record').'</h1><p>'.e($r[$cfg['subtitle']] ?? '').'</p>';
 }
@@ -121,10 +137,44 @@ if($key==='countries' && $tabParam==='overview'){
 }
 // Default overview/fields for non-countries, with airline-specific filtering
 if($tabParam==='overview' && $key==='airlines'){
-    $hideFields = ['active','updated_at','country_code','logo_url','icao_code','alias'];
+    $alIcao=$r['icao_code']??''; $alIata=$r['iata_code']??''; $alName=$r['name']??'';
+    $rFleet=0; $rHubs=0; $rFleetList=0; $rDigital=0;
+    if($alIcao){
+        try{$rFleet=(int)scalar('SELECT COALESCE(SUM(aircraft_count),0) FROM airline_fleet_summary WHERE icao_code=?',[$alIcao]);}catch(Throwable $e){}
+        try{$rHubs=(int)scalar('SELECT COUNT(*) FROM airline_hubs WHERE icao_code=?',[$alIcao]);}catch(Throwable $e){}
+        try{$rFleetList=(int)scalar('SELECT COUNT(*) FROM airline_fleet_list WHERE operator_airline=? OR operator_airline LIKE ?',[$alName,'%'.$alName.'%']);}catch(Throwable $e){}
+        try{$rDigital=(int)scalar('SELECT COUNT(*) FROM airline_digital_properties WHERE iata_code=? OR icao_code=?',[$alIata?:'',$alIcao]);}catch(Throwable $e){}
+    }
+    $rIata='—'; $rIosa='—';
+    try{$ri=row('SELECT membership_status FROM airline_iata_membership WHERE iata_code=? OR icao_code=? LIMIT 1',[$alIata?:'',$alIcao]); if($ri) $rIata=e($ri['membership_status']);}catch(Throwable $e){}
+    try{$ri2=row('SELECT iosa_status FROM airline_iosa_registration WHERE iata_code=? OR icao_code=? LIMIT 1',[$alIata?:'',$alIcao]); if($ri2) $rIosa=e($ri2['iosa_status']);}catch(Throwable $e){}
+    echo '<div class="detail-sections">';
+    echo '<div class="xcard-sec"><div class="xcard-sec-title">IDENTITY</div>';
+    echo '<div class="xcard-row"><span class="xcard-row-k">Name</span><span class="xcard-row-v">'.e($r['name']??'').'</span></div>';
+    if($r['alias']??'') echo '<div class="xcard-row"><span class="xcard-row-k">Alias</span><span class="xcard-row-v">'.e($r['alias']).'</span></div>';
+    echo '<div class="xcard-row"><span class="xcard-row-k">IATA</span><span class="xcard-row-v">'.e($r['iata_code']??'—').'</span></div>';
+    echo '<div class="xcard-row"><span class="xcard-row-k">ICAO</span><span class="xcard-row-v">'.e($r['icao_code']??'—').'</span></div>';
+    if($r['callsign']??'') echo '<div class="xcard-row"><span class="xcard-row-k">Callsign</span><span class="xcard-row-v">'.e($r['callsign']).'</span></div>';
+    echo '</div>';
+    echo '<div class="xcard-sec"><div class="xcard-sec-title">LOCATION</div>';
+    echo '<div class="xcard-row"><span class="xcard-row-k">Country</span><span class="xcard-row-v">'.e($r['country']??$r['country_code']??'—').'</span></div>';
+    if($r['country_code']??'') echo '<div class="xcard-row"><span class="xcard-row-k">Code</span><span class="xcard-row-v">'.e(strtoupper($r['country_code'])).'</span></div>';
+    echo '</div>';
+    echo '<div class="xcard-sec"><div class="xcard-sec-title">OPERATIONS</div>';
+    echo '<div class="xcard-row"><span class="xcard-row-k">Status</span><span class="xcard-row-v">'.status_chip($r['active']==='Y'?'active':($r['active']==='N'?'defunct':$r['active']??'')).'</span></div>';
+    if($rFleet) echo '<div class="xcard-row"><span class="xcard-row-k">Fleet</span><span class="xcard-row-v">'.nfmt($rFleet).' aircraft</span></div>';
+    if($rHubs) echo '<div class="xcard-row"><span class="xcard-row-k">Hubs</span><span class="xcard-row-v">'.nfmt($rHubs).' bases</span></div>';
+    if($rFleetList) echo '<div class="xcard-row"><span class="xcard-row-k">Registry</span><span class="xcard-row-v">'.nfmt($rFleetList).' tail records</span></div>';
+    echo '</div>';
+    echo '<div class="xcard-sec"><div class="xcard-sec-title">MEMBERSHIPS</div>';
+    echo '<div class="xcard-row"><span class="xcard-row-k">IATA</span><span class="xcard-row-v">'.$rIata.'</span></div>';
+    echo '<div class="xcard-row"><span class="xcard-row-k">IOSA</span><span class="xcard-row-v">'.$rIosa.'</span></div>';
+    echo '</div>';
+    echo '</div>';
+    $hideFields = ['active','updated_at','country_code','logo_url','icao_code','alias','name','iata_code','callsign','country'];
     $detailFields = $cfg['detail'] ?? [];
     $filteredDetail = array_values(array_filter($detailFields, fn($f) => !in_array($f, $hideFields)));
-    echo render_detail_fields(array_merge($cfg, ['detail' => $filteredDetail]), $r, false);
+    if($filteredDetail) echo '<div style="margin-top:12px">'.render_detail_fields(array_merge($cfg, ['detail' => $filteredDetail]), $r, false).'</div>';
 } elseif($tabParam==='overview' || $tabParam==='fields'){
     if($key!=='countries') echo render_detail_fields($cfg,$r,false);
 }
