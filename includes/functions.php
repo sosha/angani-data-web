@@ -169,7 +169,7 @@ function query_module_records(array $cfg, int $limit=24, int $offset=0, bool $fo
         if($parts) $where[]='('.implode(' OR ',$parts).')';
     }
     $country=getv('country'); if($country!=='' && in_array('country_code',$cols,true)) { $where[]='country_code=?'; $params[]=$country; }
-    $status=getv('status'); if($status!==''){ $scol=in_array('status_bucket',$cols,true)?'status_bucket':(in_array('status',$cols,true)?'status':null); if($scol){ $where[]="`$scol`=?"; $params[]=$status; } }
+    $status=getv('status'); if($status!==''){ $scol=in_array('status_bucket',$cols,true)?'status_bucket':(in_array('status',$cols,true)?'status':null); if($scol){ $where[]="`$scol`=?"; $params[]=$status; } elseif(in_array('active',$cols,true)){ if($status==='active'){ $where[]='`active`=?'; $params[]='Y'; } elseif($status==='defunct'){ $where[]='`active`=?'; $params[]='N'; } }
     $sql=' FROM `'.$table.'`'.($where?' WHERE '.implode(' AND ',$where):'');
     $total=(int)scalar('SELECT COUNT(*)'.$sql,$params);
     $sort=getv('sort','default'); $dir=str_starts_with($sort,'-')?'DESC':'ASC'; $sort=ltrim($sort,'-');
@@ -205,10 +205,12 @@ function render_search_bar(string $key, array $cfg): string {
     if(in_array('fleet_size',$cols,true)){ $sortOpts[]=['-fleet_size','Fleet size']; }
     if(in_array('elevation_ft',$cols,true)){ $sortOpts[]=['-elevation_ft','Elevation']; }
     $sops=''; $sv=getv('sort','default'); foreach($sortOpts as $o){ $sops.='<option value="'.e($o[0]).'"'.($sv===$o[0]?' selected':'').'>'.e($o[1]).'</option>'; }
-    $hasStatus=in_array('status_bucket',$cols,true)||in_array('status',$cols,true);
+    $hasStatus=in_array('status_bucket',$cols,true)||in_array('status',$cols,true)||in_array('active',$cols,true);
     $statusOpts='<option value="">All</option>'; $curS=getv('status');
     if($hasStatus){
-        $statuses=in_array('status_bucket',$cols,true)?['active','defunct','closed','unknown']:['active','inactive','closed','unknown'];
+        if(in_array('active',$cols,true)){ $statuses=['active','defunct']; }
+        elseif(in_array('status_bucket',$cols,true)){ $statuses=['active','defunct','closed','unknown']; }
+        else { $statuses=['active','inactive','closed','unknown']; }
         foreach($statuses as $s){ $statusOpts.='<option value="'.e($s).'"'.($curS===$s?' selected':'').'>'.e(ucfirst($s)).'</option>'; }
     }
     return '<form method="get" class="toolbar"><input type="hidden" name="page" value="module"><input type="hidden" name="module" value="'.e($key).'"><label class="searchbox"><span>Search</span><input name="q" value="'.e(getv('q')).'" placeholder="Search '.e($cfg['label']).'"></label><label class="searchbox small"><span>Country</span>'.country_select('country',getv('country')).'</label>'.($hasStatus?'<label class="searchbox tiny"><span>Status</span><select name="status">'.$statusOpts.'</select></label>':'').'<label class="searchbox tiny"><span>Sort</span><select name="sort">'.$sops.'</select></label><button class="btn ink">Filter</button><a class="btn ghost" href="'.e(module_url($key)).'">Reset</a>'.(can_export_module($key)?'<a class="btn ghost" href="?page=export&module='.e($key).'&'.e(http_build_query(['q'=>getv('q'),'country'=>getv('country'),'status'=>getv('status')])).'">Export CSV</a>':'').'</form>'; }
@@ -245,12 +247,12 @@ function render_record_card(string $key,array $cfg,array $r): string {
         $aps=''; $al=''; $defunctNote='';
         try{ $s=row('SELECT international_airports,domestic_airports,airlines,airlines_active,airlines_defunct FROM country_air_transport_stats WHERE iso_alpha_2=?',[$r['iso_alpha_2']??'']); if($s){
             $totalAirports = ($s['international_airports']??0)+($s['domestic_airports']??0);
-            if($totalAirports) $aps='<i class="fas fa-plane-departure"></i> '.nfmt($totalAirports).' Airports';
+            if($totalAirports) $aps='<i class="fas fa-map-location"></i> '.nfmt($totalAirports).' Airports';
             $act = (int)($s['airlines_active']??0);
             $def = (int)($s['airlines_defunct']??0);
             $totalAl = (int)($s['airlines']??0);
             if($totalAl){
-                $al = '<i class="fas fa-plane"></i> '.nfmt($act).' Airlines';
+                $al = '<i class="fas fa-plane-departure"></i> '.nfmt($act).' Airlines';
                 if($def) $defunctNote = '<sup class="muted" style="font-size:10px">*Defunct/inactive airlines: '.nfmt($def).'</sup>';
             }
         } }catch(Throwable $e){}
