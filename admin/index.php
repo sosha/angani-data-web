@@ -22,6 +22,7 @@ try { $stats = get_stats(); } catch (Throwable $e) { $dbError = $e->getMessage()
     <title>Angani Data Admin Console</title>
     <link rel="icon" href="../assets/favicon.png" type="image/png">
     <link rel="stylesheet" href="../css/styles.css">
+    <script src="https://kit.fontawesome.com/c0adf715c1.js" crossorigin="anonymous"></script>
 </head>
 <body class="admin-shell-page">
 <div class="flight-grid" aria-hidden="true"></div>
