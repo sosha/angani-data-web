@@ -363,12 +363,14 @@ function render_related_sections(string $key,array $r): string {
         $html.=related_table('Connected navaids', "SELECT associated_airports,associated_airways,system_integration,interoperability_notes FROM navaid_connectivity WHERE associated_airports LIKE ? OR associated_airports LIKE ? LIMIT 20", ["%$iata%","%$icao%"]);
     }
     if($key==='aircraft_types'){
-        $iata=$r['iata_code'] ?? ''; $icao=$r['icao_code'] ?? '';
+        $iata=$r['iata_code'] ?? ''; $icao=$r['icao_code'] ?? ''; $model=$r['model'] ?? '';
+        $html.=related_table('Aircraft type profile', 'SELECT aircraft_name,country_of_origin,aircraft_role,powerplants,performance,weights,dimensions,capacity,production,history FROM aircraft_type_profile_data WHERE aircraft_name=? OR aircraft_name LIKE ? LIMIT 5', [$model,"%$model%"]);
         $html.=related_table('Cabin & payload', 'SELECT typical_c_seats,typical_y_seats,max_capacity,cargo_volume_m3,max_payload_kg FROM aircraft_type_cabin_payload WHERE iata_code=? OR icao_code=? LIMIT 5', [$iata,$icao]);
         $html.=related_table('Engine data', 'SELECT engine_variants,engine_type,engine_count,thrust_per_engine_kn,fuel_burn_rate,saf_compatible FROM aircraft_type_engine_data WHERE iata_code=? OR icao_code=? LIMIT 5', [$iata,$icao]);
         $html.=related_table('Runway requirements', 'SELECT min_takeoff_length_ft,min_landing_length_ft,surface_compatibility FROM aircraft_type_runway_requirements WHERE iata_code=? OR icao_code=? LIMIT 5', [$iata,$icao]);
         $html.=related_table('Technical specs', 'SELECT mtow_kg,mzfw_kg,empty_weight_kg,wingspan_m,length_m,height_m FROM aircraft_type_technical_specs WHERE iata_code=? OR icao_code=? LIMIT 5', [$iata,$icao]);
         $html.=related_table('Economics', 'SELECT list_price_usd,op_cost_per_hour,lease_rate_monthly,residual_value_trend FROM aircraft_type_economic_data WHERE iata_code=? OR icao_code=? LIMIT 5', [$iata,$icao]);
+        $html.=related_table('Environmental data', 'SELECT carbon_intensity,noise_chapter,fuel_type FROM aircraft_type_environmental_data WHERE iata_code=? OR icao_code=? LIMIT 5', [$iata,$icao]);
     }
     if($key==='countries'){
         $cc=$r['iso_alpha_2'] ?? '';
