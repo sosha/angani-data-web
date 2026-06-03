@@ -4,7 +4,7 @@ Welcome to the complete documentation for the **Angani Data** aviation intellige
 
 ## About This System
 
-Angani Data is a web-based platform that provides aviation data across multiple domains: airlines, airports, aircraft types, regulatory records, navaids, NOTAMs, commercial fares, and more. The system has three access tiers (Free, Pro, Enterprise) and is built with PHP (no framework), MySQL, vanilla CSS, and minimal JavaScript.
+Angani Data is a web-based platform that provides aviation data across multiple domains: airlines, airports, aircraft types, regulatory records, navaids, NOTAMs, commercial fares, and more. The system has three access tiers (Free, Pro, Ultimate) and is built with PHP (no framework), MySQL, vanilla CSS, and minimal JavaScript.
 
 ## Documentation Sections
 

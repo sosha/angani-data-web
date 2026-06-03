@@ -451,7 +451,7 @@ User accounts. Used for authentication everywhere.
 
 Pricing tiers. Used on pricing page and for access control.
 
-**Columns**: `id` (PK), `code` (free/pro/enterprise), `name`, `monthly_usd`, `annual_usd`, `display_order`, `is_active`
+**Columns**: `id` (PK), `code` (free/pro/ultimate), `name`, `monthly_usd`, `annual_usd`, `display_order`, `is_active`
 
 ### `tier_features`
 

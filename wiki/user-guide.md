@@ -12,7 +12,7 @@ The system has three subscription levels:
 |------|------|-------------|
 | **Free** | $0 | Access to core datasets: Countries, Airlines, Airports, Aircraft Types, Navaids, Reference tables, Frequent Flyer programmes, GDS systems. Search and browse. |
 | **Pro** | Contact us | Everything in Free + Aircraft Registry, Lessors, Routes, all Aircraft Intelligence tables, all Airport Intelligence tables, all Commercial tables, all Regulatory tables, CSV export. |
-| **Enterprise** | Contact us | Everything in Pro + bulk API access, custom dashboards, import pipeline tools, dedicated support. |
+| **Ultimate** | Contact us | Everything in Pro + bulk API access, custom dashboards, import pipeline tools, dedicated support. |
 
 You can view the pricing page at `?page=pricing` to see current prices.
 
@@ -61,7 +61,7 @@ URL pattern: `?page={module_key}` e.g. `?page=airlines`, `?page=airports`, `?pag
 2. **Click to expand** — Click any card to reveal more details inline (fleet info, hubs, related data)
 3. **Click again** — Click the expanded card or the "Collapse" button to close it
 
-**Other modules** (all Pro/Enterprise datasets) use a plain table view with pagination.
+**Other modules** (all Pro/Ultimate datasets) use a plain table view with pagination.
 
 **Toolbar features:**
 - **Search input** — Type to search within the dataset (searches by name, code, etc.)
@@ -168,7 +168,7 @@ Use the "← Back to questions" link to return to the dashboard.
 
 ### 3.8 Pricing Page (`?page=pricing`)
 
-Shows the three subscription tiers (Free, Pro, Enterprise) with features and pricing.
+Shows the three subscription tiers (Free, Pro, Ultimate) with features and pricing.
 
 ### 3.9 Account Page (`?page=account`) — Logged-in users only
 

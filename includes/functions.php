@@ -19,7 +19,18 @@ function verify_csrf(): void { if ($_SERVER['REQUEST_METHOD'] === 'POST' && !has
 function flash(string $type, string $message): void { $_SESSION['flash'][] = ['type'=>$type, 'message'=>$message]; }
 function flash_html(): string { $out=''; foreach($_SESSION['flash'] ?? [] as $f) $out.='<div class="flash '.e($f['type']).'">'.e($f['message']).'</div>'; unset($_SESSION['flash']); return $out; }
 function query_string(array $override = []): string { $q=array_merge($_GET,$override); foreach($q as $k=>$v) if($v===''||$v===null) unset($q[$k]); return http_build_query($q); }
-function paginate(int $total, int $per): string { if($total <= $per) return ''; $p=page_num(); $pages=(int)ceil($total/$per); return '<div class="pager"><a class="btn ghost" href="?'.e(query_string(['p'=>max(1,$p-1)])).'">← Previous</a><span>Page '.e($p).' of '.e($pages).'</span><a class="btn ghost" href="?'.e(query_string(['p'=>min($pages,$p+1)])).'">Next →</a></div>'; }
+function paginate(int $total, int $per): string {
+    if($total <= $per) return '';
+    $p=page_num(); $pages=(int)ceil($total/$per); $start=(($p-1)*$per)+1; $end=min($total,$p*$per);
+    $html='<nav class="pager" aria-label="Pagination"><span class="pager-summary">Showing '.nfmt($start).'–'.nfmt($end).' of '.nfmt($total).'</span>';
+    $html .= $p>1 ? '<a class="btn ghost" href="?'.e(query_string(['p'=>$p-1])).'">← Previous</a>' : '<span class="btn ghost disabled" aria-disabled="true">← Previous</span>';
+    $from=max(1,$p-2); $to=min($pages,$p+2);
+    if($from>1) $html.='<a class="pager-num" href="?'.e(query_string(['p'=>1])).'">1</a><span class="pager-gap">…</span>';
+    for($i=$from;$i<=$to;$i++) $html .= $i===$p ? '<span class="pager-num active">'.e($i).'</span>' : '<a class="pager-num" href="?'.e(query_string(['p'=>$i])).'">'.e($i).'</a>';
+    if($to<$pages) $html.='<span class="pager-gap">…</span><a class="pager-num" href="?'.e(query_string(['p'=>$pages])).'">'.e($pages).'</a>';
+    $html .= $p<$pages ? '<a class="btn ghost" href="?'.e(query_string(['p'=>$p+1])).'">Next →</a>' : '<span class="btn ghost disabled" aria-disabled="true">Next →</span>';
+    return $html.'</nav>';
+}
 function metric_card(string $number, string $label, string $note=''): string { return '<div class="stat-card"><strong>'.e($number).'</strong><span>'.e($label).'</span>'.($note?'<small>'.e($note).'</small>':'').'</div>'; }
 function initials(string $name): string { preg_match_all('/\b[A-Za-z]/', $name, $m); return strtoupper(implode('', array_slice($m[0] ?? [], 0, 2)) ?: substr($name,0,2)); }
 function str_starts(string $haystack,string $needle): bool { return substr($haystack,0,strlen($needle))===$needle; }
@@ -35,47 +46,139 @@ function current_user(): ?array {
 function is_logged_in(): bool { return current_user() !== null; }
 function is_admin(): bool { $u=current_user(); return $u && ($u['role'] ?? '') === 'admin'; }
 function tier_order_for(?array $u=null): int { $u=$u ?: current_user(); return (int)($u['tier_order'] ?? 0); }
+function normalize_tier_code(string $code): string { $code=strtolower(trim($code)); return $code==='enterprise' ? 'ultimate' : $code; }
 function tier_by_code(string $code): ?array {
-    try { $r=row('SELECT * FROM subscription_tiers WHERE code=?', [$code]); if($r) return $r; } catch (Throwable $e) {}
-    foreach (fallback_tiers() as $tier) if (($tier['code'] ?? '') === $code) return $tier;
+    $code=normalize_tier_code($code); $alts=$code==='ultimate' ? ['ultimate','enterprise'] : [$code];
+    try {
+        $placeholders=implode(',',array_fill(0,count($alts),'?'));
+        $r=row('SELECT * FROM subscription_tiers WHERE code IN ('.$placeholders.') ORDER BY display_order DESC LIMIT 1', $alts);
+        if($r) return $r;
+    } catch (Throwable $e) {}
+    foreach (fallback_tiers() as $tier) if (normalize_tier_code($tier['code'] ?? '') === $code) return $tier;
     return null;
 }
 function tier_order_by_code(string $code): int { $r=tier_by_code($code); return (int)($r['display_order'] ?? 0); }
-function has_tier(string $code): bool { return is_admin() || tier_order_for() >= tier_order_by_code($code); }
+function has_tier(string $code): bool { return is_admin() || tier_order_for() >= tier_order_by_code(normalize_tier_code($code)); }
 function feature_allowed(string $feature): bool {
     if(is_admin()) return true;
     $u=current_user();
     if(!$u) return in_array($feature, ['public_view','reference_view','limited_detail'], true);
-    return (bool)scalar('SELECT COUNT(*) FROM tier_features WHERE tier_id=? AND feature_code=?', [(int)$u['tier_id'], $feature]);
+    try { return (bool)scalar('SELECT COUNT(*) FROM tier_features WHERE tier_id=? AND feature_code=?', [(int)$u['tier_id'], $feature]); }
+    catch(Throwable $e){ return false; }
 }
-function module_allowed(array $cfg): bool {
-    $tier=$cfg['tier'] ?? 'free';
-    if($tier==='free') return true;
-    if($tier==='pro') return has_tier('pro');
-    if($tier==='enterprise') return has_tier('enterprise');
-    return true;
-}
-function access_gate(string $title, string $text, string $cta='See pricing'): string { return '<div class="lock-panel"><div class="lock-icon">LOCK</div><h3>'.e($title).'</h3><p>'.e($text).'</p><div class="hero-actions"><a class="btn primary" href="?page=pricing">'.e($cta).'</a><a class="btn ghost" href="?page=login">Log in</a></div></div>'; }
-function tier_badge(?array $u=null): string { $u=$u ?: current_user(); return '<span class="tier-badge">'.e($u['tier_name'] ?? 'Guest').'</span>'; }
 function fallback_tiers(): array {
     return [
-        ['id'=>1,'code'=>'free','name'=>'Free','description'=>'Browse open aviation reference data, public database cards and rotating public insight previews.','monthly_usd'=>'0.00','annual_usd'=>'0.00','display_order'=>10,'export_limit_monthly'=>0],
-        ['id'=>2,'code'=>'pro','name'=>'Pro','description'=>'Unlock full aviation intelligence, drill-down records, preset questions and filtered CSV exports.','monthly_usd'=>'49.00','annual_usd'=>'499.00','display_order'=>20,'export_limit_monthly'=>50],
-        ['id'=>3,'code'=>'enterprise','name'=>'Enterprise','description'=>'Contact Angani for API access, bulk exports, custom dashboards and private aviation datasets.','monthly_usd'=>'0.00','annual_usd'=>'0.00','display_order'=>30,'export_limit_monthly'=>0],
+        ['id'=>1,'code'=>'free','name'=>'Free','description'=>'Create an account to open standard drill-downs for core aviation databases. Some premium fields, reports and specialist intelligence remain locked.','monthly_usd'=>'0.00','annual_usd'=>'0.00','display_order'=>10,'export_limit_monthly'=>0],
+        ['id'=>2,'code'=>'pro','name'=>'Pro','description'=>'Unlock premium aviation intelligence, generated reports, advanced related tables, filtered exports and analyst-ready views.','monthly_usd'=>'49.00','annual_usd'=>'499.00','display_order'=>20,'export_limit_monthly'=>50],
+        ['id'=>3,'code'=>'ultimate','name'=>'Ultimate','description'=>'Everything in Pro plus bulk/API access, private dashboards, custom data services and advisory support configured around the client’s needs.','monthly_usd'=>'0.00','annual_usd'=>'0.00','display_order'=>30,'export_limit_monthly'=>0],
     ];
 }
-function tier_cards(): array { try { return rows('SELECT * FROM subscription_tiers WHERE is_active=1 ORDER BY display_order'); } catch (Throwable $e) { return fallback_tiers(); } }
+function tier_cards(): array {
+    try { ensure_access_rules_schema(); return rows('SELECT * FROM subscription_tiers WHERE is_active=1 ORDER BY display_order'); }
+    catch (Throwable $e) { return fallback_tiers(); }
+}
 function tier_features(int $tierId): array {
     try { return rows('SELECT feature_label FROM tier_features WHERE tier_id=? ORDER BY id', [$tierId]); }
     catch (Throwable $e) {
         $fallback = [
-            1 => ['Public database previews','Reference codes','Limited public insights','No CSV exports'],
-            2 => ['Full standard databases','Record drill-downs','Preset intelligence questions','Filtered CSV exports','Saved searches'],
-            3 => ['Bulk exports','API access','Team accounts','Custom datasets','Private dashboards'],
+            1 => ['Core database browsing','Free account drill-downs','Public previews before login','No CSV exports'],
+            2 => ['Premium fields and reports','Full standard drill-downs','Preset intelligence questions','Filtered CSV exports','Saved searches'],
+            3 => ['Bulk exports','API access','Team accounts','Custom datasets','Private dashboards and advisory services'],
         ];
         return array_map(fn($label)=>['feature_label'=>$label], $fallback[$tierId] ?? []);
     }
 }
+function access_tier_order(string $code): int {
+    $code=normalize_tier_code($code);
+    if($code==='' || $code==='public' || $code==='guest') return 0;
+    if($code==='free') return max(1, tier_order_by_code('free') ?: 10);
+    if($code==='pro') return tier_order_by_code('pro') ?: 20;
+    if($code==='ultimate') return tier_order_by_code('ultimate') ?: 30;
+    return tier_order_by_code($code) ?: 999;
+}
+function viewer_access_order(): int { return is_admin() ? 9999 : (is_logged_in() ? tier_order_for() : 0); }
+function default_access_rules(): array {
+    return [
+        ['module','countries','Countries listing','public','Visitors can browse and expand country cards before signing in.'],
+        ['module','airlines','Airlines listing','public','Visitors can browse and expand airline cards before signing in.'],
+        ['module','airports','Airports listing','public','Visitors can browse and expand airport cards before signing in.'],
+        ['module','aircraft','Aircraft registry listing','public','Visitors can preview aircraft cards; full records require an account.'],
+        ['module','aircraft_types','Aircraft Types listing','public','Visitors can browse and expand type cards before signing in.'],
+        ['detail','countries','Country full detail','free','A free account can open standard country detail pages.'],
+        ['detail','airlines','Airline full detail','free','A free account can open standard airline detail pages.'],
+        ['detail','airports','Airport full detail','free','A free account can open standard airport detail pages.'],
+        ['detail','aircraft','Aircraft registry full detail','free','A free account can open aircraft registry detail pages unless upgraded by admin.'],
+        ['detail','aircraft_types','Aircraft Type full detail','free','A free account can open standard aircraft type detail pages.'],
+        ['section','aircraft_types:economics','Aircraft monthly lease rates / economics','pro','Protect lease rates, operating costs and residual-value intelligence.'],
+        ['section','airlines:commercial','Airline commercial intelligence','pro','Protect loyalty, commercial and revenue-related analysis.'],
+        ['section','airlines:people','Airline careers / key personnel','pro','Protect airline people, careers and contact-style intelligence.'],
+        ['module','aircraft_economic_data','Aircraft economic data module','pro','Protect lease-rate and operating-cost datasets.'],
+        ['module','airline_people','Airline people / careers module','pro','Protect staff, people and career-related datasets.'],
+        ['module','source_records','Source records','pro','Protect raw source material and screenshots.'],
+        ['module','change_log','Change log','pro','Protect data-change intelligence.'],
+        ['module','import_batches','Import batches','ultimate','Operational/admin-style metadata.'],
+        ['module','staging_records','Staging records','ultimate','Operational/admin-style metadata.'],
+        ['module','export_logs','Export logs','ultimate','Operational/admin-style metadata.'],
+        ['report','generated_reports','Generated reports','pro','Generated reports are premium intelligence by default.'],
+    ];
+}
+function ensure_access_rules_schema(): void {
+    static $done=false; if($done) return; $done=true;
+    try {
+        exec_sql("CREATE TABLE IF NOT EXISTS access_rules (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            scope_type VARCHAR(40) NOT NULL,
+            scope_key VARCHAR(191) NOT NULL,
+            label VARCHAR(255) NOT NULL,
+            min_tier VARCHAR(40) NOT NULL DEFAULT 'free',
+            is_active TINYINT(1) NOT NULL DEFAULT 1,
+            notes TEXT NULL,
+            created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATETIME NULL DEFAULT NULL,
+            UNIQUE KEY uniq_scope (scope_type, scope_key)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+        try { exec_sql("UPDATE subscription_tiers SET code='ultimate', name='Ultimate', description='Everything in Pro plus bulk/API access, private dashboards, custom data services and advisory support configured around the client’s needs.', updated_at=NOW() WHERE code='enterprise'"); } catch(Throwable $e) {}
+        foreach(default_access_rules() as $r){
+            exec_sql('INSERT IGNORE INTO access_rules (scope_type,scope_key,label,min_tier,is_active,notes,created_at) VALUES (?,?,?,?,1,?,NOW())', [$r[0],$r[1],$r[2],normalize_tier_code($r[3]),$r[4] ?? null]);
+        }
+    } catch (Throwable $e) {}
+}
+function access_rules_all(): array {
+    ensure_access_rules_schema();
+    try { return rows("SELECT * FROM access_rules ORDER BY FIELD(scope_type,'module','detail','section','field','report','feature'), scope_key"); }
+    catch(Throwable $e){
+        return array_map(fn($r)=>['scope_type'=>$r[0],'scope_key'=>$r[1],'label'=>$r[2],'min_tier'=>$r[3],'is_active'=>1,'notes'=>$r[4] ?? ''], default_access_rules());
+    }
+}
+function access_rule(string $scopeType, string $scopeKey, string $fallbackTier='free'): array {
+    ensure_access_rules_schema();
+    try { $r=row('SELECT * FROM access_rules WHERE scope_type=? AND scope_key=? AND is_active=1 LIMIT 1', [$scopeType,$scopeKey]); if($r) return $r; } catch(Throwable $e) {}
+    foreach(default_access_rules() as $d) if($d[0]===$scopeType && $d[1]===$scopeKey) return ['scope_type'=>$d[0],'scope_key'=>$d[1],'label'=>$d[2],'min_tier'=>$d[3],'is_active'=>1,'notes'=>$d[4] ?? ''];
+    return ['scope_type'=>$scopeType,'scope_key'=>$scopeKey,'label'=>labelize($scopeKey),'min_tier'=>$fallbackTier,'is_active'=>1,'notes'=>''];
+}
+function access_allowed(string $scopeType, string $scopeKey, string $fallbackTier='free'): bool {
+    if(is_admin()) return true;
+    $rule=access_rule($scopeType,$scopeKey,$fallbackTier);
+    return viewer_access_order() >= access_tier_order($rule['min_tier'] ?? $fallbackTier);
+}
+function module_key_for_cfg(array $cfg): ?string { foreach(modules() as $k=>$c){ if(($c['table']??null)===($cfg['table']??null) && ($c['label']??null)===($cfg['label']??null)) return $k; } return null; }
+function module_allowed(array $cfg): bool {
+    $key=module_key_for_cfg($cfg); $fallback=normalize_tier_code($cfg['tier'] ?? 'free');
+    return $key ? access_allowed('module',$key,$fallback) : access_allowed('module',$cfg['table'] ?? 'module',$fallback);
+}
+function detail_allowed(string $key, array $cfg): bool { return access_allowed('detail',$key,normalize_tier_code($cfg['tier'] ?? 'free')); }
+function section_allowed(string $key, string $section, string $fallbackTier='free'): bool { return access_allowed('section',$key.':'.$section,$fallbackTier); }
+function field_allowed(string $key, string $field, string $fallbackTier='free'): bool { return access_allowed('field',$key.':'.$field,$fallbackTier); }
+function access_gate(string $title, string $text, string $cta='See pricing'): string {
+    $ctaLower=strtolower($cta);
+    if(str_contains($ctaLower,'log')) $primary='?page=login';
+    elseif(str_contains($ctaLower,'back')) $primary='?page=home';
+    elseif(!is_logged_in()) $primary='?page=login';
+    else $primary='?page=pricing';
+    $secondary=is_logged_in()?'<a class="btn ghost" href="?page=catalogue">Browse open data</a>':'<a class="btn ghost" href="?page=register">Create free account</a>';
+    return '<div class="lock-panel"><div class="lock-icon"><i class="fas fa-lock"></i></div><h3>'.e($title).'</h3><p>'.e($text).'</p><div class="hero-actions"><a class="btn primary" href="'.e($primary).'">'.e($cta).'</a>'.$secondary.'</div></div>';
+}
+function tier_badge(?array $u=null): string { $u=$u ?: current_user(); return '<span class="tier-badge">'.e($u['tier_name'] ?? 'Guest').'</span>'; }
 
 function login_user(string $email, string $password): bool {
     $user=row('SELECT * FROM users WHERE email=? AND status="active"', [$email]);
@@ -229,17 +332,40 @@ function render_module_cards(string $key, array $rows): string {
 function render_record_card(string $key,array $cfg,array $r): string {
     $title=$r[$cfg['title']] ?? ($r['name'] ?? 'Record'); $sub=$r[$cfg['subtitle']] ?? '';
     $pk=module_pk($key); $id=$r[$pk] ?? $r['id'] ?? $r['code'] ?? 0; $url=detail_url($key,$id); $card=$cfg['card'] ?? 'generic';
-    $logged=is_logged_in(); $detailLink=$logged?'<a class="btn small ink xcard-detail-btn" href="'.e($url).'">View full detail &rarr;</a>':'<a class="btn small ghost xcard-detail-btn" href="?page=login">Log in to view full detail &rarr;</a>';
+    $logged=is_logged_in();
+    $canOpen=detail_allowed($key,$cfg);
+    if($canOpen){
+        $detailLink='<div class="detail-link-row"><span>Preview expanded. Open the full page for charts, related tables and source-level detail.</span><a class="btn small ink xcard-detail-btn" href="'.e($url).'">View More &rarr;</a></div>';
+    } elseif(!$logged){
+        $detailLink='<div class="detail-link-row"><span>Free preview. Create an account to drill into the full record.</span><a class="btn small ghost xcard-detail-btn" href="?page=login">Log in to View More &rarr;</a></div>';
+    } else {
+        $detailLink='<div class="detail-link-row"><span>This deeper view is limited by the current tier settings.</span><a class="btn small ghost xcard-detail-btn" href="?page=pricing">Upgrade to View More &rarr;</a></div>';
+    }
     if($card==='airline'){
-        static $fleetCache=[], $hubCache=[];
-        if(!$fleetCache){ try{ $fr=rows('SELECT icao_code,SUM(aircraft_count) AS total FROM airline_fleet_summary GROUP BY icao_code'); foreach($fr as $f) $fleetCache[$f['icao_code']]=(int)$f['total']; }catch(Throwable $e){} try{ $hr=rows('SELECT icao_code,COUNT(*) AS hubs FROM airline_hubs GROUP BY icao_code'); foreach($hr as $h) $hubCache[$h['icao_code']]=(int)$h['hubs']; }catch(Throwable $e){} }
-        $cc=strtolower($r['country_code']??''); $flagHtml=$cc?((file_exists(__DIR__.'/../assets/country_flag_icons/'.$cc.'.svg')?'<img class="xcard-img" src="assets/country_flag_icons/'.$cc.'.svg" alt="">':'<span style="font-size:28px">'.flag_emoji($cc).'</span>')):'';
+        static $fleetCache=[], $hubCache=[], $destCache=[], $destNamesCache=[], $countryNameCache=[];
+        if(!$fleetCache){
+            try{ $fr=rows('SELECT icao_code,SUM(aircraft_count) AS total FROM airline_fleet_summary GROUP BY icao_code'); foreach($fr as $f) $fleetCache[$f['icao_code']]=(int)$f['total']; }catch(Throwable $e){}
+            try{ $hr=rows('SELECT icao_code,COUNT(*) AS hubs FROM airline_hubs GROUP BY icao_code'); foreach($hr as $h) $hubCache[$h['icao_code']]=(int)$h['hubs']; }catch(Throwable $e){}
+            try{ $dr=rows('SELECT airline_icao,COUNT(*) AS cnt FROM airline_destinations GROUP BY airline_icao'); foreach($dr as $d) $destCache[$d['airline_icao']]=(int)$d['cnt']; }catch(Throwable $e){}
+            try{ $dnr=rows('SELECT airline_icao,airport_name FROM airline_destinations WHERE airport_name IS NOT NULL AND airport_name!="" ORDER BY airline_icao,airport_name'); foreach($dnr as $d) $destNamesCache[$d['airline_icao']][]=e($d['airport_name']); }catch(Throwable $e){}
+            try{ $cr=rows('SELECT iso_alpha_2,name_common FROM countries'); foreach($cr as $c) $countryNameCache[strtolower($c['iso_alpha_2'])]=e($c['name_common']); }catch(Throwable $e){}
+        }
+        $cc=strtolower($r['country_code']??'');
+        $flagHtml=$cc?((file_exists(__DIR__.'/../assets/country_flag_icons/'.$cc.'.svg')?'<img class="xcard-img" src="assets/country_flag_icons/'.$cc.'.svg" alt="">':'<span style="font-size:28px">'.flag_emoji($cc).'</span>')):'';
         $logo=($r['logo_url']??'')?'<img class="xcard-img" src="'.e($r['logo_url']).'" alt="'.e($title).' logo" loading="lazy">':'';
         $active=$r['active']??''; $statusChip=$active==='Y'?'<span class="chip ok">Active</span>':($active==='N'?'<span class="chip danger">Defunct</span>':'<span class="chip">'.e($active).'</span>');
         $icao=e($r['icao_code']??''); $iata=e($r['iata_code']??''); $callsign=e($r['callsign']??'');
         $fleet=$icao?($fleetCache[$icao]??0):0; $hubs=$icao?($hubCache[$icao]??0):0;
-        $country=e($r['country']??$r['country_code']??''); $codes=trim("$iata / $icao",' /'); $name=e($title); $alias=e($r['alias']??'');
-        return '<article class="xcard" data-xs="'.strtolower($name.' '.$iata.' '.$icao.' '.$callsign.' '.$country).'" data-xf="'.($active==='Y'?'active':'defunct').'"><div class="xcard-top">'.($logo?:$flagHtml).$statusChip.'</div><h3 class="xcard-name">'.$name.'</h3><div class="xcard-summary"><div class="xcard-stat"><span class="xcard-stat-l">CODES</span><strong class="xcard-stat-v">'.$codes.'</strong></div>'.($country?'<div class="xcard-stat"><span class="xcard-stat-l">COUNTRY</span><strong class="xcard-stat-v">'.$country.'</strong></div>':'').($fleet?'<div class="xcard-stat"><span class="xcard-stat-l">FLEET</span><strong class="xcard-stat-v">'.nfmt($fleet).'</strong></div>':'').($hubs?'<div class="xcard-stat"><span class="xcard-stat-l">HUBS</span><strong class="xcard-stat-v">'.nfmt($hubs).'</strong></div>':'').'</div><div class="xcard-expand" style="display:none"><div class="xcard-sections"><div class="xcard-sec"><div class="xcard-sec-title">IDENTITY</div><div class="xcard-row"><span class="xcard-row-k">Name</span><span class="xcard-row-v">'.$name.'</span></div>'.($alias?'<div class="xcard-row"><span class="xcard-row-k">Alias</span><span class="xcard-row-v">'.$alias.'</span></div>':'').($iata?'<div class="xcard-row"><span class="xcard-row-k">IATA</span><span class="xcard-row-v">'.$iata.'</span></div>':'').($icao?'<div class="xcard-row"><span class="xcard-row-k">ICAO</span><span class="xcard-row-v">'.$icao.'</span></div>':'').($callsign?'<div class="xcard-row"><span class="xcard-row-k">Callsign</span><span class="xcard-row-v">'.$callsign.'</span></div>':'').'</div><div class="xcard-sec"><div class="xcard-sec-title">LOCATION</div><div class="xcard-row"><span class="xcard-row-k">Country</span><span class="xcard-row-v">'.$country.'</span></div>'.($cc?'<div class="xcard-row"><span class="xcard-row-k">Code</span><span class="xcard-row-v">'.e(strtoupper($cc)).'</span></div>':'').'</div><div class="xcard-sec"><div class="xcard-sec-title">OPERATIONS</div><div class="xcard-row"><span class="xcard-row-k">Status</span><span class="xcard-row-v">'.($active==='Y'?'Active':'Defunct').'</span></div>'.($fleet?'<div class="xcard-row"><span class="xcard-row-k">Fleet</span><span class="xcard-row-v">'.nfmt($fleet).' aircraft</span></div>':'').($hubs?'<div class="xcard-row"><span class="xcard-row-k">Hubs</span><span class="xcard-row-v">'.nfmt($hubs).'</span></div>':'').'</div></div>'.$detailLink.'</div><div class="xcard-footer"><span class="xcard-hint">Click to expand</span><button class="xcard-expand-btn">+ Expand</button></div></article>';
+        $destinations=$icao?($destCache[$icao]??0):0;
+        $countryName=$cc?($countryNameCache[$cc]??''):'';
+        if(!$countryName) $countryName=e($r['country']??$r['country_code']??'');
+        $countryFlagHtml=$cc?((file_exists(__DIR__.'/../assets/country_flag_icons/'.$cc.'.svg')?'<img class="flag-svg" src="assets/country_flag_icons/'.$cc.'.svg" alt="" style="width:18px;height:18px;vertical-align:middle;margin-right:6px">':'<span style="font-size:18px;vertical-align:middle;margin-right:6px">'.flag_emoji($cc).'</span>')):'';
+        $codes=trim("$iata / $icao",' /'); $name=e($title); $alias=e($r['alias']??'');
+        $destNames=($icao && isset($destNamesCache[$icao]))?array_slice($destNamesCache[$icao],0,3):[];
+        $destHtml='';
+        foreach($destNames as $dn) $destHtml.='<div style="font-size:.78rem;line-height:1.5;padding-left:4px">&bull; '.$dn.'</div>';
+        if(!$destHtml&&$destinations) $destHtml='<div style="font-size:.78rem;color:var(--muted);padding-left:4px">'.$destinations.' destinations listed in database</div>';
+        return '<article class="xcard" data-xs="'.strtolower($name.' '.$iata.' '.$icao.' '.$callsign).'" data-xf="'.($active==='Y'?'active':'defunct').'"><div class="xcard-top">'.($logo?:$flagHtml).$statusChip.'</div><h3 class="xcard-name">'.$name.'</h3><div class="xcard-summary"><div class="xcard-stat"><span class="xcard-stat-l">CODES</span><strong class="xcard-stat-v">'.$codes.'</strong></div>'.($countryName?'<div class="xcard-stat"><span class="xcard-stat-l">COUNTRY</span><strong class="xcard-stat-v">'.$countryFlagHtml.$countryName.'</strong></div>':'').($fleet?'<div class="xcard-stat"><span class="xcard-stat-l">FLEET</span><strong class="xcard-stat-v">'.nfmt($fleet).'</strong></div>':'').($hubs?'<div class="xcard-stat"><span class="xcard-stat-l">HUBS</span><strong class="xcard-stat-v">'.nfmt($hubs).'</strong></div>':'').($destinations?'<div class="xcard-stat"><span class="xcard-stat-l">DESTINATIONS</span><strong class="xcard-stat-v">'.nfmt($destinations).'</strong></div>':'').'</div><div class="xcard-expand" style="display:none"><div class="xcard-sections"><div class="xcard-sec"><div class="xcard-sec-title">IDENTITY</div><div class="xcard-row"><span class="xcard-row-k">Name</span><span class="xcard-row-v">'.$name.'</span></div>'.($alias?'<div class="xcard-row"><span class="xcard-row-k">Alias</span><span class="xcard-row-v">'.$alias.'</span></div>':'').($iata?'<div class="xcard-row"><span class="xcard-row-k">IATA</span><span class="xcard-row-v">'.$iata.'</span></div>':'').($icao?'<div class="xcard-row"><span class="xcard-row-k">ICAO</span><span class="xcard-row-v">'.$icao.'</span></div>':'').($callsign?'<div class="xcard-row"><span class="xcard-row-k">Callsign</span><span class="xcard-row-v">'.$callsign.'</span></div>':'').'</div><div class="xcard-sec"><div class="xcard-sec-title">LOCATION</div><div class="xcard-row"><span class="xcard-row-k">Country</span><span class="xcard-row-v">'.$countryFlagHtml.$countryName.'</span></div>'.($cc?'<div class="xcard-row"><span class="xcard-row-k">Code</span><span class="xcard-row-v">'.e(strtoupper($cc)).'</span></div>':'').'</div><div class="xcard-sec"><div class="xcard-sec-title">OPERATIONS</div><div class="xcard-row"><span class="xcard-row-k">Status</span><span class="xcard-row-v">'.($active==='Y'?'Active':'Defunct').'</span></div>'.($fleet?'<div class="xcard-row"><span class="xcard-row-k">Fleet</span><span class="xcard-row-v">'.nfmt($fleet).' aircraft</span></div>':'').($hubs?'<div class="xcard-row"><span class="xcard-row-k">Hubs</span><span class="xcard-row-v">'.nfmt($hubs).'</span></div>':'').($destinations?'<div class="xcard-row"><span class="xcard-row-k">Destinations</span><span class="xcard-row-v">'.nfmt($destinations).'</span></div>':'').($destHtml?'<div style="margin-top:4px;border-top:1px solid var(--line);padding-top:6px">'.$destHtml.'</div>':'').'</div></div>'.$detailLink.'</div><div class="xcard-footer"><span class="xcard-hint">Click to expand</span><button class="xcard-expand-btn">+ Expand</button></div></article>';
     }
     if($card==='airport'){
         static $rwCache=[], $freqCache=[];
@@ -253,7 +379,10 @@ function render_record_card(string $key,array $cfg,array $r): string {
         return '<article class="xcard" data-xs="'.strtolower($name.' '.$iata.' '.$gps.' '.$ident.' '.$muni).'" data-xf="'.e($r['type']??'').'"><div class="xcard-top">'.$flagHtml.'<span class="chip">'.$type.'</span></div><h3 class="xcard-name">'.$name.'</h3><div class="xcard-summary"><div class="xcard-stat"><span class="xcard-stat-l">CODES</span><strong class="xcard-stat-v">'.trim("$iata / $gps / $ident",' /').'</strong></div>'.($muni?'<div class="xcard-stat"><span class="xcard-stat-l">LOCATION</span><strong class="xcard-stat-v">'.$muni.'</strong></div>':'').($elevF?'<div class="xcard-stat"><span class="xcard-stat-l">ELEVATION</span><strong class="xcard-stat-v">'.$elevF.'</strong></div>':'').($rwCnt?'<div class="xcard-stat"><span class="xcard-stat-l">RUNWAYS</span><strong class="xcard-stat-v">'.nfmt($rwCnt).($rwMxF?' <span class="xcard-def-note">(longest: '.$rwMxF.')</span>':'').'</strong></div>':'').'</div><div class="xcard-expand" style="display:none"><div class="xcard-sections"><div class="xcard-sec"><div class="xcard-sec-title">IDENTITY</div><div class="xcard-row"><span class="xcard-row-k">Name</span><span class="xcard-row-v">'.$name.'</span></div>'.($iata?'<div class="xcard-row"><span class="xcard-row-k">IATA</span><span class="xcard-row-v">'.$iata.'</span></div>':'').($gps?'<div class="xcard-row"><span class="xcard-row-k">GPS</span><span class="xcard-row-v">'.$gps.'</span></div>':'').($ident?'<div class="xcard-row"><span class="xcard-row-k">Ident</span><span class="xcard-row-v">'.$ident.'</span></div>':'').'<div class="xcard-row"><span class="xcard-row-k">Type</span><span class="xcard-row-v">'.e($r['type']??'—').'</span></div></div><div class="xcard-sec"><div class="xcard-sec-title">LOCATION</div><div class="xcard-row"><span class="xcard-row-k">Country</span><span class="xcard-row-v">'.e($r['iso_country']??'—').'</span></div>'.($muni?'<div class="xcard-row"><span class="xcard-row-k">Municipality</span><span class="xcard-row-v">'.$muni.'</span></div>':'').($continent?'<div class="xcard-row"><span class="xcard-row-k">Continent</span><span class="xcard-row-v">'.$continent.'</span></div>':'').($elevF?'<div class="xcard-row"><span class="xcard-row-k">Elevation</span><span class="xcard-row-v">'.$elevF.'</span></div>':'').'</div>'.($rwCnt||$freqCnt?'<div class="xcard-sec"><div class="xcard-sec-title">FACILITIES</div>'.($rwCnt?'<div class="xcard-row"><span class="xcard-row-k">Runways</span><span class="xcard-row-v">'.nfmt($rwCnt).($rwMxF?' (longest: '.$rwMxF.')':'').'</span></div>':'').($freqCnt?'<div class="xcard-row"><span class="xcard-row-k">Frequencies</span><span class="xcard-row-v">'.nfmt($freqCnt).'</span></div>':'').'</div>':'').'</div>'.$detailLink.'</div><div class="xcard-footer"><span class="xcard-hint">Click to expand</span><button class="xcard-expand-btn">+ Expand</button></div></article>';
     }
     if($card==='aircraft_type'){
-        return '<article class="record-card" onclick="location.href=\''.e($url).'\'"><div class="record-top"><span class="chip gold">'.e($r['type'] ?? 'Type').'</span></div><h3>'.e($title ?: ($r['model'] ?? 'Aircraft Type')).'</h3><p>'.e(($r['manufacturer'] ?? '').' · '.($r['model'] ?? '')).'</p><div class="mini-metrics"><span>IATA '.e($r['iata_code'] ?? '—').'</span><span>ICAO '.e($r['icao_code'] ?? '—').'</span></div><a class="btn small primary" href="'.e($url).'">View Type</a></article>';
+        $model=e($r['model'] ?? $title ?? 'Aircraft Type'); $maker=e($r['manufacturer'] ?? ''); $type=e($r['type'] ?? 'Type');
+        $iata=e($r['iata_code'] ?? ''); $icao=e($r['icao_code'] ?? ''); $engine=e($r['engine_type'] ?? ''); $wtc=e($r['wtc'] ?? '');
+        $codes=trim(($iata?'IATA '.$iata:'').' '.($icao?'ICAO '.$icao:''));
+        return '<article class="xcard" data-xs="'.strtolower($model.' '.$maker.' '.$iata.' '.$icao.' '.$type.' '.$engine).'" data-xf="'.strtolower($type).'"><div class="xcard-top"><span class="iata-box">'.($icao?:($iata?:'TYPE')).'</span><span class="chip gold">'.$type.'</span></div><h3 class="xcard-name">'.$model.'</h3><div class="xcard-summary"><div class="xcard-stat"><span class="xcard-stat-l">MAKER</span><strong class="xcard-stat-v">'.($maker?:'—').'</strong></div>'.($codes?'<div class="xcard-stat"><span class="xcard-stat-l">CODES</span><strong class="xcard-stat-v">'.$codes.'</strong></div>':'').($engine?'<div class="xcard-stat"><span class="xcard-stat-l">ENGINE</span><strong class="xcard-stat-v">'.$engine.'</strong></div>':'').($wtc?'<div class="xcard-stat"><span class="xcard-stat-l">WTC</span><strong class="xcard-stat-v">'.$wtc.'</strong></div>':'').'</div><div class="xcard-expand" style="display:none"><div class="xcard-sections"><div class="xcard-sec"><div class="xcard-sec-title">IDENTITY</div><div class="xcard-row"><span class="xcard-row-k">Model</span><span class="xcard-row-v">'.$model.'</span></div>'.($maker?'<div class="xcard-row"><span class="xcard-row-k">Manufacturer</span><span class="xcard-row-v">'.$maker.'</span></div>':'').($iata?'<div class="xcard-row"><span class="xcard-row-k">IATA</span><span class="xcard-row-v">'.$iata.'</span></div>':'').($icao?'<div class="xcard-row"><span class="xcard-row-k">ICAO</span><span class="xcard-row-v">'.$icao.'</span></div>':'').'</div><div class="xcard-sec"><div class="xcard-sec-title">TECHNICAL SNAPSHOT</div>'.($engine?'<div class="xcard-row"><span class="xcard-row-k">Engine</span><span class="xcard-row-v">'.$engine.'</span></div>':'').(($r['engine_count']??'')?'<div class="xcard-row"><span class="xcard-row-k">Engines</span><span class="xcard-row-v">'.e($r['engine_count']).'</span></div>':'').($wtc?'<div class="xcard-row"><span class="xcard-row-k">Wake</span><span class="xcard-row-v">'.$wtc.'</span></div>':'').'</div>'.(($r['description']??'')?'<div class="xcard-sec"><div class="xcard-sec-title">DESCRIPTION</div><div class="xcard-row"><span class="xcard-row-v xcard-desc">'.e($r['description']).'</span></div></div>':'').'</div>'.$detailLink.'</div><div class="xcard-footer"><span class="xcard-hint">Click to expand</span><button type="button" class="xcard-expand-btn">+ Expand</button></div></article>';
     }
     if($card==='country'){
         static $statsCache=[], $tsCache=[];
@@ -285,29 +414,44 @@ function render_record_card(string $key,array $cfg,array $r): string {
     }
     return '<article class="record-card" onclick="location.href=\''.e($url).'\'"><div class="record-top"><span class="chip">'.e($cfg['label']).'</span></div><h3>'.e($title ?: $cfg['label']).'</h3><p>'.e($sub).'</p><a class="btn small primary" href="'.e($url).'">View Record</a></article>';
 }
+function module_page_copy(string $key, array $cfg, int $total): array {
+    $copy=[
+        'countries'=>['Countries','Compare aviation markets by geography, economy and air-transport footprint.','Search or filter the cards, click a country to reveal a structured preview, then log in to open the full detail page.'],
+        'airlines'=>['Airlines','Browse operators, codes, status, country and operational clues in one consistent airline profile grid.','Click any airline card to expand the preview. Logged-in users can continue into full fleet, route, commercial and regulatory tabs.'],
+        'airports'=>['Airports','Explore airport records by code, city, type, elevation and linked infrastructure.','Start with search/filter, expand a card for a quick briefing, then open the record for runways, terminals, frequencies and hub data.'],
+        'aircraft'=>['Aircraft Registry','Preview aircraft registrations, operators, type codes and age signals.','Visitors can inspect the card preview; full aircraft registry detail opens after login or as configured by Admin.'],
+        'aircraft_types'=>['Aircraft Types','Scan models, manufacturers, IATA/ICAO codes and technical hints using the same card experience as airlines and countries.','Expand a type for a technical preview. Economics, lease rates and generated reports can be locked to Pro from Admin.'],
+    ];
+    $fallback=[$cfg['label'] ?? 'Dataset','Browse this aviation dataset through searchable cards and clean table views.','Use search and filters first. Expand a card or open a record when you need deeper detail.'];
+    return $copy[$key] ?? $fallback;
+}
 function render_xcard_page(string $key, array $cfg, array $records, int $total, array $filterOpts = []): string {
-    $label = strtolower(e($cfg['label']));
-    $html  = '<div class="xcard-controls">'
+    [$title,$sub,$hint]=module_page_copy($key,$cfg,$total);
+    $label = strtolower((string)($cfg['label'] ?? 'records'));
+    $countLabel = nfmt($total).' '.$label;
+    $tierRule = access_rule('module',$key,normalize_tier_code($cfg['tier'] ?? 'free'));
+    $html  = '<section class="dataset-hero"><div><div class="eyebrow">'.e($cfg['tier']==='free'?'Open aviation database':'Controlled aviation database').'</div><h1>'.e($title).'</h1><p>'.e($sub).'</p><div class="page-nudge"><i class="fas fa-hand-pointer"></i><span>'.e($hint).'</span></div></div><aside><span class="dataset-total">'.e($countLabel).'</span><small>Current access: '.e(ucfirst(normalize_tier_code($tierRule['min_tier'] ?? 'free'))).'</small></aside></section>';
+    $html .= '<div class="xcard-controls">'
            . '<div class="xcard-search-wrap">'
            . '<svg style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>'
            . '<input type="text" class="xcard-search" placeholder="Search '.e($cfg['label']).'..." autocomplete="off"></div>';
     if($filterOpts){
-        $html .= '<div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center">'
-               . '<button class="xcard-filter active" data-f="all">ALL</button>';
-        foreach($filterOpts as $val => $text) $html .= '<button class="xcard-filter" data-f="'.e($val).'">'.e($text).'</button>';
+        $html .= '<div class="xcard-filter-row">'
+               . '<button type="button" class="xcard-filter active" data-f="all">ALL</button>';
+        foreach($filterOpts as $val => $text) $html .= '<button type="button" class="xcard-filter" data-f="'.e($val).'">'.e($text).'</button>';
         $html .= '</div>';
     }
-    $html .= '<span class="xcard-count">'.nfmt($total).' '.$label.'</span></div>'
+    $html .= '<span class="xcard-count" data-total="'.(int)$total.'">'.e($countLabel).'</span></div>'
            . '<div class="xgrid">'.render_module_cards($key,$records).'</div>'
-           . '<div class="xcard-empty">No '.$label.' match your search.</div>';
+           . '<div class="xcard-empty">No '.e($label).' match your search. Try a broader keyword or reset filters.</div>';
     $html .= '<script>
-(function(){var g=document.querySelector(".xgrid"),s=document.querySelector(".xcard-search"),e=document.querySelector(".xcard-empty"),c=document.querySelector(".xcard-count"),ca=g.querySelectorAll(".xcard"),f=document.querySelectorAll(".xcard-filter"),t;
+(function(){var g=document.querySelector(".xgrid"),s=document.querySelector(".xcard-search"),e=document.querySelector(".xcard-empty"),c=document.querySelector(".xcard-count"),ca=g?g.querySelectorAll(".xcard"):[],f=document.querySelectorAll(".xcard-filter"),t,total=c?c.dataset.total:"0",label="'.addslashes($label).'";
 function rt(cd){var b=cd.querySelector(".xcard-expand-btn");if(b)b.textContent="+ Expand";var h=cd.querySelector(".xcard-hint");if(h)h.textContent="Click to expand"}
 function cl(){ca.forEach(function(x){x.classList.remove("expanded");rt(x)})}
-ca.forEach(function(cd){cd.addEventListener("click",function(ev){if(ev.target.closest("a")||ev.target.closest(".xcard-expand-btn"))return;var w=this.classList.contains("expanded");cl();if(!w){this.classList.add("expanded");var b=this.querySelector(".xcard-expand-btn");if(b)b.textContent="- Collapse";var h=this.querySelector(".xcard-hint");if(h)h.textContent="";this.scrollIntoView({behavior:"smooth",block:"nearest"})}})});
-function u(){var v=0;ca.forEach(function(cd){if(cd.style.display!=="none")v++});c.textContent=v+" "+"'.$label.'"+(v!==1?"s":"");e.style.display=v===0?"block":"none"}
+ca.forEach(function(cd){cd.addEventListener("click",function(ev){if(ev.target.closest("a"))return;if(ev.target.closest(".xcard-expand-btn"))ev.preventDefault();var w=this.classList.contains("expanded");cl();if(!w){this.classList.add("expanded");var b=this.querySelector(".xcard-expand-btn");if(b)b.textContent="- Collapse";var h=this.querySelector(".xcard-hint");if(h)h.textContent="Preview open";this.scrollIntoView({behavior:"smooth",block:"nearest"})}})});
+function u(){var v=0;ca.forEach(function(cd){if(cd.style.display!=="none")v++});if(c)c.textContent=v+" shown of "+total+" "+label;if(e)e.style.display=v===0?"block":"none"}
 f.forEach(function(b){b.addEventListener("click",function(){f.forEach(function(x){x.classList.remove("active")});this.classList.add("active");var ff=this.dataset.f;cl();ca.forEach(function(cd){cd.style.display=(ff==="all"||!cd.dataset.xf||(cd.dataset.xf||"").toLowerCase()===ff)?"":"none"});u()})});
-s.addEventListener("input",function(){clearTimeout(t);t=setTimeout(function(){var q=this.value.trim().toLowerCase();cl();ca.forEach(function(cd){cd.style.display=(cd.dataset.xs&&cd.dataset.xs.indexOf(q)!==-1)?"":"none"});u()}.bind(this),150)});
+if(s)s.addEventListener("input",function(){clearTimeout(t);t=setTimeout(function(){var q=this.value.trim().toLowerCase();cl();ca.forEach(function(cd){cd.style.display=(cd.dataset.xs&&cd.dataset.xs.indexOf(q)!==-1)?"":"none"});u()}.bind(this),150)});
 })();
 </script>';
     return $html;
@@ -328,7 +472,15 @@ function render_admin_record_table(array $rows, array $columns, string $moduleKe
 
 function render_detail_fields(array $cfg,array $r,bool $admin=false): string {
     $fields=$cfg['detail'] ?? array_keys($r); $explicit=isset($cfg['detail']); $html='<div class="detail-grid">';
-    foreach($fields as $f){ if(!$admin && !$explicit && is_internal_field($f)) continue; $html.='<div class="detail-item"><small>'.e(public_field_label($f)).'</small><strong>'.display_value($r[$f] ?? null).'</strong></div>'; }
+    $moduleKey=module_key_for_cfg($cfg) ?: '';
+    foreach($fields as $f){
+        if(!$admin && !$explicit && is_internal_field($f)) continue;
+        $locked=(!$admin && $moduleKey && !field_allowed($moduleKey,$f,'free'));
+        $html.='<div class="detail-item '.($locked?'locked-field':'').'"><small>'.e(public_field_label($f)).'</small>';
+        if($locked) $html.='<strong><i class="fas fa-lock"></i> Pro field</strong><em>Admin controls this field from Tier Visibility.</em>';
+        else $html.='<strong>'.display_value($r[$f] ?? null).'</strong>';
+        $html.='</div>';
+    }
     return $html.'</div>';
 }
 function render_related_sections(string $key,array $r): string {
@@ -440,6 +592,8 @@ function handle_post_actions(): void {
     if($action==='admin_save_user') { admin_save_user(); }
     if($action==='admin_save_tier') { admin_save_tier(); }
     if($action==='admin_save_feature') { admin_save_feature(); }
+    if($action==='admin_save_access_rule') { admin_save_access_rule(); }
+    if($action==='admin_delete_access_rule') { admin_delete_access_rule(); }
     if($action==='admin_delete_feature') { admin_delete_feature(); }
     if($action==='admin_save_question') { admin_save_question(); }
     if($action==='admin_save_insight') { admin_save_insight(); }
@@ -548,6 +702,33 @@ function admin_save_feature(): void {
 function admin_delete_feature(): void {
     $id=(int)postv('feature_id'); if($id>0) exec_sql('DELETE FROM tier_features WHERE id=?',[$id]);
     flash('success','Plan benefit removed.'); redirect_to('?page=admin&tab=plans');
+}
+function admin_save_access_rule(): void {
+    ensure_access_rules_schema();
+    $id=(int)postv('rule_id');
+    $scopeType=strtolower(postv('scope_type'));
+    $scopeKey=trim(postv('scope_key'));
+    $label=postv('label');
+    $minTier=normalize_tier_code(postv('min_tier','free'));
+    $notes=postv('notes');
+    $active=postv('is_active','1')==='1'?1:0;
+    $validScopes=['module','detail','section','field','report','feature'];
+    $validTiers=['public','free','pro','ultimate'];
+    if(!in_array($scopeType,$validScopes,true)) throw new RuntimeException('Invalid access rule scope.');
+    if($scopeKey==='') throw new RuntimeException('Scope key is required, for example countries or aircraft_types:economics.');
+    if($label==='') $label=labelize($scopeKey);
+    if(!in_array($minTier,$validTiers,true)) throw new RuntimeException('Invalid minimum tier.');
+    if($id>0){
+        exec_sql('UPDATE access_rules SET scope_type=?, scope_key=?, label=?, min_tier=?, is_active=?, notes=?, updated_at=NOW() WHERE id=?',[$scopeType,$scopeKey,$label,$minTier,$active,$notes?:null,$id]);
+    } else {
+        exec_sql('INSERT INTO access_rules (scope_type,scope_key,label,min_tier,is_active,notes,created_at,updated_at) VALUES (?,?,?,?,?,?,NOW(),NOW()) ON DUPLICATE KEY UPDATE label=VALUES(label), min_tier=VALUES(min_tier), is_active=VALUES(is_active), notes=VALUES(notes), updated_at=NOW()',[$scopeType,$scopeKey,$label,$minTier,$active,$notes?:null]);
+    }
+    flash('success','Tier visibility rule saved.'); redirect_to('?page=admin&tab=access');
+}
+function admin_delete_access_rule(): void {
+    ensure_access_rules_schema();
+    $id=(int)postv('rule_id'); if($id>0) exec_sql('DELETE FROM access_rules WHERE id=?',[$id]);
+    flash('success','Tier visibility rule removed.'); redirect_to('?page=admin&tab=access');
 }
 function admin_save_question(): void {
     $id=(int)postv('id');

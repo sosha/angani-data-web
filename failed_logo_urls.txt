@@ -1,0 +1,60 @@
+AAB | Abelag Aviation | https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Luxaviation_Belgium%2C_OO-LAH%2C_Dassault_Falcon_7X_%2853814652192%29.jpg/500px-Luxaviation_Belgium%2C_OO-LAH%2C_Dassault_Falcon_7X_%2853814652192%29.jpg
+UCR | Aero Charter | https://upload.wikimedia.org/wikipedia/commons/b/b8/AeroLogo.svg
+BRP | Aerobratsk | https://aerobratsk.ru/favicon.ico
+DAH | Air Algrie | https://t3.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://airalgerie.dz&size=128
+TNO | AeroUnion | https://aerounion.com.mx/favicon.ico
+WAF | Air Flamenco | https://flyairflamenco.com/favicon.ico
+CGH | Air Guilin | https://upload.wikimedia.org/wikipedia/commons/thumb/9/96/%28CHN-Fujian%29_Air_Guilin_Airbus_A319-132_B-6192_%40_ZSAM_2025-03-21.jpg/500px-%28CHN-Fujian%29_Air_Guilin_Airbus_A319-132_B-6192_%40_ZSAM_2025-03-21.jpg
+AKJ | Akasa Air | https://t3.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://akasaair.com&size=128
+AKK | Aklak Air | https://aklakair.ca/favicon.ico
+AWT | Albawings | https://albawings.com/favicon.ico
+AJK | Allied Air | http://localhost/alliedair/wp-content/uploads/2015/10/favicon.png
+LMU | AlMasria Universal Airlines | https://almasriaairlines.com/favicon.ico
+AXL | Anguilla Air Services | https://t3.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://anguillaairservices.com&size=128
+AZU | Azul | https://voeazul.com/favicon.ico
+ACN | Azul Conecta | https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://voeazul.com.br&size=128
+BCI | Blue Islands | https://t3.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://blueislands.com&size=128
+CFV | Calafia Airlines | https://calafiaairlines.com/favicon.ico
+CVK | CAVOK Air | https://cavok.aero/favicon.ico
+CTV | Citilink | https://t3.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://citilink.co.id&size=128
+CAW | Comair | https://upload.wikimedia.org/wikipedia/commons/b/bd/Comair_logo.svg
+CUB | Cubana | https://upload.wikimedia.org/wikipedia/commons/d/d4/Logo_Cubana_de_Aviaci%C3%B3n_%281930-1945%29.png
+ECO | Ecojet | https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://flyecojet.aero&size=128
+ETH | Ethiopian Airlines | https://t3.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://ethiopianairlines.com&size=128
+GIE | Elysian Airlines | https://elysianairlines.com/favicon.ico
+ASQ | ExpressJet | https://expressjet.com/favicon.ico
+VQI | Flyme | https://villaair.aero/favicon.ico
+FXT | FlexFlight | https://flexflight.dk/favicon.ico
+MNT | FlyMontserrat | https://flymontserrat.com/favicon.ico
+HTY | Hlity Copter Airlines | https://helity.es/favicon.ico
+IOU | International AirLink | https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://flyairlink.net&size=128
+FDA | Fuji Dream Airlines | https://upload.wikimedia.org/wikipedia/commons/4/45/Fuji_Dream_Airlines_logo_%282008%2C_FDA%29.svg
+EXP | Island Air Express | https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/AKW-a.jpg/500px-AKW-a.jpg
+ISR | Israir Airlines | https://upload.wikimedia.org/wikipedia/commons/9/9c/Israir_Airlines_Logo.svg
+IPM | ITA Transportes Areos | https://voeita.com.br/favicon.ico
+JUB | Jubba Airways | https://jubbaairways.com/favicon.ico
+JBW | Jubba Airways Kenya | https://jubbaairways.com/favicon.ico
+LYM | Key Lime Air | https://keylimeair.com/favicon.ico
+LVL | Level | https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://flylevel.com&size=128
+GMT | Magnicharters | https://magnicharters.com/favicon.ico
+NEA | New England Airlines | https://blockislands-airline.com/favicon.ico
+NWK | Network Aviation | https://networkaviation.com.au/favicon.ico
+NIA | Nile Air | https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://nileair.com&size=128
+NIN | Niger Airlines | https://nigerairlines.net/favicon.ico
+RVF | New Pacific Airlines | https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Ravn_Alaska_in_Dutch_Harbor.jpg/500px-Ravn_Alaska_in_Dutch_Harbor.jpg
+OTT | OTT Airlines | https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/B-123A%40PEK_%2820210128164812%29.jpg/500px-B-123A%40PEK_%2820210128164812%29.jpg
+TSH | R1 Airlines | https://r1airlines.ca/favicon.ico
+RXI | Riyadh Air | https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://riyadhair.com&size=128
+RFF | Russian Air Force | https://t0.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://mil.ru&size=128
+SSF | Severstal Air Company | https://t3.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://severstal-avia.ru&size=128
+SLD | Silver Air | https://silverair.cz/favicon.ico
+CSS | SF Airlines | https://sf-airlines.com/favicon.ico
+FDY | Southern Airways Express | https://flysunairexpress.com/favicon.ico
+AME | Spanish Air Force | https://ejercitodelaire.defensa.gob.es/favicon.ico
+SUD | Sudan Airways | https://sudanair.com/favicon.ico
+SQC | Singapore Airlines Cargo | https://upload.wikimedia.org/wikipedia/en/e/e6/SIA_Cargo_logo.svg
+MSJ | SkyJet Airlines | https://upload.wikimedia.org/wikipedia/commons/f/f8/SkyJet_Airlines_Logo.png
+TGU | Transportes Areos Guatemaltecos | https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://tagairlines.com&size=128
+SJV | Super Air Jet | https://superairjet.com/../assets/img/favicon.ico
+NYS | Ulendo Airlink | https://flynyasa.net/favicon.ico
+VEC | Vensecar Internacional, C.A. | https://vensecar.com/favicon.ico

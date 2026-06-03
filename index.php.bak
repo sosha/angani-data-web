@@ -33,12 +33,12 @@ try { $stats=get_stats(); } catch(Throwable $e) { $dbError=$e->getMessage(); }
 <?php elseif($page==='search'): $q=getv('q'); if($q==='') redirect_to('?page=home'); $results=global_search($q); ?>
 <section class="view"><section class="section-head"><div><div class="eyebrow">Global search</div><h1>Search across Angani Data</h1></div><p>Search airlines, airports, aircraft types, reference tables, infrastructure, regulatory and commercial records from one place. Pro-only records show access gates when opened.</p></section><div class="result-summary"><strong><?=nfmt(count($results))?></strong> results for <b><?=e($q)?></b></div><?=render_global_search_results($results)?></section>
 <?php elseif($page==='catalogue'): ?>
-<section class="view"><section class="section-head"><div><div class="eyebrow">Database catalogue</div><h1>Angani Data modules</h1></div><p>Free users see public/reference data. Pro users unlock premium fields and exports. Ultimate is for bulk/API access and custom aviation services.</p></section><div class="module-grid"><?php foreach(module_groups() as $group=>$keys): ?><article class="module-group"><h3><?=e($group)?></h3><div><?php foreach($keys as $k): $c=module_config($k); if(!$c) continue; ?><a class="module-chip" href="<?=e(module_url($k))?>"><b><?=module_icon_html($k)?></b><span><?=e($c['label'])?></span><em><?=nfmt(module_count($k))?></em></a><?php endforeach; ?></div></article><?php endforeach; ?></div></section>
+<section class="view"><section class="section-head"><div><div class="eyebrow">Database catalogue</div><h1>Angani Data modules</h1></div><p>Free users see public/reference data. Pro users unlock full drill-downs and exports. Enterprise is for bulk/API access.</p></section><div class="module-grid"><?php foreach(module_groups() as $group=>$keys): ?><article class="module-group"><h3><?=e($group)?></h3><div><?php foreach($keys as $k): $c=module_config($k); if(!$c) continue; ?><a class="module-chip" href="<?=e(module_url($k))?>"><b><?=module_icon_html($k)?></b><span><?=e($c['label'])?></span><em><?=nfmt(module_count($k))?></em></a><?php endforeach; ?></div></article><?php endforeach; ?></div></section>
 <?php elseif($page==='module'): $key=getv('module','airlines'); $cfg=module_config($key); ?>
-<section class="view"><?php if(!$cfg): ?><div class="empty-state"><h2>Unknown database</h2></div><?php elseif(!module_allowed($cfg)): ?><?=access_gate($cfg['label'].' is a Pro dataset','Create or upgrade your account to access this database.','View pricing')?><?php else: $expandable = in_array($cfg['card']??'', ['country','airline','airport','aircraft','aircraft_type'], true); if($expandable){ [$records,$total]=query_module_records($cfg,24,(page_num()-1)*24); $fo=[]; if($key==='countries') $fo=['africa'=>'Africa','asia'=>'Asia','europe'=>'Europe','north america'=>'N America','south america'=>'S America','oceania'=>'Oceania']; elseif($key==='airlines') $fo=['active'=>'Active','defunct'=>'Defunct']; elseif($key==='airports') $fo=['large_airport'=>'Large','medium_airport'=>'Medium','small_airport'=>'Small','heliport'=>'Heliport','closed'=>'Closed','seaplane_base'=>'Seaplane']; echo render_xcard_page($key,$cfg,$records,$total,$fo); echo paginate($total,24); } else { [$records,$total]=query_module_records($cfg,24,(page_num()-1)*24); ?><section class="section-head"><div><div class="eyebrow"><?=e($cfg['tier']==='free'?'Open database':'Pro database')?></div><h1><?=e($cfg['label'])?></h1></div><p><?=nfmt($total)?> records. Admin can add/edit/import; logged-in Pro users can export filtered data.</p></section><?=render_search_bar($key,$cfg)?><?php if(in_array($cfg['card']??'', ['airline','airport','aircraft_type','lessor','country','aircraft'], true)): ?><?=render_module_cards($key,$records)?><?php else: ?><?=render_table($records,$cfg['list'],$key)?><?php endif; ?><?=paginate($total,24)?><?php } endif; ?></section>
+<section class="view"><?php if(!$cfg): ?><div class="empty-state"><h2>Unknown database</h2></div><?php elseif(!module_allowed($cfg)): ?><?=access_gate($cfg['label'].' is a Pro dataset','Create or upgrade your account to access this database.','View pricing')?><?php else: $expandable = in_array($cfg['card']??'', ['country','airline','airport','aircraft'], true); if($expandable){ [$records,$total]=query_module_records($cfg,500,0); $fo=[]; if($key==='countries') $fo=['africa'=>'Africa','asia'=>'Asia','europe'=>'Europe','north america'=>'N America','south america'=>'S America','oceania'=>'Oceania']; elseif($key==='airlines') $fo=['active'=>'Active','defunct'=>'Defunct']; elseif($key==='airports') $fo=['large_airport'=>'Large','medium_airport'=>'Medium','small_airport'=>'Small','heliport'=>'Heliport','closed'=>'Closed','seaplane_base'=>'Seaplane']; echo render_xcard_page($key,$cfg,$records,$total,$fo); } else { [$records,$total]=query_module_records($cfg,24,(page_num()-1)*24); ?><section class="section-head"><div><div class="eyebrow"><?=e($cfg['tier']==='free'?'Open database':'Pro database')?></div><h1><?=e($cfg['label'])?></h1></div><p><?=nfmt($total)?> records. Admin can add/edit/import; logged-in Pro users can export filtered data.</p></section><?=render_search_bar($key,$cfg)?><?php if(in_array($cfg['card']??'', ['airline','airport','aircraft_type','lessor','country','aircraft'], true)): ?><?=render_module_cards($key,$records)?><?php else: ?><?=render_table($records,$cfg['list'],$key)?><?php endif; ?><?=paginate($total,24)?><?php } endif; ?></section>
 <?php elseif($page==='detail'): $key=getv('module'); $cfg=module_config($key); $id=getv('id'); $tabParam=getv('dtab','overview');
 if(!$cfg || !$id){ echo '<section class="view"><div class="empty-state"><h2>Record not found</h2></div></section>'; }
-elseif(!detail_allowed($key,$cfg)){ echo '<section class="view">'.access_gate(is_logged_in()?'Detail locked by plan':'Log in to view more','Visitors can browse cards and previews. Create a free account to open standard drill-downs; Pro/Ultimate access is controlled from Admin → Tier Visibility.',is_logged_in()?'View pricing':'Log in').'</section>'; }
+elseif(!module_allowed($cfg)){ echo '<section class="view">'.access_gate('Pro detail locked','Upgrade to open full records in this database.','View pricing').'</section>'; }
 else{ $pkCol=module_pk($key); $r=row('SELECT * FROM `'.$cfg['table'].'` WHERE `'.$pkCol.'`=?',[$id]);
 if(!$r){ echo '<section class="view"><div class="empty-state"><h2>Record not found</h2></div></section>'; }
 else{
@@ -92,26 +92,21 @@ if($key==='countries'){
     if($codeBoxes) echo '<div style="display:flex;gap:8px;margin:10px 0 4px">'.$codeBoxes.'</div>';
     $alCc=strtolower($r['country_code']??'');
     if($alCc){
-        $alCountryName='';
-        try{$alCountryName=scalar('SELECT name_common FROM countries WHERE LOWER(iso_alpha_2)=?',[$alCc]);}catch(Throwable $e){}
-        if(!$alCountryName) $alCountryName=$r['country']??$r['country_code']??'';
         $alFlag=$alCc?((file_exists(__DIR__.'/assets/country_flag_icons/'.$alCc.'.svg')
             ?'<img class="flag-svg small" src="assets/country_flag_icons/'.$alCc.'.svg" alt="" style="vertical-align:middle;margin-right:6px">'
             :'<span class="flag" style="font-size:18px;vertical-align:middle;margin-right:6px">'.flag_emoji($alCc).'</span>')):'';
-        echo '<p style="margin-top:8px">'.$alFlag.e($alCountryName).'</p>';
+        echo '<p style="margin-top:8px">'.$alFlag.e($r['country'] ?? $r['country_code'] ?? '').'</p>';
     }
     if($r['alias']??'') echo '<p style="margin-top:4px;max-width:700px;line-height:1.6;color:var(--ink-muted)">'.e($r['alias']).'</p>';
     $stIcao=$r['icao_code']??'';
-    $stFleet=0; $stHubs=0; $stDestinations=0;
+    $stFleet=0; $stHubs=0;
     if($stIcao){
         try{$stFleet=(int)scalar('SELECT COALESCE(SUM(aircraft_count),0) FROM airline_fleet_summary WHERE icao_code=?',[$stIcao]);}catch(Throwable $e){}
         try{$stHubs=(int)scalar('SELECT COUNT(*) FROM airline_hubs WHERE icao_code=?',[$stIcao]);}catch(Throwable $e){}
-        try{$stDestinations=(int)scalar('SELECT COUNT(*) FROM airline_destinations WHERE airline_icao=?',[$stIcao]);}catch(Throwable $e){}
     }
     $statsHtml='';
     if($stFleet) $statsHtml.='<div class="hero-stat"><span class="hero-stat-l">Fleet</span><span class="hero-stat-v">'.nfmt($stFleet).'</span></div>';
     if($stHubs) $statsHtml.='<div class="hero-stat"><span class="hero-stat-l">Hubs</span><span class="hero-stat-v">'.nfmt($stHubs).'</span></div>';
-    if($stDestinations) $statsHtml.='<div class="hero-stat"><span class="hero-stat-l">Destinations</span><span class="hero-stat-v">'.nfmt($stDestinations).'</span></div>';
     if($r['callsign']??'') $statsHtml.='<div class="hero-stat"><span class="hero-stat-l">Callsign</span><span class="hero-stat-v">'.e($r['callsign']).'</span></div>';
     if($statsHtml) echo '<div class="hero-stats">'.$statsHtml.'</div>';
 } else {
@@ -122,7 +117,7 @@ if(is_admin()) echo '<a class="btn ink" href="?page=admin&tab=edit&module='.e($k
 echo render_report_modal($key,$id);
 echo '</section>';
 $dtabs=['overview'=>'Overview','fields'=>'Details'];
-if($key==='airlines'){$dtabs['digital']='Digital';$dtabs['fleet']='Fleet';$dtabs['hubs']='Hubs';$dtabs['operations']='Operations';$dtabs['people']='People';$dtabs['commercial']='Commercial';$dtabs['regulatory']='Regulatory';}
+if($key==='airlines'){$dtabs['digital']='Digital';$dtabs['fleet']='Fleet';$dtabs['hubs']='Hubs';$dtabs['operations']='Operations';$dtabs['commercial']='Commercial';$dtabs['regulatory']='Regulatory';}
 if($key==='airports'){$dtabs['frequencies']='Frequencies';$dtabs['runways']='Runways';$dtabs['terminals']='Terminals';$dtabs['hubs']='Hubs';}
 if($key==='aircraft'){$dtabs['same_type']='Same Type';}
 if($key==='countries'){
@@ -131,15 +126,12 @@ if($key==='countries'){
     $dtabs['regulatory']='Regulatory';
     $dtabs['registry']='Registry';
     $dtabs['navaids']='Navaids';
-    $dtabs['stats']='Air Transport';
     $dtabs['timeseries']='Statistics';
 }
 if($key==='aircraft_types'){$dtabs['profile']='Profile';$dtabs['cabin']='Cabin & Payload';$dtabs['engine']='Engine';$dtabs['specs']='Specs';$dtabs['economics']='Economic Data';$dtabs['environmental']='Environmental';$dtabs['registry']='Registry';}
 echo '<nav class="detail-tabs">';
 foreach($dtabs as $tk=>$tl){ $active=$tabParam===$tk?' active':''; echo '<a class="tab'.$active.'" href="?page=detail&module='.e($key).'&id='.e($id).'&dtab='.e($tk).'">'.e($tl).'</a>'; }
 echo '</nav><div class="detail-content">';
-	$detailContentLocked = ($tabParam !== 'overview' && $tabParam !== 'fields' && !section_allowed($key,$tabParam,'free'));
-	if($detailContentLocked){ $tierRule=access_rule('section',$key.':'.$tabParam,'free'); echo access_gate('This section is locked', 'Admin has limited this section to '.ucfirst(e($tierRule['min_tier'] ?? 'pro')).' users. Change it from Admin → Tier Visibility.', is_logged_in()?'View pricing':'Log in'); } else {
 // Country overview: section-based layout
 if($key==='countries' && $tabParam==='overview'){
     $cIso2=$r['iso_alpha_2']??''; $cIso3=$r['iso_alpha_3']??'';
@@ -187,11 +179,10 @@ if($key==='countries' && $tabParam==='overview'){
 // Default overview/fields for non-countries, with airline-specific filtering
 if($tabParam==='overview' && $key==='airlines'){
     $alIcao=$r['icao_code']??''; $alIata=$r['iata_code']??''; $alName=$r['name']??'';
-    $rFleet=0; $rHubs=0; $rDestinations=0; $rFleetList=0; $rDigital=0;
+    $rFleet=0; $rHubs=0; $rFleetList=0; $rDigital=0;
     if($alIcao){
         try{$rFleet=(int)scalar('SELECT COALESCE(SUM(aircraft_count),0) FROM airline_fleet_summary WHERE icao_code=?',[$alIcao]);}catch(Throwable $e){}
         try{$rHubs=(int)scalar('SELECT COUNT(*) FROM airline_hubs WHERE icao_code=?',[$alIcao]);}catch(Throwable $e){}
-        try{$rDestinations=(int)scalar('SELECT COUNT(*) FROM airline_destinations WHERE airline_icao=?',[$alIcao]);}catch(Throwable $e){}
         try{$rFleetList=(int)scalar('SELECT COUNT(*) FROM airline_fleet_list WHERE operator_airline=? OR operator_airline LIKE ?',[$alName,'%'.$alName.'%']);}catch(Throwable $e){}
         try{$rDigital=(int)scalar('SELECT COUNT(*) FROM airline_digital_properties WHERE iata_code=? OR icao_code=?',[$alIata?:'',$alIcao]);}catch(Throwable $e){}
     }
@@ -207,23 +198,13 @@ if($tabParam==='overview' && $key==='airlines'){
     if($r['callsign']??'') echo '<div class="xcard-row"><span class="xcard-row-k">Callsign</span><span class="xcard-row-v">'.e($r['callsign']).'</span></div>';
     echo '</div>';
     echo '<div class="xcard-sec"><div class="xcard-sec-title">LOCATION</div>';
-    $alCountryName='';
-    $alCcOv=strtolower($r['country_code']??'');
-    if($alCcOv){
-        try{$alCountryName=scalar('SELECT name_common FROM countries WHERE LOWER(iso_alpha_2)=?',[$alCcOv]);}catch(Throwable $e){}
-        if(!$alCountryName) $alCountryName=$r['country']??$r['country_code']??'';
-        $alOvFlag=$alCcOv?((file_exists(__DIR__.'/assets/country_flag_icons/'.$alCcOv.'.svg')?'<img class="flag-svg" src="assets/country_flag_icons/'.$alCcOv.'.svg" alt="" style="width:18px;height:18px;vertical-align:middle;margin-right:6px">':'<span style="font-size:18px;vertical-align:middle;margin-right:6px">'.flag_emoji($alCcOv).'</span>')):'';
-        echo '<div class="xcard-row"><span class="xcard-row-k">Country</span><span class="xcard-row-v">'.$alOvFlag.e($alCountryName).'</span></div>';
-        echo '<div class="xcard-row"><span class="xcard-row-k">Code</span><span class="xcard-row-v">'.e(strtoupper($alCcOv)).'</span></div>';
-    } else {
-        echo '<div class="xcard-row"><span class="xcard-row-k">Country</span><span class="xcard-row-v">—</span></div>';
-    }
+    echo '<div class="xcard-row"><span class="xcard-row-k">Country</span><span class="xcard-row-v">'.e($r['country']??$r['country_code']??'—').'</span></div>';
+    if($r['country_code']??'') echo '<div class="xcard-row"><span class="xcard-row-k">Code</span><span class="xcard-row-v">'.e(strtoupper($r['country_code'])).'</span></div>';
     echo '</div>';
     echo '<div class="xcard-sec"><div class="xcard-sec-title">OPERATIONS</div>';
     echo '<div class="xcard-row"><span class="xcard-row-k">Status</span><span class="xcard-row-v">'.status_chip($r['active']==='Y'?'active':($r['active']==='N'?'defunct':$r['active']??'')).'</span></div>';
     if($rFleet) echo '<div class="xcard-row"><span class="xcard-row-k">Fleet</span><span class="xcard-row-v">'.nfmt($rFleet).' aircraft</span></div>';
     if($rHubs) echo '<div class="xcard-row"><span class="xcard-row-k">Hubs</span><span class="xcard-row-v">'.nfmt($rHubs).' bases</span></div>';
-    if($rDestinations) echo '<div class="xcard-row"><span class="xcard-row-k">Destinations</span><span class="xcard-row-v">'.nfmt($rDestinations).' served</span></div>';
     if($rFleetList) echo '<div class="xcard-row"><span class="xcard-row-k">Registry</span><span class="xcard-row-v">'.nfmt($rFleetList).' tail records</span></div>';
     echo '</div>';
     echo '<div class="xcard-sec"><div class="xcard-sec-title">MEMBERSHIPS</div>';
@@ -242,53 +223,21 @@ $related=render_related_sections($key,$r);
 $relatedSections=explode('<section class="related">',$related);
 $sectionMap=[]; foreach($relatedSections as $sec){ if(!trim($sec)) continue; if(preg_match('/<h3>(.+?)<\/h3>/',$sec,$m)){ $secKey=strtolower(preg_replace('/[^a-z0-9]/','',$m[1])); $sectionMap[$secKey]='<section class="related">'.$sec; } }
 $tabSections=[
-    'airlines'=>[
-        'digital'=>['Digital properties'],
-        'fleet'=>['Fleet list','Fleet summary'],
-        'hubs'=>['Hubs and bases'],
-        'operations'=>['IT infrastructure','Operational stats','Routes & schedules','Destinations'],
-        'people'=>['Key personnel'],
-        'commercial'=>['Frequent flyer'],
-        'regulatory'=>['IATA membership','IOSA registration','Regulatory']
-    ],
-    'airports'=>[
-        'frequencies'=>['Frequencies'],
-        'runways'=>['Runways'],
-        'terminals'=>['Terminals'],
-        'hubs'=>['Hub/base airlines','Connected navaids','Navaids in country']
-    ],
-    'countries'=>[
-        'airlines'=>['Airlines in country'],
-        'airports'=>['Airports in country'],
-        'regulatory'=>['Regulatory authorities'],
-        'registry'=>['Aircraft registry'],
-        'navaids'=>['Navaids']
-    ],
-    'aircraft_types'=>[
-        'profile'=>['Aircraft type profile'],
-        'cabin'=>['Cabin & payload'],
-        'engine'=>['Engine data'],
-        'specs'=>['Technical specs','Runway requirements'],
-        'economics'=>['Economics'],
-        'environmental'=>['Environmental data']
-    ]
+    'airlines'=>['digital'=>'Digital properties','fleet'=>'Fleet list','fleet'=>'Fleet summary','hubs'=>'Hubs and bases','operations'=>'Operational stats','commercial'=>'Frequent flyer','regulatory'=>'IATA membership','regulatory'=>'IOSA registration','regulatory'=>'Regulatory'],
+    'airports'=>['frequencies'=>'Frequencies','runways'=>'Runways','terminals'=>'Terminals','hubs'=>'Hub/base airlines'],
+    'countries'=>['airlines'=>'Airlines in country','airports'=>'Airports in country','regulatory'=>'Regulatory authorities','registry'=>'Aircraft registry','navaids'=>'Navaids'],
+    'aircraft_types'=>['profile'=>'Aircraft type profile','cabin'=>'Cabin & payload','engine'=>'Engine data','specs'=>'Technical specs','economics'=>'Economics','environmental'=>'Environmental data']
 ];
 $shown=[]; $mappings=$tabSections[$key]??[];
-foreach($mappings as $tk=>$searchTitles){
+foreach($mappings as $tk=>$searchTitle){
     if($tabParam!==$tk) continue;
     foreach($sectionMap as $sk=>$sectionHtml){
-        foreach((array)$searchTitles as $searchTitle){
-            if(str_contains(strip_tags($sectionHtml),$searchTitle) && !isset($shown[$sk])){ echo $sectionHtml; $shown[$sk]=true; break; }
-        }
+        if(str_contains(strip_tags($sectionHtml),$searchTitle) && !isset($shown[$sk])){ echo $sectionHtml; $shown[$sk]=true; }
     }
 }
 if($tabParam==='overview'){
     foreach($sectionMap as $sk=>$sectionHtml){
-        if(!isset($shown[$sk])){
-            $matched=false;
-            foreach($mappings as $searchTitles){ foreach((array)$searchTitles as $st){ if(str_contains(strip_tags($sectionHtml),$st)){ $matched=true; break 2; } } }
-            if(!$matched) echo $sectionHtml;
-        }
+        if(!isset($shown[$sk])){ $matched=false; foreach(($mappings) as $st){ if(str_contains(strip_tags($sectionHtml),$st)){ $matched=true; break; } } if(!$matched) echo $sectionHtml; }
     }
 }
 // Country-specific tabs: stats and time series
@@ -386,25 +335,24 @@ if($key==='aircraft' && $tabParam==='same_type'){
         echo '<p class="muted">No other aircraft of this type found in registry.</p>';
     }
 }
-}
-	echo '</div></section>';
+echo '</div></section>';
 }} // close if(!$r), close else branch of detail
 ?>
 <?php elseif($page==='pricing'): $tiers=tier_cards(); ?>
-<section class="view"><section class="section-head"><div><div class="eyebrow">Simple access model</div><h1>Three tiers only</h1></div><p>Free for discovery, Pro for paid intelligence, Ultimate for custom/API/bulk work and client-specific aviation services.</p></section><div class="pricing-grid"><?php foreach($tiers as $tier): ?><article class="pricing-card <?=$tier['code']==='pro'?'featured':''?>"><div class="topline"><span class="chip gold"><?=e($tier['name'])?></span><span class="chip"><?= in_array($tier['code'],['ultimate','enterprise'],true)?'Contact us':'$'.e($tier['monthly_usd']).'/mo' ?></span></div><h3><?=e($tier['name'])?></h3><p><?=e($tier['description'])?></p><div class="price"><?= in_array($tier['code'],['ultimate','enterprise'],true)?'Custom':'$'.e($tier['monthly_usd']).'<small>/month</small>' ?></div><ul><?php foreach(tier_features((int)$tier['id']) as $f): ?><li><?=e($f['feature_label'])?></li><?php endforeach; ?></ul><a class="btn <?=$tier['code']==='pro'?'primary':'ghost'?>" href="<?=in_array($tier['code'],['ultimate','enterprise'],true)?'?page=contact':'?page=register'?>"><?=in_array($tier['code'],['ultimate','enterprise'],true)?'Contact us':'Start '.$tier['name']?></a></article><?php endforeach; ?></div></section>
+<section class="view"><section class="section-head"><div><div class="eyebrow">Simple access model</div><h1>Three tiers only</h1></div><p>Free for discovery, Pro for paid intelligence, Enterprise for custom/API/bulk work.</p></section><div class="pricing-grid"><?php foreach($tiers as $tier): ?><article class="pricing-card <?=$tier['code']==='pro'?'featured':''?>"><div class="topline"><span class="chip gold"><?=e($tier['name'])?></span><span class="chip"><?= $tier['code']==='enterprise'?'Contact us':'$'.e($tier['monthly_usd']).'/mo' ?></span></div><h3><?=e($tier['name'])?></h3><p><?=e($tier['description'])?></p><div class="price"><?= $tier['code']==='enterprise'?'Custom':'$'.e($tier['monthly_usd']).'<small>/month</small>' ?></div><ul><?php foreach(tier_features((int)$tier['id']) as $f): ?><li><?=e($f['feature_label'])?></li><?php endforeach; ?></ul><a class="btn <?=$tier['code']==='pro'?'primary':'ghost'?>" href="<?=$tier['code']==='enterprise'?'?page=contact':'?page=register'?>"><?=$tier['code']==='enterprise'?'Contact us':'Start '.$tier['name']?></a></article><?php endforeach; ?></div></section>
 <?php elseif($page==='login'): ?>
 <section class="auth-shell"><div class="panel auth-card"><div class="eyebrow">Member access</div><h1>Log in</h1><p class="muted">Demo admin: <code>admin@angani.co.uk</code> / <code>Angani@2026</code></p><form method="post" class="stack-form"><?=csrf_field()?><input type="hidden" name="action" value="login"><label>Email<input name="email" type="email" required></label><label>Password<input name="password" type="password" required></label><button class="btn ink" type="submit">Log in</button></form><p>New user? <a class="linkish" href="?page=register">Create account</a></p></div></section>
 <?php elseif($page==='register'): ?>
 <section class="auth-shell"><div class="panel auth-card"><div class="eyebrow">Create account</div><h1>Start exploring</h1><form method="post" class="stack-form"><?=csrf_field()?><input type="hidden" name="action" value="register"><label>Name<input name="name" required></label><label>Email<input name="email" type="email" required></label><label>Password<input name="password" type="password" minlength="8" required></label><button class="btn ink" type="submit">Create account</button></form></div></section>
 <?php elseif($page==='account'): if(!$user) redirect_to('?page=login'); ?>
-<section class="view"><section class="section-head"><div><div class="eyebrow">Account</div><h1><?=e($user['name'])?></h1></div><?=tier_badge($user)?></section><div class="panel-grid"><div class="panel"><h3>Profile</h3><form method="post" class="stack-form"><?=csrf_field()?><input type="hidden" name="action" value="update_account"><label>Name<input name="name" value="<?=e($user['name'])?>"></label><label>Email<input value="<?=e($user['email'])?>" disabled></label><button class="btn ink">Save</button></form></div><div class="panel"><h3>Access</h3><p>Your current tier is <strong><?=e($user['tier_name'])?></strong>.</p><p>CSV exports and premium drill-downs are available on Pro and Ultimate according to admin-controlled Tier Visibility rules.</p><a class="btn primary" href="?page=pricing">Compare plans</a></div></div></section>
+<section class="view"><section class="section-head"><div><div class="eyebrow">Account</div><h1><?=e($user['name'])?></h1></div><?=tier_badge($user)?></section><div class="panel-grid"><div class="panel"><h3>Profile</h3><form method="post" class="stack-form"><?=csrf_field()?><input type="hidden" name="action" value="update_account"><label>Name<input name="name" value="<?=e($user['name'])?>"></label><label>Email<input value="<?=e($user['email'])?>" disabled></label><button class="btn ink">Save</button></form></div><div class="panel"><h3>Access</h3><p>Your current tier is <strong><?=e($user['tier_name'])?></strong>.</p><p>CSV exports and full drilldowns are available on Pro and Enterprise.</p><a class="btn primary" href="?page=pricing">Compare plans</a></div></div></section>
 <?php elseif($page==='dashboard'): if(!$user) redirect_to('?page=login'); $presets=question_presets(); $dashInsights=active_insight_cards(); ?>
 <section class="view"><section class="dashboard-hero panel dark"><div><div class="eyebrow">Member cockpit</div><h1>Welcome, <?=e($user['name'])?></h1><p>Use preset questions, global search and database drill-downs to turn the aviation datasets into answers.</p></div><div class="stats-grid compact"><?=metric_card(nfmt($stats['airlines']),'Airlines',nfmt($stats['active_airlines']).' active')?><?=metric_card(nfmt($stats['airports']),'Airports','global coverage')?><?=metric_card(nfmt($stats['aircraft_types']),'Aircraft types','technical intelligence')?><?=metric_card(nfmt($stats['dataset_files']),'Dataset files','source warehouse')?></div></section><form class="global-search-panel standalone" method="get"><input type="hidden" name="page" value="search"><label><span>Search your aviation data</span><input name="q" placeholder="Search across airlines, airports, aircraft types, routes, standards..."></label><button class="btn ink">Search</button><a class="btn ghost" href="?page=catalogue">Browse catalogue</a></form><section class="section-head"><div><div class="eyebrow">Preset intelligence questions</div><h1>Ask the dataset</h1></div><p>These are controlled from Admin → Preset Questions and are designed to guide logged-in users toward useful answers.</p></section><div class="question-grid"><?php foreach($presets as $q): $locked=!empty($q['required_tier_order']) && tier_order_for()< (int)$q['required_tier_order'] && !is_admin(); ?><article class="question-card"><span class="chip"><?=e($q['category'])?></span><h3><?=e($q['title'])?></h3><p><?=e($q['question_text'])?></p><?php if($locked): ?><a class="btn ghost" href="?page=pricing">Upgrade to <?=e($q['required_tier_name'])?></a><?php else: ?><a class="btn primary" href="?page=answer&q=<?=e($q['answer_key'])?>">Run question</a><?php endif; ?></article><?php endforeach; ?></div><section class="section-head"><div><div class="eyebrow">Live titbits</div><h2>Charts from current data</h2></div><p>The same insight engine powers public teasers and logged-in analysis cards.</p></section><div class="insight-grid"><?php foreach(array_slice($dashInsights,0,6) as $card): $rows=run_insight_query($card['query_key']); ?><article class="insight-card"><div class="topline"><span class="chip gold"><?=e($card['metric_label'])?></span></div><h3><?=e($card['title'])?></h3><p><?=e($card['description'])?></p><?=chart_bars($rows)?></article><?php endforeach; ?></div></section>
 <?php elseif($page==='answer'): if(!$user) redirect_to('?page=login'); $answerKey=getv('q'); $preset=preset_for_answer_key($answerKey); if($preset && !preset_allowed($preset)): ?><?=access_gate('Pro question locked','Upgrade to run this preset intelligence question.','View pricing')?><?php else: $rows=run_preset_query($answerKey); ?>
 <section class="view"><a class="linkish" href="?page=dashboard">← Back to questions</a><section class="section-head"><div><div class="eyebrow">Preset answer</div><h1><?=e($preset['title'] ?? labelize($answerKey))?></h1></div><a class="btn ghost" href="?page=catalogue">Open datasets</a></section><?=render_answer_visual($answerKey,$rows)?><?=render_table($rows,$rows?array_keys($rows[0]):[],null)?></section><?php endif; ?>
 <?php elseif($page==='admin'): if(!is_admin()): ?><?=access_gate('Admin access required','Log in with an administrator account to manage records, imports, exports and users.','Log in')?><?php else: render_admin_page(); endif; ?>
 <?php elseif($page==='contact'): ?>
-<section class="view"><div class="panel contact-panel"><div class="eyebrow">Ultimate package</div><h1>Contact Angani Solutions</h1><p>For bulk exports, API access, private dashboards, custom aviation datasets and advisory work tailored to the client’s aviation workflow.</p><p><strong>Silas Savali</strong><br>Angani Solutions<br><a href="mailto:info@angani.co.uk">info@angani.co.uk</a><br><a href="https://www.angani.co.uk">www.angani.co.uk</a></p></div></section>
+<section class="view"><div class="panel contact-panel"><div class="eyebrow">Enterprise package</div><h1>Contact Angani Solutions</h1><p>For bulk exports, API access, private dashboards, custom aviation datasets and advisory work.</p><p><strong>Silas Savali</strong><br>Angani Solutions<br><a href="mailto:info@angani.co.uk">info@angani.co.uk</a><br><a href="https://www.angani.co.uk">www.angani.co.uk</a></p></div></section>
 <?php endif; ?></main><footer class="site-footer"><span>Angani Data</span><span>Built for aviation professionals, consultants, airports, airlines and regulators.</span></footer><script src="js/app.js"></script></body></html>
 <?php
 require_once __DIR__ . '/includes/admin_render.php';

@@ -71,9 +71,9 @@ qa_add($checks, 'All configured module fields exist', count($missingFields) === 
 
 $badTiers = [];
 foreach ($mods as $key => $cfg) {
-    if (!in_array($cfg['tier'] ?? 'free', ['free','pro','enterprise'], true)) $badTiers[] = $key;
+    if (!in_array($cfg['tier'] ?? 'free', ['free','pro','ultimate'], true)) $badTiers[] = $key;
 }
-qa_add($checks, 'Modules use only Free / Pro / Enterprise tiers', count($badTiers) === 0, $badTiers ? implode(', ', $badTiers) : '3-tier model enforced in module config');
+qa_add($checks, 'Modules use only Free / Pro / Ultimate tiers', count($badTiers) === 0, $badTiers ? implode(', ', $badTiers) : '3-tier model enforced in module config');
 
 $badPublicFields = [];
 $internal = ['id','uuid','source_id','source_record_id','source_scope','fields_json','row_json','headers_json','raw_text','raw_hash','import_batch_id','dataset_file_id','created_at','updated_at','deleted_at','date_added','date_modified','data_source','record_status','source_file','source_url','created_by','screenshot_path'];

@@ -1,0 +1,70 @@
+Failed Airline Logo Downloads (60 total)
+=========================================
+
+HTTP 429 (Rate Limited) — 12
+  AAB  Abelag Aviation
+  UCR  Aero Charter
+  CGH  Air Guilin
+  CAW  Comair
+  CUB  Cubana
+  FDA  Fuji Dream Airlines
+  EXP  Island Air Express
+  ISR  Israir Airlines
+  RVF  New Pacific Airlines
+  OTT  OTT Airlines
+  SQC  Singapore Airlines Cargo
+  MSJ  SkyJet Airlines
+
+HTTP 404 (Not Found) — 30
+  BRP  Aerobratsk
+  DAH  Air Algérie
+  TNO  AeroUnion
+  WAF  Air Flamenco
+  AKJ  Akasa Air
+  AJK  Allied Air
+  LMU  AlMasria Universal Airlines
+  AXL  Anguilla Air Services
+  AZU  Azul
+  ACN  Azul Conecta
+  BCI  Blue Islands
+  CVK  CAVOK Air
+  CTV  Citilink
+  ECO  Ecojet
+  ETH  Ethiopian Airlines
+  GIE  Elysian Airlines
+  VQI  Flyme
+  FXT  FlexFlight
+  MNT  FlyMontserrat
+  IOU  International AirLink
+  IPM  ITA Transportes Aéreos
+  JUB  Jubba Airways
+  JBW  Jubba Airways Kenya
+  LYM  Key Lime Air
+  GMT  Magnicharters
+  NEA  New England Airlines
+  NWK  Network Aviation
+  NIA  Nile Air
+  NIN  Niger Airlines
+  TSH  R1 Airlines
+  RXI  Riyadh Air
+  RFF  Russian Air Force
+  SSF  Severstal Air Company
+  SLD  Silver Air
+  SUD  Sudan Airways
+  AME  Spanish Air Force
+  TGU  Transportes Aéreos Guatemaltecos
+
+HTTP 403 (Forbidden) — 2
+  FDY  Southern Airways Express
+  SJV  Super Air Jet
+
+HTTP 200/204 (Empty/No Content) — 6
+  AKK  Aklak Air
+  AWT  Albawings
+  CFV  Calafia Airlines
+  ASQ  ExpressJet
+  HTY  Hlity Copter Airlines
+  LVL  Level
+  CSS  SF Airlines
+  NYS  Ulendo Airlink
+  VEC  Vensecar Internacional

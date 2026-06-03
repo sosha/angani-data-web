@@ -35,7 +35,7 @@ Manage user accounts:
 - **Edit user**: Click "Edit" on any user row to change their name, tier, role, or status
 - **Inline editing**: Click the tier/role/status cells to edit directly
 
-**Fields**: name, email, password_hash, tier_id (Free/Pro/Enterprise), role (user/admin), status (active/suspended/deleted)
+**Fields**: name, email, password_hash, tier_id (Free/Pro/Ultimate), role (user/admin), status (active/suspended/deleted)
 
 ### 2.3 Plans (Subscription Tiers)
 
@@ -268,7 +268,7 @@ Direct record management for any module:
 
 | Role | Permissions |
 |------|------------|
-| **user** | Access based on their tier (Free/Pro/Enterprise). No admin access. |
+| **user** | Access based on their tier (Free/Pro/Ultimate). No admin access. |
 | **admin** | Full access to everything: all modules, all tiers, admin console, CRUD operations, import/export, pipeline management, user management, system configuration. |
 
 ---
