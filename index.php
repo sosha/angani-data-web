@@ -114,6 +114,28 @@ if($key==='countries'){
     if($stDestinations) $statsHtml.='<div class="hero-stat"><span class="hero-stat-l">Destinations</span><span class="hero-stat-v">'.nfmt($stDestinations).'</span></div>';
     if($r['callsign']??'') $statsHtml.='<div class="hero-stat"><span class="hero-stat-l">Callsign</span><span class="hero-stat-v">'.e($r['callsign']).'</span></div>';
     if($statsHtml) echo '<div class="hero-stats">'.$statsHtml.'</div>';
+} elseif($key==='aircraft_types'){
+    $acIcao=$r['icao_code']??''; $acIata=$r['iata_code']??'';
+    $acImage=''; $acRange=null; $acCeiling=null; $acSpeed=null; $acMtow=null; $acWingspan=null; $acLength=null; $acPrice=null; $acSeats=null; $acEngine='';
+    if($acIcao || $acIata){
+        try{$a=row('SELECT primary_livery_url FROM aircraft_type_assets WHERE icao_code=? OR iata_code=? LIMIT 1',[$acIcao?:'',$acIata?:'']); if($a) $acImage=e($a['primary_livery_url']);}catch(Throwable $e){}
+        try{$p=row('SELECT max_range_nm,service_ceiling_ft,cruise_speed_mach FROM aircraft_type_operational_performance WHERE icao_code=? OR iata_code=? LIMIT 1',[$acIcao?:'',$acIata?:'']); if($p){ $acRange=$p['max_range_nm']; $acCeiling=$p['service_ceiling_ft']; $acSpeed=$p['cruise_speed_mach']; }}catch(Throwable $e){}
+        try{$s=row('SELECT mtow_kg,wingspan_m,length_m FROM aircraft_type_technical_specs WHERE icao_code=? OR iata_code=? LIMIT 1',[$acIcao?:'',$acIata?:'']); if($s){ $acMtow=$s['mtow_kg']; $acWingspan=$s['wingspan_m']; $acLength=$s['length_m']; }}catch(Throwable $e){}
+        try{$econ=row('SELECT list_price_usd FROM aircraft_type_economic_data WHERE icao_code=? OR iata_code=? LIMIT 1',[$acIcao?:'',$acIata?:'']); if($econ) $acPrice=$econ['list_price_usd'];}catch(Throwable $e){}
+        try{$c=row('SELECT max_capacity FROM aircraft_type_cabin_payload WHERE icao_code=? OR iata_code=? LIMIT 1',[$acIcao?:'',$acIata?:'']); if($c) $acSeats=(int)$c['max_capacity'];}catch(Throwable $e){}
+        try{$eng=row('SELECT engine_type FROM aircraft_type_engine_data WHERE icao_code=? OR iata_code=? LIMIT 1',[$acIcao?:'',$acIata?:'']); if($eng) $acEngine=e($eng['engine_type']);}catch(Throwable $e){}
+    }
+    $imgHtml=$acImage?'<img class="hero-logo ac-hero-img" src="'.$acImage.'" alt="'.e($r[$cfg['title']]??'').'" style="width:auto;height:120px;max-width:100%;border-radius:16px">':'<div class="ac-placeholder" style="width:120px;height:120px;background:rgba(7,21,33,.06);border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:3rem;font-weight:700;color:var(--muted);border:1px solid var(--line)">'.e($acIcao?:'✈').'</div>';
+    echo '<div style="display:flex;align-items:center;gap:16px;margin-bottom:8px">'.$imgHtml.'<div><h1 style="margin:0">'.e($r[$cfg['title']]??'Record').'</h1><p style="margin:4px 0 0;color:var(--muted)">'.e($r['manufacturer']??'').' · '.e($r['type']??$r['engine_type']??'Type').'</p></div></div>';
+    $acStats='';
+    if($acRange) $acStats.='<div class="hero-stat"><span class="hero-stat-l">Range</span><span class="hero-stat-v">'.nfmt($acRange).' nm</span></div>';
+    if($acSpeed) $acStats.='<div class="hero-stat"><span class="hero-stat-l">Cruise</span><span class="hero-stat-v">Mach '.$acSpeed.'</span></div>';
+    if($acCeiling) $acStats.='<div class="hero-stat"><span class="hero-stat-l">Ceiling</span><span class="hero-stat-v">'.nfmt($acCeiling).' ft</span></div>';
+    if($acSeats) $acStats.='<div class="hero-stat"><span class="hero-stat-l">Capacity</span><span class="hero-stat-v">'.nfmt($acSeats).' pax</span></div>';
+    if($acMtow) $acStats.='<div class="hero-stat"><span class="hero-stat-l">MTOW</span><span class="hero-stat-v">'.nfmt($acMtow).' kg</span></div>';
+    if($acEngine) $acStats.='<div class="hero-stat"><span class="hero-stat-l">Engine</span><span class="hero-stat-v">'.$acEngine.'</span></div>';
+    if($acPrice) $acStats.='<div class="hero-stat"><span class="hero-stat-l">List Price</span><span class="hero-stat-v">US$'.nfmt(round($acPrice)).'</span></div>';
+    if($acStats) echo '<div class="hero-stats">'.$acStats.'</div>';
 } else {
     echo '<h1>'.e($r[$cfg['title']] ?? 'Record').'</h1><p>'.e($r[$cfg['subtitle']] ?? '').'</p>';
 }
@@ -238,6 +260,69 @@ if($tabParam==='overview' && $key==='airlines'){
 } elseif($tabParam==='overview' || $tabParam==='fields'){
     if($key!=='countries') echo render_detail_fields($cfg,$r,false);
 }
+// Aircraft type overview with chart
+if($tabParam==='overview' && $key==='aircraft_types'){
+    $acIcao=$r['icao_code']??''; $acIata=$r['iata_code']??'';
+    $acRange=null; $acCeiling=null; $acSpeed=null; $acMtow=null; $acWingspan=null; $acLength=null; $acPrice=null; $acSeatsC=null; $acSeatsY=null; $acEngine=''; $acFuel='';
+    if($acIcao || $acIata){
+        try{$p=row('SELECT max_range_nm,service_ceiling_ft,cruise_speed_mach FROM aircraft_type_operational_performance WHERE icao_code=? OR iata_code=? LIMIT 1',[$acIcao?:'',$acIata?:'']); if($p){ $acRange=$p['max_range_nm']; $acCeiling=$p['service_ceiling_ft']; $acSpeed=$p['cruise_speed_mach']; }}catch(Throwable $e){}
+        try{$s=row('SELECT mtow_kg,wingspan_m,length_m,height_m FROM aircraft_type_technical_specs WHERE icao_code=? OR iata_code=? LIMIT 1',[$acIcao?:'',$acIata?:'']); if($s){ $acMtow=$s['mtow_kg']; $acWingspan=$s['wingspan_m']; $acLength=$s['length_m']; }}catch(Throwable $e){}
+        try{$econ=row('SELECT list_price_usd,op_cost_per_hour FROM aircraft_type_economic_data WHERE icao_code=? OR iata_code=? LIMIT 1',[$acIcao?:'',$acIata?:'']); if($econ) $acPrice=$econ['list_price_usd'];}catch(Throwable $e){}
+        try{$c=row('SELECT typical_c_seats,typical_y_seats FROM aircraft_type_cabin_payload WHERE icao_code=? OR iata_code=? LIMIT 1',[$acIcao?:'',$acIata?:'']); if($c){ $acSeatsC=(int)$c['typical_c_seats']; $acSeatsY=(int)$c['typical_y_seats']; }}catch(Throwable $e){}
+        try{$eng=row('SELECT engine_type,fuel_burn_rate FROM aircraft_type_engine_data WHERE icao_code=? OR iata_code=? LIMIT 1',[$acIcao?:'',$acIata?:'']); if($eng){ $acEngine=e($eng['engine_type']); $acFuel=e($eng['fuel_burn_rate']??''); }}catch(Throwable $e){}
+    }
+    echo '<div class="detail-sections">';
+    echo '<div class="xcard-sec"><div class="xcard-sec-title">PERFORMANCE</div>';
+    if($acRange) echo '<div class="xcard-row"><span class="xcard-row-k">Max Range</span><span class="xcard-row-v">'.nfmt($acRange).' nm</span></div>';
+    if($acSpeed) echo '<div class="xcard-row"><span class="xcard-row-k">Cruise Speed</span><span class="xcard-row-v">Mach '.$acSpeed.'</span></div>';
+    if($acCeiling) echo '<div class="xcard-row"><span class="xcard-row-k">Service Ceiling</span><span class="xcard-row-v">'.nfmt($acCeiling).' ft</span></div>';
+    echo '</div>';
+    echo '<div class="xcard-sec"><div class="xcard-sec-title">DIMENSIONS & WEIGHT</div>';
+    if($acLength) echo '<div class="xcard-row"><span class="xcard-row-k">Length</span><span class="xcard-row-v">'.$acLength.' m</span></div>';
+    if($acWingspan) echo '<div class="xcard-row"><span class="xcard-row-k">Wingspan</span><span class="xcard-row-v">'.$acWingspan.' m</span></div>';
+    if($acMtow) echo '<div class="xcard-row"><span class="xcard-row-k">MTOW</span><span class="xcard-row-v">'.nfmt($acMtow).' kg</span></div>';
+    echo '</div>';
+    echo '<div class="xcard-sec"><div class="xcard-sec-title">CAPACITY & COST</div>';
+    if($acSeatsC||$acSeatsY) echo '<div class="xcard-row"><span class="xcard-row-k">Seats</span><span class="xcard-row-v">'.($acSeatsC?nfmt($acSeatsC).'C':'').($acSeatsC&&$acSeatsY?' + ':'').($acSeatsY?nfmt($acSeatsY).'Y':'').'</span></div>';
+    if($acEngine) echo '<div class="xcard-row"><span class="xcard-row-k">Engine</span><span class="xcard-row-v">'.$acEngine.'</span></div>';
+    if($acFuel) echo '<div class="xcard-row"><span class="xcard-row-k">Fuel Burn</span><span class="xcard-row-v">'.$acFuel.'</span></div>';
+    if($acPrice) echo '<div class="xcard-row"><span class="xcard-row-k">List Price</span><span class="xcard-row-v">US$'.nfmt(round($acPrice)).'</span></div>';
+    echo '</div>';
+    echo '</div>';
+    // Performance radar chart
+    $chartId='perf_'.preg_replace('/[^a-z0-9]/','',strtolower($acIcao?:$acIata?:'ac'));
+    if($acRange||$acSpeed||$acCeiling||$acMtow){
+        $radarLabels=[]; $radarData=[];
+        if($acRange){$radarLabels[]='Range';$radarData[]=min(100,round($acRange/10));}
+        if($acSpeed){$radarLabels[]='Speed';$radarData[]=min(100,round((float)$acSpeed*100));}
+        if($acCeiling){$radarLabels[]='Ceiling';$radarData[]=min(100,round($acCeiling/450));}
+        if($acMtow){$radarLabels[]='MTOW';$radarData[]=min(100,round($acMtow/500));}
+        if($acLength){$radarLabels[]='Length';$radarData[]=min(100,round($acLength*3));}
+        if($acWingspan){$radarLabels[]='Span';$radarData[]=min(100,round($acWingspan*3));}
+        echo '<section class="panel"><h3>Performance Profile</h3><div style="position:relative;height:320px;max-width:500px;margin:0 auto"><canvas id="'.$chartId.'"></canvas></div></section>';
+        echo '<script>document.addEventListener("DOMContentLoaded",function(){new Chart(document.getElementById("'.$chartId.'"),{type:"radar",data:{labels:'.json_encode($radarLabels).',datasets:[{label:"'.e($r['model']??'Aircraft').'",data:'.json_encode($radarData).',backgroundColor:"rgba(198,163,92,0.2)",borderColor:"#c6a35c",borderWidth:2,pointBackgroundColor:"#c6a35c",pointRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{r:{beginAtZero:true,max:100,ticks:{stepSize:20,font:{size:10}},grid:{color:"rgba(7,21,33,0.1)"},pointLabels:{font:{size:11}}}}}});});</script>';
+    }
+    // Range comparison with similar aircraft from same manufacturer
+    $maker=$r['manufacturer']??'';
+    $compareRows=[];
+    if($maker && ($acIcao||$acIata)){
+        try{
+            $compareRows=rows('SELECT a.model, p.max_range_nm FROM aircraft_types a JOIN aircraft_type_operational_performance p ON (a.icao_code=p.icao_code OR a.iata_code=p.iata_code) WHERE a.manufacturer=? AND p.max_range_nm IS NOT NULL ORDER BY p.max_range_nm DESC LIMIT 10',[$maker]);
+        }catch(Throwable $e){}
+    }
+    if(count($compareRows)>1){
+        $compLabels=[]; $compData=[];
+        foreach($compareRows as $cr){
+            $compLabels[]=e($cr['model']??'Unknown');
+            $compData[]=(float)$cr['max_range_nm'];
+        }
+        $compChartId='comp_'.preg_replace('/[^a-z0-9]/','',strtolower($acIcao?:$acIata?:'cp'));
+        echo '<section class="panel"><h3>Range Comparison — '.e($maker).' Models</h3><div style="position:relative;height:280px"><canvas id="'.$compChartId.'"></canvas></div></section>';
+        $compColors='['.implode(',',array_map(fn($i)=>'rgba(198,163,92,'.(0.5+$i*0.06).')',array_keys($compData))).']';
+        $compBorders='['.implode(',',array_map(fn()=>'"#c6a35c"',$compData)).']';
+        echo '<script>document.addEventListener("DOMContentLoaded",function(){new Chart(document.getElementById("'.$compChartId.'"),{type:"bar",data:{labels:'.json_encode($compLabels).',datasets:[{label:"Range (nm)",data:'.json_encode($compData).',backgroundColor:'.$compColors.',borderColor:'.$compBorders.',borderWidth:1}]},options:{indexAxis:"y",responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{beginAtZero:true,title:{display:true,text:"Nautical Miles",font:{size:10}},ticks:{font:{size:9}}},y:{ticks:{font:{size:9}}}}}});});</script>';
+    }
+}
 $related=render_related_sections($key,$r);
 $relatedSections=explode('<section class="related">',$related);
 $sectionMap=[]; foreach($relatedSections as $sec){ if(!trim($sec)) continue; if(preg_match('/<h3>(.+?)<\/h3>/',$sec,$m)){ $secKey=strtolower(preg_replace('/[^a-z0-9]/','',$m[1])); $sectionMap[$secKey]='<section class="related">'.$sec; } }
@@ -339,6 +424,157 @@ if($key==='countries'){
         }
     }
 }
+// Aircraft type dedicated subtabs (richer than raw related tables)
+if($key==='aircraft_types' && $tabParam==='profile'){
+    echo '<div class="detail-sections">';
+    $acIcao=$r['icao_code']??''; $acIata=$r['iata_code']??''; $acModel=$r['model']??'';
+    $profRows=[]; $acImage='';
+    try{$profRows=rows('SELECT * FROM aircraft_type_profile_data WHERE aircraft_name=? OR aircraft_name LIKE ? LIMIT 3',[$acModel,"%$acModel%"]);}catch(Throwable $e){}
+    try{$a=row('SELECT primary_livery_url,cockpit_reference_url,lopa_template_url FROM aircraft_type_assets WHERE icao_code=? OR iata_code=? LIMIT 1',[$acIcao?:'',$acIata?:'']); if($a){ $acImage=$a; }}catch(Throwable $e){}
+    if($acImage){
+        echo '<div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:12px">';
+        if($acImage['primary_livery_url']) echo '<img src="'.e($acImage['primary_livery_url']).'" alt="Aircraft" style="max-width:100%;height:auto;max-height:200px;border-radius:12px;border:1px solid var(--line)">';
+        echo '</div>';
+    }
+    if($profRows){
+        foreach($profRows as $pr){
+            if($pr['history']??'') echo '<div style="margin-bottom:12px;line-height:1.7;color:var(--ink)"><strong>History</strong><p style="margin:4px 0 0">'.e(substr($pr['history'],0,1000)).'</p></div>';
+            echo '<div class="xcard-sec" style="margin-bottom:12px"><div class="xcard-sec-title">SPECIFICATIONS</div>';
+            if($pr['country_of_origin']??'') echo '<div class="xcard-row"><span class="xcard-row-k">Origin</span><span class="xcard-row-v">'.e($pr['country_of_origin']).'</span></div>';
+            if($pr['aircraft_role']??'') echo '<div class="xcard-row"><span class="xcard-row-k">Role</span><span class="xcard-row-v">'.e($pr['aircraft_role']).'</span></div>';
+            if($pr['powerplants']??'') echo '<div class="xcard-row"><span class="xcard-row-k">Powerplants</span><span class="xcard-row-v">'.e($pr['powerplants']).'</span></div>';
+            if($pr['capacity']??'') echo '<div class="xcard-row"><span class="xcard-row-k">Capacity</span><span class="xcard-row-v">'.e($pr['capacity']).'</span></div>';
+            if($pr['performance']??'') echo '<div class="xcard-row"><span class="xcard-row-k">Performance</span><span class="xcard-row-v">'.e($pr['performance']).'</span></div>';
+            if($pr['weights']??'') echo '<div class="xcard-row"><span class="xcard-row-k">Weights</span><span class="xcard-row-v">'.e($pr['weights']).'</span></div>';
+            if($pr['dimensions']??'') echo '<div class="xcard-row"><span class="xcard-row-k">Dimensions</span><span class="xcard-row-v">'.e($pr['dimensions']).'</span></div>';
+            if($pr['production']??'') echo '<div class="xcard-row"><span class="xcard-row-k">Production</span><span class="xcard-row-v">'.e($pr['production']).'</span></div>';
+            echo '</div>';
+        }
+    } else {
+        echo '<p class="muted">No profile data available for this aircraft type.</p>';
+    }
+    echo '</div>';
+}
+if($key==='aircraft_types' && $tabParam==='cabin'){
+    echo '<div class="detail-sections">';
+    $cabinRows=[]; $acIcao=$r['icao_code']??''; $acIata=$r['iata_code']??'';
+    try{$cabinRows=rows('SELECT * FROM aircraft_type_cabin_payload WHERE icao_code=? OR iata_code=? LIMIT 5',[$acIcao?:'',$acIata?:'']);}catch(Throwable $e){}
+    if($cabinRows){
+        echo '<section class="panel"><h3>Cabin Configuration</h3><div class="table-wrap"><table><thead><tr><th>Business Seats</th><th>Economy Seats</th><th>Max Capacity</th><th>Cargo Volume</th><th>Max Payload</th></tr></thead><tbody>';
+        foreach($cabinRows as $cr){
+            echo '<tr><td>'.($cr['typical_c_seats']?nfmt($cr['typical_c_seats']):'—').'</td><td>'.($cr['typical_y_seats']?nfmt($cr['typical_y_seats']):'—').'</td><td>'.($cr['max_capacity']?nfmt($cr['max_capacity']):'—').'</td><td>'.($cr['cargo_volume_m3']?nfmt($cr['cargo_volume_m3']).' m³':'—').'</td><td>'.($cr['max_payload_kg']?nfmt($cr['max_payload_kg']).' kg':'—').'</td></tr>';
+        }
+        echo '</tbody></table></div></section>';
+        // Visual seat bar
+        $first=$cabinRows[0];
+        $totalSeats=(int)($first['typical_c_seats']??0)+(int)($first['typical_y_seats']??0);
+        if($totalSeats>0){
+            $cPct=(int)($first['typical_c_seats']??0)/$totalSeats*100;
+            $yPct=(int)($first['typical_y_seats']??0)/$totalSeats*100;
+            echo '<div style="margin-top:12px"><p style="font-size:.82rem;font-weight:600;margin-bottom:4px">Seat Configuration</p><div style="display:flex;height:32px;border-radius:8px;overflow:hidden;border:1px solid var(--line)">';
+            if($cPct>0) echo '<div style="width:'.$cPct.'%;background:#c6a35c;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:600;color:#fff">'.nfmt($first['typical_c_seats']).' Business</div>';
+            if($yPct>0) echo '<div style="width:'.$yPct.'%;background:#4285f4;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:600;color:#fff">'.nfmt($first['typical_y_seats']).' Economy</div>';
+            echo '</div></div>';
+        }
+    } else {
+        echo '<p class="muted">No cabin data available for this aircraft type.</p>';
+    }
+    echo '</div>';
+}
+if($key==='aircraft_types' && $tabParam==='engine'){
+    echo '<div class="detail-sections">';
+    $engRows=[]; $acIcao=$r['icao_code']??''; $acIata=$r['iata_code']??'';
+    try{$engRows=rows('SELECT * FROM aircraft_type_engine_data WHERE icao_code=? OR iata_code=? LIMIT 5',[$acIcao?:'',$acIata?:'']);}catch(Throwable $e){}
+    if($engRows){
+        foreach($engRows as $er){
+            echo '<div class="xcard-sec"><div class="xcard-sec-title">POWERPLANT</div>';
+            if($er['engine_variants']??'') echo '<div class="xcard-row"><span class="xcard-row-k">Variants</span><span class="xcard-row-v">'.e($er['engine_variants']).'</span></div>';
+            if($er['engine_type']??'') echo '<div class="xcard-row"><span class="xcard-row-k">Type</span><span class="xcard-row-v">'.e($er['engine_type']).'</span></div>';
+            if($er['engine_count']??'') echo '<div class="xcard-row"><span class="xcard-row-k">Count</span><span class="xcard-row-v">'.e($er['engine_count']).'</span></div>';
+            if($er['thrust_per_engine_kn']??'') echo '<div class="xcard-row"><span class="xcard-row-k">Thrust</span><span class="xcard-row-v">'.nfmt($er['thrust_per_engine_kn']).' kN</span></div>';
+            if($er['fuel_burn_rate']??'') echo '<div class="xcard-row"><span class="xcard-row-k">Fuel Burn</span><span class="xcard-row-v">'.e($er['fuel_burn_rate']).'</span></div>';
+            if($er['saf_compatible']??'') echo '<div class="xcard-row"><span class="xcard-row-k">SAF</span><span class="xcard-row-v">'.e($er['saf_compatible']).'</span></div>';
+            echo '</div>';
+        }
+    } else {
+        echo '<p class="muted">No engine data available for this aircraft type.</p>';
+    }
+    echo '</div>';
+}
+if($key==='aircraft_types' && $tabParam==='specs'){
+    echo '<div class="detail-sections">';
+    $specRows=[]; $rwRows=[]; $acIcao=$r['icao_code']??''; $acIata=$r['iata_code']??'';
+    try{$specRows=rows('SELECT * FROM aircraft_type_technical_specs WHERE icao_code=? OR iata_code=? LIMIT 5',[$acIcao?:'',$acIata?:'']);}catch(Throwable $e){}
+    try{$rwRows=rows('SELECT * FROM aircraft_type_runway_requirements WHERE icao_code=? OR iata_code=? LIMIT 5',[$acIcao?:'',$acIata?:'']);}catch(Throwable $e){}
+    if($specRows){
+        foreach($specRows as $sr){
+            echo '<div class="xcard-sec"><div class="xcard-sec-title">DIMENSIONS & WEIGHTS</div>';
+            if($sr['mtow_kg']??'') echo '<div class="xcard-row"><span class="xcard-row-k">MTOW</span><span class="xcard-row-v">'.nfmt($sr['mtow_kg']).' kg</span></div>';
+            if($sr['mzfw_kg']??'') echo '<div class="xcard-row"><span class="xcard-row-k">MZFW</span><span class="xcard-row-v">'.nfmt($sr['mzfw_kg']).' kg</span></div>';
+            if($sr['empty_weight_kg']??'') echo '<div class="xcard-row"><span class="xcard-row-k">Empty Weight</span><span class="xcard-row-v">'.nfmt($sr['empty_weight_kg']).' kg</span></div>';
+            if($sr['wingspan_m']??'') echo '<div class="xcard-row"><span class="xcard-row-k">Wingspan</span><span class="xcard-row-v">'.nfmt($sr['wingspan_m']).' m</span></div>';
+            if($sr['length_m']??'') echo '<div class="xcard-row"><span class="xcard-row-k">Length</span><span class="xcard-row-v">'.nfmt($sr['length_m']).' m</span></div>';
+            if($sr['height_m']??'') echo '<div class="xcard-row"><span class="xcard-row-k">Height</span><span class="xcard-row-v">'.nfmt($sr['height_m']).' m</span></div>';
+            echo '</div>';
+        }
+    }
+    if($rwRows){
+        foreach($rwRows as $rr){
+            echo '<div class="xcard-sec" style="margin-top:12px"><div class="xcard-sec-title">RUNWAY REQUIREMENTS</div>';
+            if($rr['min_takeoff_length_ft']??'') echo '<div class="xcard-row"><span class="xcard-row-k">Takeoff</span><span class="xcard-row-v">'.nfmt($rr['min_takeoff_length_ft']).' ft</span></div>';
+            if($rr['min_landing_length_ft']??'') echo '<div class="xcard-row"><span class="xcard-row-k">Landing</span><span class="xcard-row-v">'.nfmt($rr['min_landing_length_ft']).' ft</span></div>';
+            if($rr['surface_compatibility']??'') echo '<div class="xcard-row"><span class="xcard-row-k">Surface</span><span class="xcard-row-v">'.e($rr['surface_compatibility']).'</span></div>';
+            echo '</div>';
+        }
+    }
+    if(!$specRows&&!$rwRows) echo '<p class="muted">No technical specs available for this aircraft type.</p>';
+    echo '</div>';
+}
+if($key==='aircraft_types' && $tabParam==='economics'){
+    echo '<div class="detail-sections">';
+    $econRows=[]; $acIcao=$r['icao_code']??''; $acIata=$r['iata_code']??'';
+    try{$econRows=rows('SELECT * FROM aircraft_type_economic_data WHERE icao_code=? OR iata_code=? LIMIT 5',[$acIcao?:'',$acIata?:'']);}catch(Throwable $e){}
+    $econChartId='econ_'.preg_replace('/[^a-z0-9]/','',strtolower($acIcao?:$acIata?:'ec'));
+    if($econRows){
+        foreach($econRows as $er){
+            echo '<div class="xcard-sec"><div class="xcard-sec-title">COST ANALYSIS</div>';
+            if($er['list_price_usd']??'') echo '<div class="xcard-row"><span class="xcard-row-k">List Price</span><span class="xcard-row-v">US$ '.nfmt(round($er['list_price_usd'])).'</span></div>';
+            if($er['op_cost_per_hour']??'') echo '<div class="xcard-row"><span class="xcard-row-k">Op Cost/Hour</span><span class="xcard-row-v">US$ '.nfmt(round($er['op_cost_per_hour'])).'</span></div>';
+            if($er['lease_rate_monthly']??'') echo '<div class="xcard-row"><span class="xcard-row-k">Lease Rate</span><span class="xcard-row-v">US$ '.nfmt(round($er['lease_rate_monthly'])).'/mo</span></div>';
+            if($er['residual_value_trend']??'') echo '<div class="xcard-row"><span class="xcard-row-k">Residual Value</span><span class="xcard-row-v">'.e($er['residual_value_trend']).'</span></div>';
+            echo '</div>';
+            // Cost bar chart
+            $econLabels=[]; $econVals=[];
+            if($er['list_price_usd']??''){$econLabels[]='List Price';$econVals[]=round($er['list_price_usd']/1e6,1);}
+            if($er['op_cost_per_hour']??''){$econLabels[]='Hourly Cost';$econVals[]=round($er['op_cost_per_hour']);}
+            if($er['lease_rate_monthly']??''){$econLabels[]='Lease/Mo';$econVals[]=round($er['lease_rate_monthly']);}
+            if($econLabels){
+                echo '<section class="panel"><h3>Cost Overview</h3><div style="position:relative;height:250px;max-width:500px;margin:12px auto 0"><canvas id="'.$econChartId.'"></canvas></div></section>';
+                echo '<script>document.addEventListener("DOMContentLoaded",function(){new Chart(document.getElementById("'.$econChartId.'"),{type:"bar",data:{labels:'.json_encode($econLabels).',datasets:[{label:"Cost",data:'.json_encode($econVals).',backgroundColor:["rgba(198,163,92,0.7)","rgba(66,133,244,0.7)","rgba(38,197,107,0.7)"],borderColor:["#c6a35c","#4285f4","#26c56b"],borderWidth:1}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{font:{size:10}}}}}});});</script>';
+            }
+        }
+    } else {
+        echo '<p class="muted">No economic data available for this aircraft type.</p>';
+    }
+    echo '</div>';
+}
+if($key==='aircraft_types' && $tabParam==='environmental'){
+    echo '<div class="detail-sections">';
+    $envRows=[]; $acIcao=$r['icao_code']??''; $acIata=$r['iata_code']??'';
+    try{$envRows=rows('SELECT * FROM aircraft_type_environmental_data WHERE icao_code=? OR iata_code=? LIMIT 5',[$acIcao?:'',$acIata?:'']);}catch(Throwable $e){}
+    if($envRows){
+        echo '<div class="xcard-sec"><div class="xcard-sec-title">ENVIRONMENTAL</div>';
+        foreach($envRows as $ev){
+            if($ev['carbon_intensity']??'') echo '<div class="xcard-row"><span class="xcard-row-k">Carbon</span><span class="xcard-row-v">'.e($ev['carbon_intensity']).'</span></div>';
+            if($ev['noise_chapter']??'') echo '<div class="xcard-row"><span class="xcard-row-k">Noise</span><span class="xcard-row-v">'.e($ev['noise_chapter']).'</span></div>';
+            if($ev['fuel_type']??'') echo '<div class="xcard-row"><span class="xcard-row-k">Fuel</span><span class="xcard-row-v">'.e($ev['fuel_type']).'</span></div>';
+        }
+        echo '</div>';
+    } else {
+        echo '<p class="muted">No environmental data available for this aircraft type.</p>';
+    }
+    echo '</div>';
+}
 // Aircraft type registry tab
 if($key==='aircraft_types' && $tabParam==='registry'){
     $icao=$r['icao_code']??''; $iata=$r['iata_code']??'';
@@ -353,6 +589,17 @@ if($key==='aircraft_types' && $tabParam==='registry'){
         }catch(Throwable $e){}
     }
     if($regRows){
+        // Donut chart by country
+        $countryCounts=[];
+        foreach($regRows as $ar){ $cc=$ar['country_code']??'Unknown'; isset($countryCounts[$cc])?$countryCounts[$cc]++:$countryCounts[$cc]=1; }
+        arsort($countryCounts);
+        $donutLabels=array_keys($countryCounts); $donutData=array_values($countryCounts);
+        $donutColors='["rgba(198,163,92,0.8)","rgba(66,133,244,0.8)","rgba(38,197,107,0.8)","rgba(219,68,55,0.8)","rgba(156,39,176,0.8)","rgba(0,188,212,0.8)","rgba(255,152,0,0.8)","rgba(96,125,139,0.8)"]';
+        $regChartId='reg_'.preg_replace('/[^a-z0-9]/','',strtolower($icao?:$iata?:'rg'));
+        if(count($donutLabels)>1){
+            echo '<section class="panel"><h3>Registrations by Country</h3><div style="position:relative;height:260px;max-width:400px;margin:0 auto 16px"><canvas id="'.$regChartId.'"></canvas></div></section>';
+            echo '<script>document.addEventListener("DOMContentLoaded",function(){new Chart(document.getElementById("'.$regChartId.'"),{type:"doughnut",data:{labels:'.json_encode($donutLabels).',datasets:[{data:'.json_encode($donutData).',backgroundColor:'.$donutColors.',borderWidth:1}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:"bottom",labels:{boxWidth:12,font:{size:10}}}}}});});</script>';
+        }
         echo '<section class="panel"><h3>Models in Registry ('.count($regRows).')</h3><div class="table-wrap"><table><thead><tr><th>Registration</th><th>Operator</th><th>Country</th><th>Age</th><th>Status</th></tr></thead><tbody>';
         foreach($regRows as $ar){
             echo '<tr><td>'.e($ar['registration']??'').'</td><td>'.e($ar['operator_name']??'').'</td><td>'.e($ar['country_code']??'').'</td><td>'.e($ar['age']??'—').'</td><td>'.e($ar['record_status']??'').'</td></tr>';
