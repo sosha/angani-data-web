@@ -126,7 +126,8 @@ if($key==='countries'){
         try{$eng=row('SELECT engine_type FROM aircraft_type_engine_data WHERE icao_code=? OR iata_code=? LIMIT 1',[$acIcao?:'',$acIata?:'']); if($eng) $acEngine=e($eng['engine_type']);}catch(Throwable $e){}
     }
     $imgHtml=$acImage?'<img class="hero-logo ac-hero-img" src="'.$acImage.'" alt="'.e($r[$cfg['title']]??'').'" style="width:auto;height:120px;max-width:100%;border-radius:16px">':'<div class="ac-placeholder" style="width:120px;height:120px;background:rgba(7,21,33,.06);border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:3rem;font-weight:700;color:var(--muted);border:1px solid var(--line)">'.e($acIcao?:'✈').'</div>';
-    echo '<div style="display:flex;align-items:center;gap:16px;margin-bottom:8px">'.$imgHtml.'<div><h1 style="margin:0">'.e($r[$cfg['title']]??'Record').'</h1><p style="margin:4px 0 0;color:var(--muted)">'.e($r['manufacturer']??'').' · '.e($r['type']??$r['engine_type']??'Type').'</p></div></div>';
+    $heroTitle=e($r['manufacturer']??'').' '.e($r[$cfg['title']]??''); $heroSubtitle=e($r['type']??$r['engine_type']??''); if($heroSubtitle) $heroSubtitle=' · '.$heroSubtitle;
+    echo '<div style="display:flex;align-items:center;gap:16px;margin-bottom:8px">'.$imgHtml.'<div><h1 style="margin:0">'.trim($heroTitle).'</h1><p style="margin:4px 0 0;color:rgba(246,241,231,.72)">'.ltrim($heroSubtitle,' · ').'</p></div></div>';
     $acStats='';
     if($acRange) $acStats.='<div class="hero-stat"><span class="hero-stat-l">Range</span><span class="hero-stat-v">'.nfmt($acRange).' nm</span></div>';
     if($acSpeed) $acStats.='<div class="hero-stat"><span class="hero-stat-l">Cruise</span><span class="hero-stat-v">Mach '.$acSpeed.'</span></div>';
