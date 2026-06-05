@@ -1537,3 +1537,32 @@ CREATE TABLE IF NOT EXISTS country_fare_policies (
   currency_standard VARCHAR(16) DEFAULT NULL,
   last_modified DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS aircraft_manufacturers (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  legal_name VARCHAR(255) DEFAULT NULL,
+  organisation_type VARCHAR(80) DEFAULT NULL,
+  industry VARCHAR(255) DEFAULT NULL,
+  headquarters VARCHAR(255) DEFAULT NULL,
+  founded_year SMALLINT UNSIGNED DEFAULT NULL,
+  ceased_year SMALLINT UNSIGNED DEFAULT NULL,
+  key_people TEXT DEFAULT NULL,
+  products TEXT DEFAULT NULL,
+  employee_count VARCHAR(60) DEFAULT NULL,
+  website VARCHAR(500) DEFAULT NULL,
+  logo_url VARCHAR(500) DEFAULT NULL,
+  is_active ENUM('Yes','No','Unknown') DEFAULT 'Unknown',
+  status VARCHAR(80) DEFAULT NULL,
+  fate TEXT DEFAULT NULL,
+  parent_manufacturer_id INT UNSIGNED DEFAULT NULL,
+  predecessor_manufacturer_id INT UNSIGNED DEFAULT NULL,
+  successor_manufacturer_id INT UNSIGNED DEFAULT NULL,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  INDEX idx_am_name (name),
+  INDEX idx_am_active (is_active),
+  CONSTRAINT fk_am_parent FOREIGN KEY (parent_manufacturer_id) REFERENCES aircraft_manufacturers(id) ON DELETE SET NULL,
+  CONSTRAINT fk_am_predecessor FOREIGN KEY (predecessor_manufacturer_id) REFERENCES aircraft_manufacturers(id) ON DELETE SET NULL,
+  CONSTRAINT fk_am_successor FOREIGN KEY (successor_manufacturer_id) REFERENCES aircraft_manufacturers(id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
