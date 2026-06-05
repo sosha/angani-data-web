@@ -307,7 +307,7 @@ if($tabParam==='overview' && $key==='aircraft_types'){
     $compareRows=[];
     if($maker && ($acIcao||$acIata)){
         try{
-            $compareRows=rows('SELECT a.model, p.max_range_nm FROM aircraft_types a JOIN aircraft_type_operational_performance p ON (a.icao_code=p.icao_code OR a.iata_code=p.iata_code) WHERE a.manufacturer=? AND p.max_range_nm IS NOT NULL ORDER BY p.max_range_nm DESC LIMIT 10',[$maker]);
+            $compareRows=rows('SELECT DISTINCT a.model, p.max_range_nm FROM aircraft_types a JOIN aircraft_type_operational_performance p ON (a.icao_code=p.icao_code OR a.iata_code=p.iata_code) WHERE a.manufacturer=? AND p.max_range_nm IS NOT NULL ORDER BY p.max_range_nm DESC LIMIT 10',[$maker]);
         }catch(Throwable $e){}
     }
     if(count($compareRows)>1){
@@ -318,7 +318,7 @@ if($tabParam==='overview' && $key==='aircraft_types'){
         }
         $compChartId='comp_'.preg_replace('/[^a-z0-9]/','',strtolower($acIcao?:$acIata?:'cp'));
         echo '<section class="panel"><h3>Range Comparison — '.e($maker).' Models</h3><div style="position:relative;height:280px"><canvas id="'.$compChartId.'"></canvas></div></section>';
-        $compColors='['.implode(',',array_map(fn($i)=>'rgba(198,163,92,'.(0.5+$i*0.06).')',array_keys($compData))).']';
+        $compColors='['.implode(',',array_map(fn($i)=>'"rgba(198,163,92,'.min(1.0,0.5+$i*0.06).')"',array_keys($compData))).']';
         $compBorders='['.implode(',',array_map(fn()=>'"#c6a35c"',$compData)).']';
         echo '<script>document.addEventListener("DOMContentLoaded",function(){new Chart(document.getElementById("'.$compChartId.'"),{type:"bar",data:{labels:'.json_encode($compLabels).',datasets:[{label:"Range (nm)",data:'.json_encode($compData).',backgroundColor:'.$compColors.',borderColor:'.$compBorders.',borderWidth:1}]},options:{indexAxis:"y",responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{beginAtZero:true,title:{display:true,text:"Nautical Miles",font:{size:10}},ticks:{font:{size:9}}},y:{ticks:{font:{size:9}}}}}});});</script>';
     }
