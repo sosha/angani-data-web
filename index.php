@@ -139,10 +139,12 @@ if($key==='countries'){
 } else {
     echo '<h1>'.e($r[$cfg['title']] ?? 'Record').'</h1><p>'.e($r[$cfg['subtitle']] ?? '').'</p>';
 }
-echo '</div>';
+echo '</div><div class="record-hero-actions">';
 if(is_admin()) echo '<a class="btn ink" href="?page=admin&tab=edit&module='.e($key).'&id='.e($id).'">Edit in Admin</a>';
-echo render_report_modal($key,$id);
+echo '<a class="btn ghost small" href="#" onclick="event.preventDefault();document.getElementById(\'reportModal\').classList.add(\'open\')"><i class="fas fa-flag"></i> Report data problem</a>';
+echo '</div>';
 echo '</section>';
+echo render_report_modal($key,$id);
 $dtabs=['overview'=>'Overview','fields'=>'Details'];
 if($key==='airlines'){$dtabs['digital']='Digital';$dtabs['fleet']='Fleet';$dtabs['hubs']='Hubs';$dtabs['operations']='Operations';$dtabs['people']='People';$dtabs['commercial']='Commercial';$dtabs['regulatory']='Regulatory';}
 if($key==='airports'){$dtabs['frequencies']='Frequencies';$dtabs['runways']='Runways';$dtabs['terminals']='Terminals';$dtabs['hubs']='Hubs';}

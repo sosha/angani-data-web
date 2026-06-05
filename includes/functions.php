@@ -1002,8 +1002,7 @@ function handle_submit_report(): void {
 
 function render_report_modal(string $entityType, string $entityId): string {
     $url='https://'.($_SERVER['HTTP_HOST'] ?? 'angani.co.uk').($_SERVER['REQUEST_URI'] ?? '');
-    return '<a class="btn ghost small" href="#" onclick="event.preventDefault();document.getElementById(\'reportModal\').classList.add(\'open\')"><i class="fas fa-flag"></i> Report data problem</a>
-    <div class="modal-overlay" id="reportModal" onclick="if(event.target===this)this.classList.remove(\'open\')"><div class="modal-panel"><button type="button" class="modal-close" onclick="this.closest(\'.modal-overlay\').classList.remove(\'open\')">&times;</button>
+    return '<div class="modal-overlay" id="reportModal" onclick="if(event.target===this)this.classList.remove(\'open\')"><div class="modal-panel"><button type="button" class="modal-close" onclick="this.closest(\'.modal-overlay\').classList.remove(\'open\')">&times;</button>
     <h3>Report a data problem</h3><p class="muted">Help us improve — tell us what is wrong with this record.</p>
     <form method="post" class="stack-form">'.csrf_field().'<input type="hidden" name="action" value="submit_report">
     <input type="hidden" name="entity_type" value="'.e($entityType).'"><input type="hidden" name="entity_id" value="'.e($entityId).'"><input type="hidden" name="page_url" value="'.e($url).'">
