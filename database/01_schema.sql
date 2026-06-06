@@ -1566,3 +1566,15 @@ CREATE TABLE IF NOT EXISTS aircraft_manufacturers (
   CONSTRAINT fk_am_predecessor FOREIGN KEY (predecessor_manufacturer_id) REFERENCES aircraft_manufacturers(id) ON DELETE SET NULL,
   CONSTRAINT fk_am_successor FOREIGN KEY (successor_manufacturer_id) REFERENCES aircraft_manufacturers(id) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS ref_timezones (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  continent VARCHAR(40) DEFAULT NULL,
+  timezone_name VARCHAR(120) NOT NULL,
+  utc_offset VARCHAR(40) DEFAULT NULL,
+  dst_info VARCHAR(80) DEFAULT NULL,
+  has_dst TINYINT(1) NOT NULL DEFAULT 0,
+  last_modified DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  INDEX idx_tz_continent (continent),
+  INDEX idx_tz_name (timezone_name)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
