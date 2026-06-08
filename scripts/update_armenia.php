@@ -19,7 +19,7 @@ if ($old) {
 }
 $new = row("SELECT id, name, iata_code, icao_code FROM airlines WHERE id=546 AND country_code='AM'");
 if ($new) {
-    exec_sql("UPDATE airlines SET iata_code='JI', icao_code='AAG', callsign='APRICOT', fleet_size=2, status_bucket='inactive', founded='2022', hubs='Zvartnots International Airport (EVN)', source_url='https://www.planespotters.net/airline/Armenian-Airlines-2022', logo_url='assets/airline_logos/armenian-airlines.svg' WHERE id=546");
+    exec_sql("UPDATE airlines SET iata_code='JI', icao_code='AAG', callsign='APRICOT', fleet_size=2, status_bucket='unknown', founded='2022', hubs='Zvartnots International Airport (EVN)', source_url='https://www.planespotters.net/airline/Armenian-Airlines-2022', logo_url='assets/airline_logos/armenian-airlines.svg' WHERE id=546");
     $log("UPDATED: Armenian Airlines (current) id={$new['id']} codes JI/AAG/APRICOT fleet=2 status=inactive");
 }
 
