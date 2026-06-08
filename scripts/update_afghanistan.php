@@ -5,6 +5,13 @@ $db=db();
 
 $log("=== Starting Afghanistan (AF) airlines update ===");
 
+// Fix: Kam Air (id=443) was incorrectly assigned country_code='US' in initial ingestion
+$kam = row("SELECT id, name, country_code FROM airlines WHERE name = 'Kam Air' AND country_code = 'US'");
+if ($kam) {
+    exec_sql("UPDATE airlines SET country_code='AF', fleet_size=13, status_bucket='active', founded='2003', callsign='KAMGAR', hubs='Kabul International Airport (Kabul); Mazar-i-Sharif International Airport (Mazar-i-Sharif)', legal_name='Kam Air', trading_name='Kam Air', website_url='https://www.kamair.com', source_url='https://www.planespotters.net/airline/Kam-Air', logo_url='assets/airline_logos/kam-air.png' WHERE id=?", [$kam['id']]);
+    $log("FIXED: Kam Air id={$kam['id']} country_code US->AF, updated fleet=13 status=active");
+}
+
 $airlines = [
     ['name'=>'Ariana Afghan Airlines','iata'=>'FG','icao'=>'AFG','callsign'=>'ARIANA','fleet'=>6,'bucket'=>'active','founded'=>'1955','hubs'=>'Kabul International Airport (Kabul); Kandahar International Airport (Kandahar)','legal'=>'Ariana Afghan Airlines Co. Ltd.','trading'=>'Ariana','web'=>'http://www.flyariana.com','src'=>'https://en.wikipedia.org/wiki/Ariana_Afghan_Airlines','logo'=>'ariana-afghan-airlines.png'],
     ['name'=>'Kam Air','iata'=>'RQ','icao'=>'KMF','callsign'=>'KAMGAR','fleet'=>13,'bucket'=>'active','founded'=>'2003','hubs'=>'Kabul International Airport (Kabul); Mazar-i-Sharif International Airport (Mazar-i-Sharif)','legal'=>'Kam Air','trading'=>'Kam Air','web'=>'https://www.kamair.com','src'=>'https://www.planespotters.net/airline/Kam-Air','logo'=>'kam-air.png'],
