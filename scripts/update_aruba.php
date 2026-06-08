@@ -21,7 +21,7 @@ $updates = [
     ['id'=>805, 'name'=>'FlyAruba',           'iata'=>null,'icao'=>null,'callsign'=>null,'fleet'=>0, 'bucket'=>'unknown', 'founded'=>'2011','hubs'=>''],
     ['id'=>806, 'name'=>'Global Jet Aruba',   'iata'=>null,'icao'=>'GJW','callsign'=>'PLATA','fleet'=>3, 'bucket'=>'active',  'founded'=>'2022','hubs'=>''],
     ['id'=>807, 'name'=>'InselAir Aruba',     'iata'=>'8I','icao'=>'NLU','callsign'=>'INSEL ARUBA','fleet'=>0, 'bucket'=>'defunct','founded'=>'2012','hubs'=>'Oranjestad Reina Beatrix International (AUA / TNCA)'],
-    ['id'=>808, 'name'=>'Royal Aruban Airlines','iata'=>'V5','icao'=>'RYL','callsign'=>'ROYAL ARUBAN','fleet'=>0, 'bucket'=>'inactive','founded'=>null,'hubs'=>''],
+    ['id'=>808, 'name'=>'Royal Aruban Airlines','iata'=>'V5','icao'=>'RYL','callsign'=>'ROYAL ARUBAN','fleet'=>0, 'bucket'=>'unknown','founded'=>null,'hubs'=>''],
     ['id'=>810, 'name'=>'TBN Aircraft',       'iata'=>null,'icao'=>null,'callsign'=>null,'fleet'=>0, 'bucket'=>'unknown', 'founded'=>null,'hubs'=>''],
     ['id'=>811, 'name'=>'Tiara Air',          'iata'=>'3P','icao'=>'TIA','callsign'=>'TIARA','fleet'=>0, 'bucket'=>'defunct','founded'=>'2006','hubs'=>''],
     ['id'=>812, 'name'=>'West Caribbean Aruba','iata'=>null,'icao'=>null,'callsign'=>null,'fleet'=>0, 'bucket'=>'unknown', 'founded'=>null,'hubs'=>''],
