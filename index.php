@@ -82,8 +82,7 @@ if($key==='countries'){
         $logoHtml='<img class="hero-logo" src="'.$src.'" alt="'.e($r[$cfg['title']] ?? '').' logo">';
     }
     $statusChip='';
-    if($r['active']==='Y') $statusChip='<span class="chip ok glow-green" style="vertical-align:middle;margin-left:8px">Active</span>';
-    elseif($r['active']==='N') $statusChip='<span class="chip danger" style="vertical-align:middle;margin-left:8px">Defunct</span>';
+    $sb=$r['status_bucket']??''; $statusChip=$sb==='active'?'<span class="chip ok glow-green" style="vertical-align:middle;margin-left:8px">Active</span>':($sb==='defunct'?'<span class="chip danger" style="vertical-align:middle;margin-left:8px">Defunct</span>':'');
     $alIcao=e($r['icao_code']??''); $alIata=e($r['iata_code']??'');
     $codeBoxes='';
     if($alIata) $codeBoxes.='<span class="iata-box">'.$alIata.'</span>';
@@ -246,7 +245,7 @@ if($tabParam==='overview' && $key==='airlines'){
     }
     echo '</div>';
     echo '<div class="xcard-sec"><div class="xcard-sec-title">OPERATIONS</div>';
-    echo '<div class="xcard-row"><span class="xcard-row-k">Status</span><span class="xcard-row-v">'.status_chip($r['active']==='Y'?'active':($r['active']==='N'?'defunct':$r['active']??'')).'</span></div>';
+    echo '<div class="xcard-row"><span class="xcard-row-k">Status</span><span class="xcard-row-v">'.status_chip($r['status_bucket']??'').'</span></div>';
     if($rFleet) echo '<div class="xcard-row"><span class="xcard-row-k">Fleet</span><span class="xcard-row-v">'.nfmt($rFleet).' aircraft</span></div>';
     if($rHubs) echo '<div class="xcard-row"><span class="xcard-row-k">Hubs</span><span class="xcard-row-v">'.nfmt($rHubs).' bases</span></div>';
     if($rDestinations) echo '<div class="xcard-row"><span class="xcard-row-k">Destinations</span><span class="xcard-row-v">'.nfmt($rDestinations).' served</span></div>';

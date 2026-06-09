@@ -27,3 +27,13 @@ assets/airline_logos/*.svg
 Thumbs.db
 .vscode/
 .idea/
+
+# Supabase scripts with API keys
+scripts/sync_to_supabase.php
+scripts/test_curl.php
+scripts/test_airports.php
+scripts/test_pgr.php
+scripts/check_missing_tables.php
+scripts/check_sb.sh
+scripts/check_sb_tables.py
+scripts/sb_curl.sh

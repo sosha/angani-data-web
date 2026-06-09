@@ -532,6 +532,20 @@ function render_admin_mirror(): void {
     echo '<p class="muted">Trigger an immediate sync to the mirror server.</p>';
     echo '<form method="post">' . csrf_field() . '<input type="hidden" name="action" value="run_mirror_sync"><button class="btn ink">Run Mirror Sync Now</button></form>';
     echo '</section>';
+
+    // Supabase sync section
+    $supabaseStateFile = __DIR__ . '/../backups/supabase_sync_state.json';
+    $sState = ['last_sync' => 'Never', 'status' => 'unknown', 'tables_synced' => 0, 'rows_synced' => 0, 'last_error' => ''];
+    if (file_exists($supabaseStateFile)) {
+        $sState = array_merge($sState, json_decode(file_get_contents($supabaseStateFile), true) ?: []);
+    }
+    echo '<section class="panel" style="border-left:3px solid #3ecf8e"><div class="topline"><h3>☁️ Sync to Supabase</h3><span class="chip ' . ($sState['status'] === 'ok' ? 'ok glow-green' : ($sState['status'] === 'error' ? 'danger' : 'gold')) . '">' . e(ucfirst($sState['status'] === 'ok' ? 'Synced' : ($sState['status'] === 'error' ? 'Error' : 'Unknown'))) . '</span></div>';
+    echo '<p class="muted">Drop everything in Supabase and recreate from current MySQL schema + all data. Last sync: ' . e($sState['last_sync']) . ' · ' . nfmt((int)$sState['tables_synced']) . ' tables · ' . nfmt((int)$sState['rows_synced']) . ' rows</p>';
+    if ($sState['last_error']) {
+        echo '<p style="color:#ff6b6b;font-size:13px;font-family:monospace">Last error: ' . e($sState['last_error']) . '</p>';
+    }
+    echo '<form method="post" onsubmit="return confirm(\'This will DROP ALL tables in Supabase and recreate from MySQL. Continue?\')">' . csrf_field() . '<input type="hidden" name="action" value="sync_to_supabase"><button class="btn ink" style="background:#3ecf8e;color:#0a0a0a">Sync Full Database to Supabase</button></form>';
+    echo '</section>';
 }
 
 function render_admin_data_reports(): void {

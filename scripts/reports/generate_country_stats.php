@@ -25,10 +25,10 @@ foreach ($countries as $c) {
     // Total airlines based in this country
     $als = (int)scalar("SELECT COUNT(*) FROM airlines WHERE country_code=?", [$cc]);
 
-    // Airlines with international services: active='Y' airlines
-    $alsIntl = (int)scalar("SELECT COUNT(*) FROM airlines WHERE country_code=? AND active='Y'", [$cc]);
-    $alsActive = (int)scalar("SELECT COUNT(*) FROM airlines WHERE country_code=? AND active='Y'", [$cc]);
-    $alsDefunct = (int)scalar("SELECT COUNT(*) FROM airlines WHERE country_code=? AND active='N'", [$cc]);
+    // Airlines with international services: status_bucket='active' airlines
+    $alsIntl = (int)scalar("SELECT COUNT(*) FROM airlines WHERE country_code=? AND status_bucket='active'", [$cc]);
+    $alsActive = (int)scalar("SELECT COUNT(*) FROM airlines WHERE country_code=? AND status_bucket='active'", [$cc]);
+    $alsDefunct = (int)scalar("SELECT COUNT(*) FROM airlines WHERE country_code=? AND status_bucket='defunct'", [$cc]);
 
     exec_sql(
         'INSERT INTO country_air_transport_stats (iso_alpha_2, international_airports, domestic_airports, airlines, airlines_active, airlines_defunct, airlines_with_international) VALUES (?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE international_airports=VALUES(international_airports), domestic_airports=VALUES(domestic_airports), airlines=VALUES(airlines), airlines_active=VALUES(airlines_active), airlines_defunct=VALUES(airlines_defunct), airlines_with_international=VALUES(airlines_with_international)',
