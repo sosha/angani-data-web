@@ -109,6 +109,22 @@ Stores individual aircraft (by tail number). Used on Aircraft Registry listing a
 
 **Used in**: `?page=aircraft` (Pro), aircraft detail page, country detail Registry tab, aircraft type detail Registry tab, home page stats.
 
+### `lessors` (Pro tier)
+
+Stores aircraft lessors (leasing companies). Used on Lessors listing and detail pages.
+
+**Key columns**: `lessor_code` (VARCHAR(32) PK), `name`, `hq_location`, `headquarters_country_code`, `fleet_count`, `contact_info`, `status`, `notes`
+
+**Usage**: 35 lessors imported from `ultimate_lessors_list.csv`. The `lessors` table is separate from `organisations` to avoid duplication — lessor-type organisations were removed from `organisations`.
+
+### `airline_destinations`
+
+Stores airline-destination city/airport pairs. Populated from `06_airline_destinations.sql` seed.
+
+**Key columns**: `iata_code`, `icao_code`, `airline_code`, `destination`, `country`, `region`, `airport_iata`
+
+**Records**: 290
+
 ---
 
 ## 2. Country Intelligence Tables (V2)
@@ -377,6 +393,14 @@ Extended model data. All Pro tier. Joined by `model_id`.
 
 ## 6. Regulatory & Standards Tables (V1 extension)
 
+### `regulatory_records` (Pro tier)
+
+General regulatory records with AOC numbers and status buckets. Used in country detail and admin QA.
+
+**Key columns**: `id` (BIGINT PK AUTO), `type`, `country_code`, `name`, `regulator_name`, `airline_iata`, `airline_icao`, `aoc_number`, `authority`, `city`, `country`, `email`, `phone`, `website`, `status` (TEXT), `status_bucket` (enum active/defunct/unknown)
+
+**Records**: 160 (from `07_regulatory_records.sql`). The `status` column was widened from VARCHAR(80) to TEXT to handle a malformed row with CSV-concatenated data.
+
 ### `regulatory_authorities` (Free tier)
 
 Civil aviation authorities. Used in country detail Regulatory tab.
@@ -495,9 +519,40 @@ Data license definitions.
 
 **Columns**: `id` (PK), `name` (UNIQUE), `url`, `description`, `allows_commercial_use`
 
-### `pipeline_sources`, `pipeline_runs`, `staging_import_records`, `import_batches`, `export_logs`, `admin_tasks`, `email_providers`, `email_queue`, `entity_change_log`
+### `dataset_files`, `dataset_records`
+
+Import pipeline tables used by the Phase 4 import engine.
+
+- **`dataset_files`**: Metadata per imported CSV file. Columns: `id` (BIGINT PK AUTO), `path`, `scope` (global/country_zip), `category`, `filename`, `country_code`, `row_count`, `is_populated`, `headers_json`
+- **`dataset_records`**: Raw JSON row storage for every row in every imported file. Columns: `id` (BIGINT PK AUTO), `dataset_file_id` (FK), `country_code`, `category`, `filename`, `row_json` (LONGTEXT)
+
+Both currently empty (0 records). Populated by running Phase 4 import with `--store-raw` flag.
+
+### `organisations`
+
+Service providers to the aviation industry. Distinguished from airlines and airports.
+
+**Key columns**: `id` (BIGINT PK AUTO), `name`, `type` (lessor/mro/maintenance/ground_handling/catering/training/etc.), `country_code`, `status`
+
+**Current state**: 0 records. Lessor-type rows were removed when the `lessors` table was populated (35 lessors) to avoid duplication.
+
+### `change_log`, `source_records`
+
+- **`entity_change_log`**: Field-level change tracking. Columns: `id` (BIGINT PK AUTO), `entity_type`, `entity_id`, `field_name`, `old_value`, `new_value`, `changed_at`, `change_source`, `confidence_score`
+- **`source_records`**: Raw source data (text, screenshots). Columns: `source_id` (BIGINT PK AUTO), `entity_type`, `entity_id`, `url`, `title`, `retrieved_at`, `raw_hash`, `raw_text`, `screenshot_path`
+
+### `pipeline_sources`, `pipeline_runs`, `staging_import_records`, `import_batches`, `export_logs`, `admin_tasks`, `email_providers`, `email_queue`
 
 Operations tables for the pipeline system, import/export, admin task management, email sending, and data change tracking.
+
+- **`pipeline_sources`**: Data source definitions (API, scraper, CSV upload, URL CSV)
+- **`pipeline_runs`**: Execution logs for pipeline runs
+- **`staging_import_records`**: Rows flagged for review during import
+- **`import_batches`**: Batch-level import metadata
+- **`export_logs`**: CSV/ZIP export history
+- **`admin_tasks`**: Project management checklist items
+- **`email_providers`**: Email service provider configs (SendPulse, Postmark, Brevo, etc.)
+- **`email_queue`**: Outgoing email queue
 
 ---
 
