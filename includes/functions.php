@@ -269,7 +269,7 @@ function iso2_continent(string $iso2): string {
     return $map[strtoupper($iso2)] ?? '';
 }
 
-function query_module_records(array $cfg, int $limit=24, int $offset=0, bool $forExport=false): array {
+function query_module_records(array $cfg, int $limit=24, int $offset=0, bool $forExport=false, ?string $orderBy=null): array {
     $table=$cfg['table']; if(!table_exists($table)) return [[],0];
     $cols=table_columns($table);
     $q=getv('q'); $where=[]; $params=[];
@@ -281,13 +281,17 @@ function query_module_records(array $cfg, int $limit=24, int $offset=0, bool $fo
     $status=getv('status'); if($status!==''){ $scol=in_array('status_bucket',$cols,true)?'status_bucket':(in_array('status',$cols,true)?'status':null); if($scol){ $where[]="`$scol`=?"; $params[]=$status; } elseif(in_array('active',$cols,true)){ if($status==='active'){ $where[]='`active`=?'; $params[]='Y'; } elseif($status==='defunct'){ $where[]='`active`=?'; $params[]='N'; } } }
     $sql=' FROM `'.$table.'`'.($where?' WHERE '.implode(' AND ',$where):'');
     $total=(int)scalar('SELECT COUNT(*)'.$sql,$params);
-    $sort=getv('sort','default'); $dir=str_starts_with($sort,'-')?'DESC':'ASC'; $sort=ltrim($sort,'-');
-    if($sort==='default'){
-        $order=in_array('last_modified',$cols,true)?' ORDER BY last_modified DESC':(in_array('updated_at',$cols,true)?' ORDER BY updated_at DESC':(in_array('id',$cols,true)?' ORDER BY id DESC':(in_array('code',$cols,true)?' ORDER BY code ASC':(count($cols)?' ORDER BY '.$cols[0].' ASC':''))));
-    } elseif(in_array($sort,$cols,true)){
-        $order=' ORDER BY `'.str_replace('`','',$sort).'` '.$dir;
+    if($orderBy){
+        $order=' ORDER BY '.$orderBy;
     } else {
-        $order=in_array('id',$cols,true)?' ORDER BY id DESC':(in_array('code',$cols,true)?' ORDER BY code ASC':(count($cols)?' ORDER BY '.$cols[0].' ASC':''));
+        $sort=getv('sort','default'); $dir=str_starts_with($sort,'-')?'DESC':'ASC'; $sort=ltrim($sort,'-');
+        if($sort==='default'){
+            $order=in_array('last_modified',$cols,true)?' ORDER BY last_modified DESC':(in_array('updated_at',$cols,true)?' ORDER BY updated_at DESC':(in_array('id',$cols,true)?' ORDER BY id DESC':(in_array('code',$cols,true)?' ORDER BY code ASC':(count($cols)?' ORDER BY '.$cols[0].' ASC':''))));
+        } elseif(in_array($sort,$cols,true)){
+            $order=' ORDER BY `'.str_replace('`','',$sort).'` '.$dir;
+        } else {
+            $order=in_array('id',$cols,true)?' ORDER BY id DESC':(in_array('code',$cols,true)?' ORDER BY code ASC':(count($cols)?' ORDER BY '.$cols[0].' ASC':''));
+        }
     }
     if($forExport){ $data=rows('SELECT *'.$sql.$order.' LIMIT 5000',$params); }
     else { $data=rows('SELECT *'.$sql.$order.' LIMIT '.(int)$limit.' OFFSET '.(int)$offset,$params); }
@@ -436,17 +440,32 @@ function module_page_copy(string $key, array $cfg, int $total): array {
     $fallback=[$cfg['label'] ?? 'Dataset','Browse this aviation dataset through searchable cards and clean table views.','Use search and filters first. Expand a card or open a record when you need deeper detail.'];
     return $copy[$key] ?? $fallback;
 }
-function render_xcard_page(string $key, array $cfg, array $records, int $total, array $filterOpts = []): string {
+function render_xcard_page(string $key, array $cfg, array $records, int $total, array $filterOpts = [], string $extraToolbarHtml = ''): string {
     [$title,$sub,$hint]=module_page_copy($key,$cfg,$total);
     $label = strtolower((string)($cfg['label'] ?? 'records'));
     $countLabel = nfmt($total).' '.$label;
     $tierRule = access_rule('module',$key,normalize_tier_code($cfg['tier'] ?? 'free'));
-    $html  = '<section class="dataset-hero"><div><div class="eyebrow">'.e($cfg['tier']==='free'?'Open aviation database':'Controlled aviation database').'</div><h1>'.e($title).'</h1><p>'.e($sub).'</p><div class="page-nudge"><i class="fas fa-hand-pointer"></i><span>'.e($hint).'</span></div></div><aside><span class="dataset-total">'.e($countLabel).'</span><small>Current access: '.e(ucfirst(normalize_tier_code($tierRule['min_tier'] ?? 'free'))).'</small></aside></section>';
-    $html .= '<div class="xcard-controls">'
-           . '<div class="xcard-search-wrap">'
-           . '<svg style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>'
-           . '<input type="text" class="xcard-search" placeholder="Search '.e($cfg['label']).'..." autocomplete="off"></div>';
-    if($filterOpts){
+    $html  = '<section class="dataset-hero dataset-hero--'.e($key).'"><div><div class="eyebrow">'.e($cfg['tier']==='free'?'Open aviation database':'Controlled aviation database').'</div><h1>'.e($title).'</h1><p>'.e($sub).'</p><div class="page-nudge"><i class="fas fa-hand-pointer"></i><span>'.e($hint).'</span></div></div><aside><span class="dataset-total">'.e($countLabel).'</span><small>Current access: '.e(ucfirst(normalize_tier_code($tierRule['min_tier'] ?? 'free'))).'</small></aside></section>';
+    $isCountries=$key==='countries';
+    $isAirlines=$key==='airlines';
+    $html .= '<div class="xcard-controls">';
+    if($extraToolbarHtml){
+        $html .= $extraToolbarHtml;
+    } elseif($isCountries){
+        try{
+            $allCountries=rows('SELECT iso_alpha_2,name_common FROM countries ORDER BY name_common ASC');
+            $html .= '<div class="xcard-search-wrap">'
+                   . '<select class="xcard-search xcard-jump" onchange="if(this.value)location.href=\'?page=detail&amp;module=countries&amp;id=\'+this.value">'
+                   . '<option value="">Jump to country...</option>';
+            foreach($allCountries as $c) $html .= '<option value="'.e($c['iso_alpha_2']).'">'.e($c['name_common']).'</option>';
+            $html .= '</select></div>';
+        }catch(Throwable $e){}
+    } else {
+        $html .= '<div class="xcard-search-wrap">'
+               . '<svg style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>'
+               . '<input type="text" class="xcard-search" placeholder="Search '.e($cfg['label']).'..." autocomplete="off"></div>';
+    }
+    if($filterOpts && !$extraToolbarHtml){
         $html .= '<div class="xcard-filter-row">'
                . '<button type="button" class="xcard-filter active" data-f="all">ALL</button>';
         foreach($filterOpts as $val => $text) $html .= '<button type="button" class="xcard-filter" data-f="'.e($val).'">'.e($text).'</button>';
@@ -454,8 +473,27 @@ function render_xcard_page(string $key, array $cfg, array $records, int $total, 
     }
     $html .= '<span class="xcard-count" data-total="'.(int)$total.'">'.e($countLabel).'</span></div>'
            . '<div class="xgrid">'.render_module_cards($key,$records).'</div>'
-           . '<div class="xcard-empty">No '.e($label).' match your search. Try a broader keyword or reset filters.</div>';
-    $html .= '<script>
+           . '<div class="xcard-empty">No '.e($label).' match your '.($extraToolbarHtml||$isCountries?'filter':'search').'. Try a broader keyword or reset filters.</div>';
+    if($extraToolbarHtml){
+        $html .= '<script>
+(function(){var g=document.querySelector(".xgrid"),e=document.querySelector(".xcard-empty"),c=document.querySelector(".xcard-count"),ca=g?g.querySelectorAll(".xcard"):[],total=c?c.dataset.total:"0",label="'.addslashes($label).'";
+function rt(cd){var b=cd.querySelector(".xcard-expand-btn");if(b)b.textContent="+ Expand";var h=cd.querySelector(".xcard-hint");if(h)h.textContent="Click to expand"}
+function cl(){ca.forEach(function(x){x.classList.remove("expanded");rt(x)})}
+ca.forEach(function(cd){cd.addEventListener("click",function(ev){if(ev.target.closest("a"))return;if(ev.target.closest(".xcard-expand-btn"))ev.preventDefault();var w=this.classList.contains("expanded");cl();if(!w){this.classList.add("expanded");var b=this.querySelector(".xcard-expand-btn");if(b)b.textContent="- Collapse";var h=this.querySelector(".xcard-hint");if(h)h.textContent="Preview open";this.scrollIntoView({behavior:"smooth",block:"nearest"})}})});
+})();
+</script>';
+    } elseif($isCountries){
+        $html .= '<script>
+(function(){var g=document.querySelector(".xgrid"),e=document.querySelector(".xcard-empty"),c=document.querySelector(".xcard-count"),ca=g?g.querySelectorAll(".xcard"):[],f=document.querySelectorAll(".xcard-filter"),total=c?c.dataset.total:"0",label="'.addslashes($label).'";
+function rt(cd){var b=cd.querySelector(".xcard-expand-btn");if(b)b.textContent="+ Expand";var h=cd.querySelector(".xcard-hint");if(h)h.textContent="Click to expand"}
+function cl(){ca.forEach(function(x){x.classList.remove("expanded");rt(x)})}
+ca.forEach(function(cd){cd.addEventListener("click",function(ev){if(ev.target.closest("a"))return;if(ev.target.closest(".xcard-expand-btn"))ev.preventDefault();var w=this.classList.contains("expanded");cl();if(!w){this.classList.add("expanded");var b=this.querySelector(".xcard-expand-btn");if(b)b.textContent="- Collapse";var h=this.querySelector(".xcard-hint");if(h)h.textContent="Preview open";this.scrollIntoView({behavior:"smooth",block:"nearest"})}})});
+function u(){var v=0;ca.forEach(function(cd){if(cd.style.display!=="none")v++});if(c)c.textContent=v+" shown of "+total+" "+label;if(e)e.style.display=v===0?"block":"none"}
+f.forEach(function(b){b.addEventListener("click",function(){f.forEach(function(x){x.classList.remove("active")});this.classList.add("active");var ff=this.dataset.f;cl();ca.forEach(function(cd){cd.style.display=(ff==="all"||!cd.dataset.xf||(cd.dataset.xf||"").toLowerCase()===ff)?"":"none"});u()})});
+})();
+</script>';
+    } else {
+        $html .= '<script>
 (function(){var g=document.querySelector(".xgrid"),s=document.querySelector(".xcard-search"),e=document.querySelector(".xcard-empty"),c=document.querySelector(".xcard-count"),ca=g?g.querySelectorAll(".xcard"):[],f=document.querySelectorAll(".xcard-filter"),t,total=c?c.dataset.total:"0",label="'.addslashes($label).'";
 function rt(cd){var b=cd.querySelector(".xcard-expand-btn");if(b)b.textContent="+ Expand";var h=cd.querySelector(".xcard-hint");if(h)h.textContent="Click to expand"}
 function cl(){ca.forEach(function(x){x.classList.remove("expanded");rt(x)})}
@@ -465,6 +503,7 @@ f.forEach(function(b){b.addEventListener("click",function(){f.forEach(function(x
 if(s)s.addEventListener("input",function(){clearTimeout(t);t=setTimeout(function(){var q=this.value.trim().toLowerCase();cl();ca.forEach(function(cd){cd.style.display=(cd.dataset.xs&&cd.dataset.xs.indexOf(q)!==-1)?"":"none"});u()}.bind(this),150)});
 })();
 </script>';
+    }
     return $html;
 }
 function render_table(array $rows, array $columns, ?string $moduleKey=null): string {
