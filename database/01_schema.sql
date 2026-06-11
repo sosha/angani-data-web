@@ -158,7 +158,8 @@ CREATE TABLE insight_cards (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- -----------------------------------------------------------------------------
--- Normalised aviation entities layered on top of the current source tables
+-- Service providers to the aviation industry (lessors, MRO, maintenance, 
+-- ground handling, catering, training, etc.)
 -- -----------------------------------------------------------------------------
 CREATE TABLE organisations (
   id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
