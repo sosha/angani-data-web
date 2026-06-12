@@ -651,6 +651,19 @@ function handle_post_actions(): void {
     if($action==='update_account' && is_logged_in()){ exec_sql('UPDATE users SET name=?, updated_at=NOW() WHERE id=?',[postv('name'),(int)current_user()['id']]); flash('success','Account updated.'); redirect_to('?page=account'); }
     if($action==='forgot_password'){ ensure_password_reset_table(); $email=postv('email'); $user=row('SELECT id,email,name FROM users WHERE email=? AND status="active"',[$email]); if($user){ $token=bin2hex(random_bytes(32)); exec_sql('INSERT INTO password_reset_tokens (user_id,token,email,expires_at) VALUES (?,?,?,DATE_ADD(NOW(),INTERVAL 1 HOUR))',[$user['id'],$token,$user['email']]); try{ send_email($user['email'],'Reset your Angani Data password',"Hi {$user['name']},\n\nClick this link to reset your password:\n\n".((!empty($_SERVER['HTTPS'])&&$_SERVER['HTTPS']!=='off')?'https://':'http://').($_SERVER['HTTP_HOST']??'data.angani.co.uk').public_url_prefix()."?page=reset&token=$token&e=".urlencode($user['email'])."\n\nThe link expires in 1 hour."); }catch(Throwable $e){} flash('success','If that email exists, a reset link has been sent.'); redirect_to('?page=forgot&sent=1&token='.urlencode($token).'&e='.urlencode($user['email'])); } else { flash('error','If that email exists, a reset link has been sent.'); redirect_to('?page=forgot'); } }
     if($action==='reset_password'){ ensure_password_reset_table(); $token=postv('token'); $email=postv('email'); $password=postv('password'); $confirm=postv('confirm'); if($password!==$confirm){ flash('error','Passwords do not match.'); redirect_to('?page=reset&token='.urlencode($token).'&e='.urlencode($email)); } if(strlen($password)<8){ flash('error','Use at least 8 characters.'); redirect_to('?page=reset&token='.urlencode($token).'&e='.urlencode($email)); } $rt=row('SELECT * FROM password_reset_tokens WHERE token=? AND email=? AND used_at IS NULL AND expires_at>NOW() LIMIT 1',[$token,$email]); if(!$rt){ flash('error','Invalid or expired reset link.'); redirect_to('?page=forgot'); } exec_sql('UPDATE users SET password_hash=?, updated_at=NOW() WHERE id=? AND email=?',[password_hash($password,PASSWORD_DEFAULT),(int)$rt['user_id'],$email]); exec_sql('UPDATE password_reset_tokens SET used_at=NOW() WHERE id=?',[(int)$rt['id']]); flash('success','Password reset. You can now log in.'); redirect_to('?page=login'); }
+    if($action==='record_verify' && is_logged_in()) {
+        $entityType=postv('entity_type'); $entityId=(int)postv('entity_id'); $userId=(int)current_user()['id'];
+        $completeness=postv('completeness'); $accuracy=postv('accuracy');
+        if(!in_array($completeness,['','complete','incomplete'],true)) $completeness=null;
+        if(!in_array($accuracy,['','accurate','inaccurate','unverified'],true)) $accuracy=null;
+        if($completeness || $accuracy){
+            $existing=row('SELECT id FROM record_verifications WHERE entity_type=? AND entity_id=? AND user_id=?',[$entityType,$entityId,$userId]);
+            if($existing) exec_sql('UPDATE record_verifications SET completeness=?, accuracy=?, updated_at=NOW() WHERE id=?',[$completeness?:null,$accuracy?:null,(int)$existing['id']]);
+            else exec_sql('INSERT INTO record_verifications (entity_type,entity_id,user_id,completeness,accuracy) VALUES (?,?,?,?,?)',[$entityType,$entityId,$userId,$completeness?:null,$accuracy?:null]);
+        }
+        flash('success','Verification saved.');
+        redirect_to($_SERVER['HTTP_REFERER'] ?? '?page=home');
+    }
     if($action==='submit_report'){ handle_submit_report(); return; }
     if(!is_admin()) return;
     if($action==='admin_save_record') { admin_save_record(); }
@@ -663,6 +676,9 @@ function handle_post_actions(): void {
     if($action==='admin_delete_feature') { admin_delete_feature(); }
     if($action==='admin_save_question') { admin_save_question(); }
     if($action==='admin_save_insight') { admin_save_insight(); }
+    if($action==='admin_save_page') { exec_sql('UPDATE site_pages SET title=?, content=?, updated_at=NOW() WHERE page_key=?',[postv('title'),postv('content'),postv('page_key')]); flash('success','Page updated.'); redirect_to('?page=admin&tab=pages'); }
+    if($action==='admin_save_slide') { $id=(int)postv('slide_id'); if($id>0) exec_sql('UPDATE site_slides SET title=?,subtitle=?,image_url=?,stat_label=?,stat_value=?,link_url=?,display_order=?,is_active=?,updated_at=NOW() WHERE id=?',[postv('title'),postv('subtitle'),postv('image_url'),postv('stat_label'),postv('stat_value'),postv('link_url'),(int)postv('display_order'),(int)postv('is_active'),$id]); else exec_sql('INSERT INTO site_slides (title,subtitle,image_url,stat_label,stat_value,link_url,display_order,is_active) VALUES (?,?,?,?,?,?,?,?)',[postv('title'),postv('subtitle'),postv('image_url'),postv('stat_label'),postv('stat_value'),postv('link_url'),(int)postv('display_order'),(int)postv('is_active')]); flash('success','Slide saved.'); redirect_to('?page=admin&tab=slides'); }
+    if($action==='admin_delete_slide') { exec_sql('DELETE FROM site_slides WHERE id=?',[(int)postv('slide_id')]); flash('success','Slide deleted.'); redirect_to('?page=admin&tab=slides'); }
     if($action==='admin_update_staging') { admin_update_staging(); }
     if($action==='admin_update_task') { exec_sql('UPDATE admin_tasks SET status=?, updated_at=NOW() WHERE id=?',[postv('status'),(int)postv('task_id')]); flash('success','Task updated.'); redirect_to('?page=admin&tab=tasks'); }
     if($action==='admin_import_csv') { admin_import_csv(); }

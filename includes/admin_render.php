@@ -34,6 +34,8 @@ function render_admin_page(): void {
         'access'=>'Tier Visibility',
         'questions'=>'Preset Questions',
         'insights'=>'Homepage Insights',
+        'pages'=>'Site Pages',
+        'slides'=>'Homepage Slider',
         'tasks'=>'100% Tasks',
         'backup'=>'Backup & Restore',
         'mirror'=>'Mirror'
@@ -47,6 +49,8 @@ function render_admin_page(): void {
     elseif($tab==='access') render_admin_access_rules();
     elseif($tab==='questions') render_admin_questions();
     elseif($tab==='insights') render_admin_insights();
+    elseif($tab==='pages') render_admin_pages();
+    elseif($tab==='slides') render_admin_slides();
     elseif($tab==='imports') render_admin_imports();
     elseif($tab==='quality') render_admin_quality();
     elseif($tab==='tasks') render_admin_tasks();
@@ -603,4 +607,36 @@ function render_admin_email_providers(): void {
         echo '</td></tr>';
     }
     echo '</tbody></table></div></section>';
+}
+function render_admin_pages(): void {
+    echo '<section class="admin-head"><h1>Site Pages</h1><p>Edit editable page content (Terms, Privacy, Beta Status).</p></section>';
+    $pages=rows('SELECT * FROM site_pages ORDER BY page_key ASC');
+    foreach($pages as $p){
+        echo '<section class="panel" style="margin-bottom:16px"><h3>'.e($p['title']).'</h3>';
+        echo '<form method="post" class="stack-form">'.csrf_field().'<input type="hidden" name="action" value="admin_save_page"><input type="hidden" name="page_key" value="'.e($p['page_key']).'">';
+        echo '<label><span>Title</span><input name="title" value="'.e($p['title']).'"></label>';
+        echo '<label><span>Content (HTML allowed)</span><textarea name="content" rows="12" style="font-family:monospace;font-size:13px">'.e($p['content']).'</textarea></label>';
+        echo '<button class="btn ink">Save</button></form></section>';
+    }
+}
+function render_admin_slides(): void {
+    echo '<section class="admin-head"><h1>Homepage Slider</h1><p>Manage slides that appear in the hero panel. The slider auto-rotates on the homepage.</p></section>';
+    $slides=rows('SELECT * FROM site_slides ORDER BY display_order ASC');
+    echo '<section class="panel"><h3>Add Slide</h3><form method="post" class="stack-form">'.csrf_field().'<input type="hidden" name="action" value="admin_save_slide">';
+    echo '<label><span>Title</span><input name="title" required></label>';
+    echo '<label><span>Subtitle</span><input name="subtitle"></label>';
+    echo '<label><span>Image URL</span><input name="image_url" placeholder="http://..."></label>';
+    echo '<label><span>Stat Label</span><input name="stat_label" placeholder="e.g. Active Airlines"></label>';
+    echo '<label><span>Stat Value</span><input name="stat_value" placeholder="e.g. 9210"></label>';
+    echo '<label><span>Link URL</span><input name="link_url" placeholder="?page=catalogue"></label>';
+    echo '<label><span>Display Order</span><input type="number" name="display_order" value="1"></label>';
+    echo '<label><span>Active</span><select name="is_active"><option value="1">Yes</option><option value="0">No</option></select></label>';
+    echo '<button class="btn ink">Add Slide</button></form></section>';
+    echo '<div class="table-wrap"><table><thead><tr><th>Order</th><th>Title</th><th>Image</th><th>Active</th><th>Actions</th></tr></thead><tbody>';
+    foreach($slides as $s){
+        echo '<tr><td>'.(int)$s['display_order'].'</td><td><strong>'.e($s['title']).'</strong><br><small>'.e($s['subtitle']??'').'</small></td><td>'.($s['image_url']?'<img src="'.e($s['image_url']).'" style="height:40px;border-radius:4px">':'').'</td><td>'.($s['is_active']?'<span class="chip ok">Yes</span>':'<span class="chip">No</span>').'</td><td>';
+        echo '<form method="post" style="display:inline" onsubmit="return confirm(\'Delete this slide?\')">'.csrf_field().'<input type="hidden" name="action" value="admin_delete_slide"><input type="hidden" name="slide_id" value="'.(int)$s['id'].'"><button class="btn mini ghost">Delete</button></form>';
+        echo '</td></tr>';
+    }
+    echo '</tbody></table></div>';
 }
