@@ -630,11 +630,27 @@ function run_preset_query(string $key): array {
     return [];
 }
 
+function ensure_password_reset_table(): void {
+    try { exec_sql("CREATE TABLE IF NOT EXISTS password_reset_tokens (
+        id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+        user_id BIGINT UNSIGNED NOT NULL,
+        token VARCHAR(64) NOT NULL,
+        email VARCHAR(190) NOT NULL,
+        expires_at DATETIME NOT NULL,
+        used_at DATETIME DEFAULT NULL,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        INDEX idx_token (token),
+        INDEX idx_user (user_id)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"); } catch(Throwable $e) {}
+}
+
 function handle_post_actions(): void {
     if(($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'POST') return; verify_csrf(); $action=postv('action');
     if($action==='login'){ $attempts=(int)($_SESSION['login_attempts'] ?? 0); if($attempts>5) { usleep(3000000); flash('error','Too many attempts. Try again later.'); redirect_to('?page=login'); } if($attempts>0) usleep($attempts*200000); if(login_user(postv('email'),postv('password'))){$_SESSION['login_attempts']=0;flash('success','Logged in.'); redirect_to('?page=dashboard');} $_SESSION['login_attempts']=$attempts+1; flash('error','Invalid email or password.'); redirect_to('?page=login'); }
     if($action==='register'){ [$ok,$msg]=register_user(postv('name'),postv('email'),postv('password')); flash($ok?'success':'error',$msg); redirect_to($ok?'?page=dashboard':'?page=register'); }
     if($action==='update_account' && is_logged_in()){ exec_sql('UPDATE users SET name=?, updated_at=NOW() WHERE id=?',[postv('name'),(int)current_user()['id']]); flash('success','Account updated.'); redirect_to('?page=account'); }
+    if($action==='forgot_password'){ ensure_password_reset_table(); $email=postv('email'); $user=row('SELECT id,email,name FROM users WHERE email=? AND status="active"',[$email]); if($user){ $token=bin2hex(random_bytes(32)); exec_sql('INSERT INTO password_reset_tokens (user_id,token,email,expires_at) VALUES (?,?,?,DATE_ADD(NOW(),INTERVAL 1 HOUR))',[$user['id'],$token,$user['email']]); try{ send_email($user['email'],'Reset your Angani Data password',"Hi {$user['name']},\n\nClick this link to reset your password:\n\n".((!empty($_SERVER['HTTPS'])&&$_SERVER['HTTPS']!=='off')?'https://':'http://').($_SERVER['HTTP_HOST']??'data.angani.co.uk').public_url_prefix()."?page=reset&token=$token&e=".urlencode($user['email'])."\n\nThe link expires in 1 hour."); }catch(Throwable $e){} flash('success','If that email exists, a reset link has been sent.'); redirect_to('?page=forgot&sent=1&token='.urlencode($token).'&e='.urlencode($user['email'])); } else { flash('error','If that email exists, a reset link has been sent.'); redirect_to('?page=forgot'); } }
+    if($action==='reset_password'){ ensure_password_reset_table(); $token=postv('token'); $email=postv('email'); $password=postv('password'); $confirm=postv('confirm'); if($password!==$confirm){ flash('error','Passwords do not match.'); redirect_to('?page=reset&token='.urlencode($token).'&e='.urlencode($email)); } if(strlen($password)<8){ flash('error','Use at least 8 characters.'); redirect_to('?page=reset&token='.urlencode($token).'&e='.urlencode($email)); } $rt=row('SELECT * FROM password_reset_tokens WHERE token=? AND email=? AND used_at IS NULL AND expires_at>NOW() LIMIT 1',[$token,$email]); if(!$rt){ flash('error','Invalid or expired reset link.'); redirect_to('?page=forgot'); } exec_sql('UPDATE users SET password_hash=?, updated_at=NOW() WHERE id=? AND email=?',[password_hash($password,PASSWORD_DEFAULT),(int)$rt['user_id'],$email]); exec_sql('UPDATE password_reset_tokens SET used_at=NOW() WHERE id=?',[(int)$rt['id']]); flash('success','Password reset. You can now log in.'); redirect_to('?page=login'); }
     if($action==='submit_report'){ handle_submit_report(); return; }
     if(!is_admin()) return;
     if($action==='admin_save_record') { admin_save_record(); }
